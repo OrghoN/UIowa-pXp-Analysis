@@ -325,8 +325,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hvtxx"] = new TH1F("hvtxx","X vtx",1000,-1.,1.);
   histosTH1F["hvtxy"] = new TH1F("hvtxy","Y vtx",1000,-1.,1.);
   histosTH1F["hvtxz"] = new TH1F("hvtxz","Z vtx",300,-30.,30.);
-  histosTH1F["hvtxchi2"] = new TH1F("hvtxchi2","chi2 vtx",1100,-100.,1000.);
-  histosTH1F["hvtxchi2fin"] = new TH1F("hvtxchi2fin","chi2 vtx",1100,-100.,1000.);
+  //histosTH1F["hvtxchi2"] = new TH1F("hvtxchi2","chi2 vtx",1100,-100.,1000.);
+  //histosTH1F["hvtxchi2fin"] = new TH1F("hvtxchi2fin","chi2 vtx",1100,-100.,1000.);
   //...Luiz
   histosTH1F["hvtxchi2"] = new TH1F("hvtxchi2","#chi^{2} vtx",1100,-100.,1000.);
   histosTH1F["hvtxchi2fin"] = new TH1F("hvtxchi2fin","#chi^{2} vtx fin",1100,-100.,1000.);
@@ -1121,7 +1121,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
       
       //notElastic
       // this is average theta_x and thetha_y, both measure the same thing
-      // one is negative on is positive, so minus is needed
+      // one is negative one is positive, so minus is needed
       //      double thX=0.5*(thx_proton_left-thx_proton_right);
       //      double thY=0.5*(thy_proton_left-thy_proton_right);
       // not needed here
