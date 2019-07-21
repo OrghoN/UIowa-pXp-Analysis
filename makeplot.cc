@@ -34,8 +34,10 @@ void makeplot()
   //TFile *f = TFile::Open("t0RPrelui2015all.root");
   //TFile *f = TFile::Open("t0RP2trackrelui.root");
   //TFile *f = TFile::Open("t0RP4trackrelui.root");
-  TFile *f = TFile::Open("t0RP42relui.root");
+  TFile *f = TFile::Open("t0RP4track2relui.root");
+  //TFile *f = TFile::Open("t0RP42relui.root");
   //TFile *f = TFile::Open("t0RP25relui.root");
+  //TFile *f = TFile::Open("t0RP69relui.root");
   //
   cout << "                                 " << endl;
   cout << " * * *  TOTEM making plots  * * *" << endl;
@@ -304,7 +306,7 @@ TH1F *hxiR; gFile->GetObject("hxiR", hxiR);
 TH1F *hxiL2; gFile->GetObject("hxiL2", hxiL2);
 TH1F *hxiR2; gFile->GetObject("hxiR2", hxiR2);
 TH1F *hm; gFile->GetObject("hm", hm);
- TH1F *hmxicut; gFile->GetObject("hmxicut", hmxicut);
+TH1F *hmxicut; gFile->GetObject("hmxicut", hmxicut);
 TH1F *hm2rec; gFile->GetObject("hm2rec", hm2rec);
 TH1F *hm2recbis; gFile->GetObject("hm2recbis", hm2recbis);
 TH1F *hm2recPP; gFile->GetObject("hm2recPP", hm2recPP);
@@ -476,6 +478,9 @@ TH2F *phi_proton_left_t_tt; gFile->GetObject("phi_proton_left_t_tt", phi_proton_
 //
 TH2F *phi_proton_right_t_bb; gFile->GetObject("phi_proton_right_t_bb", phi_proton_right_t_bb);
 TH2F *phi_proton_left_t_bb; gFile->GetObject("phi_proton_left_t_bb", phi_proton_left_t_bb);
+//
+TH1F *hrapy; gFile->GetObject("hrapy", hrapy);
+TH1F *hrapy2; gFile->GetObject("hrapy2", hrapy2);
 //
   //TDirectory *dir = _file0->GetDirectory("analyzeHiMassTau");
   //if (dir) {
@@ -791,6 +796,9 @@ TH2F *phi_proton_left_t_bb; gFile->GetObject("phi_proton_left_t_bb", phi_proton_
   //
   plot2d(phi_proton_right_t_bb,"#varphi (rad)","|-t| (GeV^{2})","lin","lin");// #varphi vs -t
   plot2d(phi_proton_left_t_bb,"#varphi (rad)","|-t| (GeV^{2})","lin","lin");// #varphi vs -t
+  //
+  plot1d(hrapy,"rapidity","0.01","lin","lin");// rapidity
+  plot1d(hrapy2,"rapidity 2","0.01","lin","lin");// rapidity 2
   //
   //gSystem->Exec("cd ../");
   gSystem->cd("../");
