@@ -339,12 +339,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hxiL"] = new TH1F("hxiL","#xiL ",100,-0.1,0.1);
   histosTH1F["hxiR"] = new TH1F("hxiR","#xiR ",100,-0.1,0.1);
   //...Luiz
-  histosTH1F["rapy"] = new TH1F("rapy","rapidity",2000,-10,10);
+  histosTH1F["hrapy"] = new TH1F("hrapy","rapidity",2000,-10,10);
   //
   histosTH1F["hxiL2"] = new TH1F("hxiL2","#xiL ",100,-0.1,0.1);
   histosTH1F["hxiR2"] = new TH1F("hxiR2","#xiR ",100,-0.1,0.1);
   //...Luiz
-  histosTH1F["rapy2"] = new TH1F("rapy2","rapidity 2",2000,-10,10);
+  histosTH1F["hrapy2"] = new TH1F("hrapy2","rapidity 2",2000,-10,10);
   //
   
   int massbins=250;
@@ -1222,12 +1222,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	histosTH2F["phi_proton_left_t_ttbb"]->Fill( -t_proton_left, phi_proton_left );
       //	
       }
-
+      //...Luiz
       if(top45_top56){
 	histosTH2F["phi_proton_right_t_tt"]->Fill( -t_proton_right, phi_proton_right );
 	histosTH2F["phi_proton_left_t_tt"]->Fill( -t_proton_left, phi_proton_left );
       }
-      
+      //...Luiz
       if(bot45_bot56){
 	histosTH2F["phi_proton_right_t_bb"]->Fill( -t_proton_right, phi_proton_right );
 	histosTH2F["phi_proton_left_t_bb"]->Fill( -t_proton_left, phi_proton_left );
@@ -1464,9 +1464,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
 	   histosTH2F["hdedx"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);
 	   //...Luiz
-	   Double_t lndEdx=TMath::Log(itTrack->harmonic2_dEdx);
+	   double lndEdx=TMath::Log(itTrack->harmonic2_dEdx);
 	   histosTH2F["hlndedx"]->Fill(itTrack->p,lndEdx);
-	   Double_t l10dEdx=TMath::Log10(itTrack->harmonic2_dEdx);
+	   double l10dEdx=TMath::Log10(itTrack->harmonic2_dEdx);
 	   histosTH2F["hl10dedx"]->Fill(itTrack->p,l10dEdx);
 
 	   totcharge += itTrack->charge;
@@ -1584,7 +1584,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        // 0.001 -> 13 GeV
 
 	 //...Luiz...rapidity = 1/2 ln ( xi_proton_2/xi_proton_1 )
-	 double rapy = 1/2*TMath::Log(xiR/xiL);
+	 double rapy = 0.5*TMath::Log(xiR/xiL);
 	 //
        
        if(fiducialRegion && fiducialRegionPt){
