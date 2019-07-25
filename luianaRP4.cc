@@ -1414,7 +1414,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        bool fiducialRegionPt = false;
        double ptCut= 0.2;
   
-       //tracks in 2track-events (npixelhits>0)
+       //tracks in 4track-events (npixelhits>0)
        //...Luiz
        TLorentzVector pi1(0.,0.,0.,0.);
        TLorentzVector pi2(0.,0.,0.,0.);
@@ -1807,7 +1807,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	   else     histosTH1F["hm2recSS_ttbb"]->Fill(mrec);      
 	 }
 
-	 //...cut 2
+	 //...cut 2            
 	 if(RPvertex && CTpxcut && CTvertex){
 	   
 	   if(totcharge==0){
@@ -1820,7 +1820,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	     if(diag) histosTH1F["hm2rec2SS_diag"]->Fill(mrec);
 	     else     histosTH1F["hm2rec2SS_ttbb"]->Fill(mrec);      
 	   }
-	   
+	   //....???????
 	   if(totcharge==0 && diag){
 	     if(pi1.Py()*pi2.Py()*pi3.Py()*pi4.Py()>0) histosTH1F["hm2rec2OS_diag_trkP"]->Fill(mrec);
 	     if(pi1.Py()*pi2.Py()*pi3.Py()*pi4.Py()<0) histosTH1F["hm2rec2OS_diag_trkM"]->Fill(mrec);
@@ -1830,7 +1830,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	     if(pi1.Py()*pi2.Py()*pi3.Py()*pi4.Py()<0) histosTH1F["hm2rec2OS_ttbb_trkM"]->Fill(mrec);
 	   }
 
-	   //...Luiz  ?????????
+	   //...Luiz  ??????
 	   if(totcharge==0 && diag){
 	     if(TMath::Abs(pipipipiRec.Py()) > TMath::Abs(pipipipiRec.Px())) histosTH1F["hm2rec2OS_diag_pypxP"]->Fill(mrec);
 	     else histosTH1F["hm2rec2OS_diag_pypxM"]->Fill(mrec);
@@ -1860,7 +1860,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 }
 	 
 	 //...cut 3
-	   //.... OS:totcharge==0 SS:totcharge!=0
+	 //.... OS:totcharge==0 SS:totcharge!=0
 	 if(RPvertex && CTpxcut){
 	   if(totcharge==0){
 	     histosTH1F["hm2rec3OS"]->Fill(mrec);      
