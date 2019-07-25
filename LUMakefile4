@@ -14,7 +14,7 @@ analysis-readTOTEM: $(TotemLibrary)
 
 analysis-readCMS: $(CMSLibrary)
 
-luianaRP: $(CMSLibrary) $(TotemLibrary)
+luianaRP4: $(CMSLibrary) $(TotemLibrary)
 
 
 clean:
