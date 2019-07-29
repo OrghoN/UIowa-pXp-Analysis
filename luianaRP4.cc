@@ -1584,10 +1584,13 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        //...Luiz  ntrk==4
        //fiducialRegion   = (ntrk==2 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut);  
        //fiducialRegionPt = (ntrk==2 && pi1.Pt()>ptCut && pi2.Pt()>ptCut);
-       fiducialRegion   = (ntrk==4 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut &&
-			   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
-       fiducialRegionPt = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
-			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
+       //...Luiz
+       //fiducialRegion   = (ntrk==4 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut &&
+       //		   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
+       //fiducialRegionPt = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
+       //			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
+       fiducialRegion   = (ntrk==4);
+       fiducialRegionPt = (ntrk==4);
        histosTH1F["hvtx"]->Fill( isfake );    
        //...Luiz
        if(ntrk==4){
@@ -1597,8 +1600,11 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
        //...Luiz ?????? cut nvtx=1 or 2
        //if(nvtx!=1) continue;
+       //
+       // if(nvtx!=2) continue;
+
        if(nvtx!=1) {
-	 if(nvtx!=2) continue;
+         if(nvtx!=2) continue;
        }
        histosTH1F["hvtxx"]->Fill(xvtx);
        histosTH1F["hvtxy"]->Fill(yvtx);
@@ -2004,7 +2010,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	     
 	   }
 	 }
-	 
+
+	 //...cut 7
 	 if(diag && RPvertex && CTpxcut){
 	   
 	   if(totcharge==0) histosTH1F["hm2recHFvetoOS"]->Fill(mrec);      
@@ -2017,7 +2024,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	     else histosTH1F["hm2rec45SS"]->Fill(mrec);      
 	     
 	     double etaCut2=1.5;
-	     //...Luiz
+	     //...Luiz    ??????
 	     if(TMath::Abs(pi1.Eta())<etaCut2 && TMath::Abs(pi2.Eta())<etaCut2 &&
 		TMath::Abs(pi3.Eta())<etaCut2 && TMath::Abs(pi4.Eta())<etaCut2){
 	       if(totcharge==0) histosTH1F["hm2rec4515OS"]->Fill(mrec);      
