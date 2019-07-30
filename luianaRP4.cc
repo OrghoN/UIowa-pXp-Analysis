@@ -1412,8 +1412,10 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        bool fiducialRegion = false;
        double etaCut= 2.5;
        bool fiducialRegionPt = false;
-       double ptCut= 0.2;
-  
+       //double ptCut= 0.2;
+       //...Luiz
+       double ptCut= 0.1;
+       
        //tracks in 4track-events (npixelhits>0)
        //...Luiz
        TLorentzVector pi1(0.,0.,0.,0.);
@@ -1585,12 +1587,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        //fiducialRegion   = (ntrk==2 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut);  
        //fiducialRegionPt = (ntrk==2 && pi1.Pt()>ptCut && pi2.Pt()>ptCut);
        //...Luiz
-       //fiducialRegion   = (ntrk==4 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut &&
-       //		   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
-       //fiducialRegionPt = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
-       //			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
-       fiducialRegion   = (ntrk==4);
-       fiducialRegionPt = (ntrk==4);
+       fiducialRegion   = (ntrk==4 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut &&
+       		   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
+       fiducialRegionPt = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
+       			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
+       ////fiducialRegion   = (ntrk==4);
+       ////fiducialRegionPt = (ntrk==4);
        histosTH1F["hvtx"]->Fill( isfake );    
        //...Luiz
        if(ntrk==4){
