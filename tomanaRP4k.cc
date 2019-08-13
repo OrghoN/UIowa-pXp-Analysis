@@ -365,6 +365,10 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hm2recEE"] = new TH1F("hm2recEE","M_{ee} ",massbins,0,5.);
 
   histosTH1F["hm2recOS"] = new TH1F("hm2recOS","M_{#pi#pi} OS",massbins,0,5.);
+  histosTH1F["hm2recOS_k1k2"] = new TH1F("hm2recOS_k1k2","M_{k1k2} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2recOS_k3k4"] = new TH1F("hm2recOS_k3k4","M_{k3k4} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2recOS_k1k3"] = new TH1F("hm2recOS_k1k3","M_{k1k3} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2recOS_k2k4"] = new TH1F("hm2recOS_k2k4","M_{k2k4} OS", 2.0*massbins,0,10.);
   histosTH1F["hm2recSS"] = new TH1F("hm2recSS","M_{#pi#pi} SS",massbins,0,5.);
   histosTH1F["hm2recOS_diag"] = new TH1F("hm2recOS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
   histosTH1F["hm2recSS_diag"] = new TH1F("hm2recSS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
@@ -1320,7 +1324,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        ///////////////////////////////////////////////////////////////////////////////
        ///////////////////////////////////////////////////////////////////////////////
 
-      //...Luiz #gev/c^2
+      //...Luiz #particle masses, gev/c^2
        double m_pi=0.13957;
        double m_k =0.493667;
        //double m_mu = 0.1056583715;
@@ -1422,6 +1426,11 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        TLorentzVector k2(0.,0.,0.,0.);
        TLorentzVector k3(0.,0.,0.,0.);
        TLorentzVector k4(0.,0.,0.,0.);
+       TLorentzVector k1k2Rec(0.,0.,0.,0.);
+       TLorentzVector k3k4Rec(0.,0.,0.,0.);
+       TLorentzVector k1k3Rec(0.,0.,0.,0.);
+       TLorentzVector k2k4Rec(0.,0.,0.,0.);
+
        //
        //TLorentzVector pipiRec(0.,0.,0.,0.);
        //...Luiz
@@ -1628,8 +1637,13 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        //...Luiz
        double mrec=kkkkRec.M();      
        double mrecKK=kkRec.M();      
-       double mrecMM=mmRec.M(); //reconstructed mass      
-       double mrecEE=eeRec.M();      
+       double mrecMM=mmRec.M(); //reconstructed masses      
+       double mrecEE=eeRec.M();   
+
+       double mreck1k2=k1k2Rec.M(); 
+       double mreck3k4=k3k4Rec.M(); 
+       double mreck1k3=k1k3Rec.M(); 
+       double mreck2k4=k2k4Rec.M(); 
 
        //----------------------------
        // xi cut
@@ -1829,7 +1843,11 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	   
 	   if(totcharge==0){
 
-	     histosTH1F["hm2rec2OS"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OS"]->Fill(mrec);  
+	     histosTH1F["hm2rec2OS_k1k2"]->Fill(mreck1k2);
+	     histosTH1F["hm2rec2OS_k3k4"]->Fill(mreck3k4); 
+	     histosTH1F["hm2rec2OS_k1k3"]->Fill(mreck1k3); 
+	     histosTH1F["hm2rec2OS_k2k4"]->Fill(mreck2k4);  
 	     if(diag) histosTH1F["hm2rec2OS_diag"]->Fill(mrec);
 	     else     histosTH1F["hm2rec2OS_ttbb"]->Fill(mrec);      
 	   }else{
