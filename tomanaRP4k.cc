@@ -365,10 +365,6 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hm2recEE"] = new TH1F("hm2recEE","M_{ee} ",massbins,0,5.);
 
   histosTH1F["hm2recOS"] = new TH1F("hm2recOS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2recOS_k1k2"] = new TH1F("hm2recOS_k1k2","M_{k1k2} OS", 2.0*massbins,0,10.);
-  histosTH1F["hm2recOS_k3k4"] = new TH1F("hm2recOS_k3k4","M_{k3k4} OS", 2.0*massbins,0,10.);
-  histosTH1F["hm2recOS_k1k3"] = new TH1F("hm2recOS_k1k3","M_{k1k3} OS", 2.0*massbins,0,10.);
-  histosTH1F["hm2recOS_k2k4"] = new TH1F("hm2recOS_k2k4","M_{k2k4} OS", 2.0*massbins,0,10.);
   histosTH1F["hm2recSS"] = new TH1F("hm2recSS","M_{#pi#pi} SS",massbins,0,5.);
   histosTH1F["hm2recOS_diag"] = new TH1F("hm2recOS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
   histosTH1F["hm2recSS_diag"] = new TH1F("hm2recSS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
@@ -376,6 +372,10 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hm2recSS_ttbb"] = new TH1F("hm2recSS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
   
   histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{#pi#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k2"] = new TH1F("hm2recOS_k1k2","M_{k1k2} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_k3k4"] = new TH1F("hm2recOS_k3k4","M_{k3k4} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_k1k3"] = new TH1F("hm2recOS_k1k3","M_{k1k3} OS", 2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_k2k4"] = new TH1F("hm2recOS_k2k4","M_{k2k4} OS", 2.0*massbins,0,10.);
   histosTH1F["hm2rec2SS"] = new TH1F("hm2rec2SS","M_{#pi#pi} SS",massbins,0,5.);
   histosTH1F["hm2rec2OS_diag"] = new TH1F("hm2rec2OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
   histosTH1F["hm2rec2SS_diag"] = new TH1F("hm2rec2SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
