@@ -380,6 +380,10 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
     histosTH1F["hm2rec2OS_k3k4"] = new TH1F("hm2recOS_k3k4", "M_{k3k4} OS", 2.0 * massbins, 0, 10.);
     histosTH1F["hm2rec2OS_k1k3"] = new TH1F("hm2recOS_k1k3", "M_{k1k3} OS", 2.0 * massbins, 0, 10.);
     histosTH1F["hm2rec2OS_k2k4"] = new TH1F("hm2recOS_k2k4", "M_{k2k4} OS", 2.0 * massbins, 0, 10.);
+    histosTH1F["hm2rec2OS_k1k2v2"] = new TH1F("hm2recOS_k1k2v2", "M_{k1k2} OS", 2.0 * massbins, 0, 10.);
+    histosTH1F["hm2rec2OS_k3k4v2"] = new TH1F("hm2recOS_k3k4v2", "M_{k3k4} OS", 2.0 * massbins, 0, 10.);
+    histosTH1F["hm2rec2OS_k1k3v2"] = new TH1F("hm2recOS_k1k3v2", "M_{k1k3} OS", 2.0 * massbins, 0, 10.);
+    histosTH1F["hm2rec2OS_k2k4v2"] = new TH1F("hm2recOS_k2k4v2", "M_{k2k4} OS", 2.0 * massbins, 0, 10.);
     histosTH1F["hm2rec2SS"] = new TH1F("hm2rec2SS", "M_{#pi#pi} SS", massbins, 0, 5.);
     histosTH1F["hm2rec2OS_diag"] = new TH1F("hm2rec2OS_diag", "M_{#pi#pi} TB/BT OS", massbins, 0, 5.);
     histosTH1F["hm2rec2SS_diag"] = new TH1F("hm2rec2SS_diag", "M_{#pi#pi} TB/BT SS", massbins, 0, 5.);
@@ -1911,21 +1915,36 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                 }
 
                 //...cut 2
-                if(CTpxcut)
+                // if(CTpxcut)
+                //{
+                if(pidarray[0] == pidKaon && pidarray[1] == pidKaon && pidarray[2] == pidKaon && pidarray[3] == pidKaon)
                 {
 
                     if(totcharge == 0)
                     {
-
-                        histosTH1F["hm2rec2OS"]->Fill(mrec);
-                        if(charray[0]*charray[1] && pidarray[0] == pidKaon && pidarray[1] == pidKaon)
+                        histosTH1F["hm2rec20S"]->Fill(mrec);
+                        if(nvtx == 1);
+                            {
+                        if(charray[0]+charray[1] == 0);
                             histosTH1F["hm2rec2OS_k1k2"]->Fill(mreck1k2);
-                        if(charray[2]*charray[3] && pidarray[2] == pidKaon && pidarray[3] == pidKaon)
+                        if(charray[2]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k3k4"]->Fill(mreck3k4);
-                        if(charray[0]*charray[2] && pidarray[0] == pidKaon && pidarray[2] == pidKaon)
+                        if(charray[0]+charray[2] == 0)
                             histosTH1F["hm2rec2OS_k1k3"]->Fill(mreck1k3);
-                        if(charray[1]*charray[3] && pidarray[1] == pidKaon && pidarray[3] == pidKaon)
+                        if(charray[1]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k2k4"]->Fill(mreck2k4);
+                    }
+                         if(nvtx == 2);
+                            {
+                        if(charray[0]+charray[1] == 0);
+                            histosTH1F["hm2rec2OS_k1k2v2"]->Fill(mreck1k2);
+                        if(charray[2]+charray[3] == 0)
+                            histosTH1F["hm2rec2OS_k3k4v2"]->Fill(mreck3k4);
+                        if(charray[0]+charray[2] == 0)
+                            histosTH1F["hm2rec2OS_k1k3v2"]->Fill(mreck1k3);
+                        if(charray[1]+charray[3] == 0)
+                            histosTH1F["hm2rec2OS_k2k4v2"]->Fill(mreck2k4);
+                    }
                         if(diag) histosTH1F["hm2rec2OS_diag"]->Fill(mrec);
                         else     histosTH1F["hm2rec2OS_ttbb"]->Fill(mrec);
                     }
@@ -1977,7 +1996,8 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                         histosTH1F["hm2recEE"]->Fill(mrecEE);
                     }
 
-                }
+                    }
+                 //}
 
                 //...cut 3
                 //.... OS:totcharge==0 SS:totcharge!=0
