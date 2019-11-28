@@ -2,6 +2,7 @@
 #include <TROOT.h>
 #include <TH1.h>
 #include <TH2.h>
+#include <TH3.h>
 #include <TProfile.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -22,6 +23,9 @@
 #include "UATree/UADataFormat/interface/MyVertex.h"
 #include "UATree/UADataFormat/interface/MySiPixelCluster.h"
 #include "UATree/UADataFormat/interface/MySiStripCluster.h"
+#include "UATree/UADataFormat/interface/MyKshorts.h"
+#include "UATree/UADataFormat/interface/MyLambdas.h"
+#include "UATree/UADataFormat/interface/MyPart.h"
 
 // TOTEM data formats
 #include "RPRootDumpReconstructedProton.h"
@@ -122,7 +126,15 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   selections.push_back("fiducialXY");
   selections.push_back("notElastic");
   selections.push_back("#xi<0.1");
-
+  //...important
+  //selections.push_back("|#xi_{1,2}|<0.02");
+  //selections.push_back("NvtxCMS=1");
+  //selections.push_back("NtrkCMS=2");
+  //selections.push_back("CT py bal.");
+  //selections.push_back("CT px bal.");
+  //selections.push_back("RP xVtx");
+  //selections.push_back("CT xVtx");
+  
   int nBinsEventSelection = selections.size();
   histosTH1F["EventSelection"] = new TH1F("EventSelection"," ",nBinsEventSelection,0,nBinsEventSelection);
   for(size_t k = 0; k < selections.size(); ++k)
@@ -224,9 +236,10 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hthxEla2_diag"] = new TH1F("hthxEla2_diag", "thxL+thxR dig" , 4000 , -0.0004 , 0.0004);
   histosTH1F["hthyEla2_ttbb"] = new TH1F("hthyEla2_ttbb", "thyL+thyR TTBB" , 4000 , -0.0004 , 0.0004);
   histosTH1F["hthxEla2_ttbb"] = new TH1F("hthxEla2_ttbb", "thxL+thxR TTBB" , 4000 , -0.0004 , 0.0004);
-  
-  map<string,TH2F*> histosTH2F;
 
+  //...2D
+  map<string,TH2F*> histosTH2F;
+  
   histosTH2F["rp_yx_020"] = new TH2F("rp_yx_020", "y vs x RP" , 200, -10., 10., 500, -50., 50.);
   histosTH2F["rp_yx_021"] = new TH2F("rp_yx_021", "y vs x RP" , 200, -10., 10., 500, -50., 50.);
   histosTH2F["rp_yx_024"] = new TH2F("rp_yx_024", "y vs x RP" , 200, -10., 10., 500, -50., 50.);
@@ -266,6 +279,15 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH2F["phi_proton_right_t_bb"] = new TH2F("phi_proton_right_t_bb","#varphi vs |-t|" , 1000 , 0. , 5., 64, -3.2, 3.2);
   histosTH2F["phi_proton_left_t_bb"]  = new TH2F("phi_proton_left_t_bb", "#varphi vs |-t|" , 1000 , 0. , 5., 64, -3.2, 3.2);
   //
+  //...Luiz
+  // delta phi between protons
+  histosTH1F["dphi_proton"]  = new TH1F("dphi_proton", "#Delta#varphi" , 64, -3.2, 3.2);
+  histosTH1F["dphi_proton_diag"]  = new TH1F("dphi_proton_diag", "#Delta#varphi DIAG" , 64, -3.2, 3.2);
+  histosTH1F["dphi_proton_ttbb"]  = new TH1F("dphi_proton_ttbb", "#Delta#varphi TTBB" , 64, -3.2, 3.2);
+  //
+  histosTH2F["dphi_proton_mrec"]  = new TH2F("dphi_proton_mrec", "#Delta#varphi_{pp} vs M_{4#pi}" , 400 , 0., 8.0, 64, -3.2, 3.2);
+  histosTH2F["dphi_proton_mrec_diag"]  = new TH2F("dphi_proton_mrec_diag", "#Delta#varphi_{pp} vs M_{4#pi} DIAG" , 400 , 0., 8.0, 64, -3.2, 3.2);
+  histosTH2F["dphi_proton_mrec_ttbb"]  = new TH2F("dphi_proton_mrec_ttbb", "#Delta#varphi_{pp} vs M_{4#pi} TTBB" , 400 , 0., 8.0, 64, -3.2, 3.2);
   
 //---------------------------------------------------
 
@@ -278,6 +300,14 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hpt"] = new TH1F("hpt","p_{T}",nbins_pt,0,5);
   histosTH1F["heta"] = new TH1F("heta","#eta",nbins_eta,-4,4);
   histosTH1F["hphi"] = new TH1F("hphi","#varphi",nbins_phi,-3.2,3.2);
+
+  //...Luiz 
+  histosTH1F["hphiL"] = new TH1F("hphiL","#varphi_{L}",60,-TMath::Pi(),TMath::Pi());
+  histosTH1F["hphiR"] = new TH1F("hphiR","#varphi_{R}",60,-TMath::Pi(),TMath::Pi());
+  histosTH1F["hdphi"] = new TH1F("hdphi","#Delta#varphi_{LR}",320,0,TMath::Pi());
+  histosTH1F["hdphi_diag"] = new TH1F("hdphi_diag","#Delta#varphi_{LR} TB/BT",320,0,TMath::Pi());
+  histosTH1F["hdphi_ttbb"] = new TH1F("hdphi_ttbb","#Delta#varphi_{LR} TT/BB",320,0,TMath::Pi());
+  //
   
   //histosTH1F["hptP"] = new TH1F("hptP","p_{T} #pi+",nbins_pt,0,3);
   //...Luiz
@@ -291,11 +321,11 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hetaM"] = new TH1F("hetaM","#eta #pi-",nbins_eta,-4,4);
   histosTH1F["hphiM"] = new TH1F("hphiM","#varphi #pi-",nbins_phi,-3.2,3.2);
   
-  //histosTH1F["hptRes"] = new TH1F("hptRes","p_{T} #pi#pi",nbins_pt,0,3);
+  //histosTH1F["hptRes"] = new TH1F("hptRes","p_{T} 4#pi",nbins_pt,0,3);
   //...Luiz
-  histosTH1F["hptRes"] = new TH1F("hptRes","p_{T} #pi#pi",2.0*nbins_pt,0,4);
-  histosTH1F["hetaRes"] = new TH1F("hetaRes","#eta #pi#pi",nbins_eta*1.5,-6,6);
-  histosTH1F["hphiRes"] = new TH1F("hphiRes","#varphi #pi#pi",nbins_phi,-3.2,3.2);
+  histosTH1F["hptRes"] = new TH1F("hptRes","p_{T} 4#pi",2.0*nbins_pt,0,4);
+  histosTH1F["hetaRes"] = new TH1F("hetaRes","#eta 4#pi",nbins_eta*1.5,-6,6);
+  histosTH1F["hphiRes"] = new TH1F("hphiRes","#varphi 4#pi",nbins_phi,-3.2,3.2);
   
   //  histosTH1F["htopo"] = new TH1F("htopo","1=TB 2=BT 3=TT 4=BB topology",5,0,5);
   
@@ -312,25 +342,117 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hntrk0"] = new TH1F("hntrk0","Ntrk",150,0,150);
   histosTH1F["hntrk"] = new TH1F("hntrk","Ntrk for nPixelHits>0",150,0,150);
   histosTH1F["hntrkvtx"] = new TH1F("hntrkvtx","Ntrkvtx",150,0,150);
-  histosTH1F["hntrkntrkvtx2"] = new TH1F("hntrkntrkvtx2","Ntrk for Ntrkvtx==2",150,0,150);
-  histosTH1F["hntrk2ntrkvtx"] = new TH1F("hntrk2ntrkvtx","Ntrkvtx for Ntrk==2",150,0,150);
+  histosTH1F["hntrkvtx0"] = new TH1F("hntrkvtx0","Ntrkvtx0",150,0,150);
+  histosTH1F["hntrkvtx2"] = new TH1F("hntrkvtx2","Ntrkvtx2",150,0,150);
+  histosTH1F["hntrkvtx3"] = new TH1F("hntrkvtx3","Ntrkvtx3",150,0,150);
+  histosTH1F["hntrkvtx4"] = new TH1F("hntrkvtx4","Ntrkvtx4",150,0,150);
+  histosTH1F["hntrkntrkvtx2"] = new TH1F("hntrkntrkvtx2","Ntrk for Ntrkvtx=2",150,0,150);
+  histosTH1F["hntrk2ntrkvtx"] = new TH1F("hntrk2ntrkvtx","Ntrkvtx for Ntrk=2",150,0,150);
   
   histosTH2F["hntrkntrkvtx"] = new TH2F("hntrkntrkvtx","Ntrk vs Ntrkvtx",150,0,150,150,0,150);
   
   histosTH1F["hvtx"] = new TH1F("hvtx","vtx.isFake()",2,0,2);
-  histosTH1F["hvtx2"] = new TH1F("hvtx2","vtx.isFake() 2 tracks",2,0,2);
-  histosTH1F["hvtx3"] = new TH1F("hvtx3","vtx.isFake() 2 tracks both |#eta|<2.5 and OS",2,0,2);
+  //...Luiz
+  histosTH1F["hvtx2"] = new TH1F("hvtx2","vtx.isFake() 4 tracks",2,0,2);
+  histosTH1F["hvtx3"] = new TH1F("hvtx3","vtx.isFake() 4 tracks both |#eta|<2.5 and OS",2,0,2);
   
   histosTH1F["hnvtx"] = new TH1F("hnvtx","Nvtx",10,0,10);
+  
+
+  //...Kshorts
+  histosTH1F["hnks"] = new TH1F("hnks","N Kshorts",10,0,10);
+  histosTH1F["hksvertexx"] = new TH1F("hksvertexx","K0s X vertex",120,-30.,30.);
+  histosTH1F["hksvertexy"] = new TH1F("hksvertexy","K0s Y vertex",120,-30.,30.);
+  histosTH1F["hksvertexz"] = new TH1F("hksvertexz","K0s Z vertex",120,-30.,30.);
+  histosTH1F["hksradius"] = new TH1F("hksradius","K0s vertex radius",60,0.,30.);
+  histosTH1F["hkslifetime"] = new TH1F("hkslifetime","K0s lifetime",20,0.,10.);
+  //...2D
+  histosTH2F["h2dimksxy"] = new TH2F("h2dimksxy","K0s X vs Y vtx",300,-30.,30.,300,-30.,30.);
+  histosTH2F["h2dimksxz"] = new TH2F("h2dimksxz","K0s X vs Z vtx",300,-30.,30.,300,-30.,30.);
+  histosTH2F["h2dimksyz"] = new TH2F("h2dimksyz","K0s Y vs Z vtx",300,-30.,30.,300,-30.,30.);
+  //
+  histosTH1F["hkspt"] = new TH1F("hkspt","K0s pt",100,0.,5.);
+  histosTH1F["hkseta"] = new TH1F("hkseta","K0s #eta",80,-4.,4.);
+  histosTH1F["hksphi"] = new TH1F("hksphi","K0s #varphi",64,-3.2,3.2);
+  histosTH1F["hksmass"] = new TH1F("hksmass","K0s mass",250,0.,5.);
+  //
+  histosTH1F["hksmassv1"] = new TH1F("hksmassv1","K0s mass 1 vertex",250,0.,5.);
+  histosTH1F["hksmassv2"] = new TH1F("hksmassv2","K0sK0s mass 2 vertices",250,0.,5.);
+
+
+  //...Lambdas
+  histosTH1F["hnlam"] = new TH1F("hnlam","N #Lambda's",10,0,10);
+  histosTH1F["hlamvertexx"] = new TH1F("hlamvertexx","#Lambda X vertex",120,-30.,30.);
+  histosTH1F["hlamvertexy"] = new TH1F("hlamvertexy","#Lambda Y vertex",120,-30.,30.);
+  histosTH1F["hlamvertexz"] = new TH1F("hlamvertexz","#Lambda Z vertex",120,-30.,30.);
+  histosTH1F["hlamradius"] = new TH1F("hlamradius","#Lambda vertex radius",60,0.,30.);
+  //...2D
+  histosTH2F["h2dimlamxy"] = new TH2F("h2dimlamxy","#Lambda X vs Y vtx",300,-30.,30.,300,-30.,30.);
+  histosTH2F["h2dimlamxz"] = new TH2F("h2dimlamxz","#Lambda X vs Z vtx",300,-30.,30.,300,-30.,30.);
+  histosTH2F["h2dimlamyz"] = new TH2F("h2dimlamyz","#Lambda Y vs Z vtx",300,-30.,30.,300,-30.,30.);
+  //
+  histosTH1F["hlampt"] = new TH1F("hlampt","#Lambda pt",100,0.,5.);
+  histosTH1F["hlameta"] = new TH1F("hlameta","#Lambda #eta",80,-4.,4.);
+  histosTH1F["hlamphi"] = new TH1F("hlamphi","#Lambda #varphi",64,-3.2,3.2);
+  histosTH1F["hlammass"] = new TH1F("hlammass","#Lambda mass",250,0.,5.);
+
+  
   histosTH1F["hvtxx"] = new TH1F("hvtxx","X vtx",1000,-1.,1.);
   histosTH1F["hvtxy"] = new TH1F("hvtxy","Y vtx",1000,-1.,1.);
+  histosTH1F["hvtxx4"] = new TH1F("hvtxx4","X vtx",1000,-1.,1.);
+  histosTH1F["hvtxy4"] = new TH1F("hvtxy4","Y vtx",1000,-1.,1.);
+  ////histosTH1F["hvtxx"] = new TH1F("hvtxx","X vtx",10000,-5000.,5000.);
+  ////histosTH1F["hvtxy"] = new TH1F("hvtxy","Y vtx",10000,-5000.,5000.);
   histosTH1F["hvtxz"] = new TH1F("hvtxz","Z vtx",300,-30.,30.);
+  histosTH1F["hvtxz4"] = new TH1F("hvtxz4","Z vtx",300,-30.,30.);
+
+  //...Luiz
+  histosTH2F["hvtx2dimxy"] = new TH2F("hvtx2dimxy","X vs Y vtx",1000,-1.,1.,1000,-1.,1.);
+  //histosTH2F["hvtx2dimxy"] = new TH2F("hvtx2dimxy","X vs Y vtx",1000,-10.,10.,1000,-10.,10.);
+  histosTH2F["hvtx2dimxz"] = new TH2F("hvtx2dimxz","X vs Z vtx",1000,-1.,1.,300,-3.,3.);
+  histosTH2F["hvtx2dimyz"] = new TH2F("hvtx2dimyz","Y vs Z vtx",1000,-1.,1.,300,-3.,3.);
+  //...3D
+  ////map<string,TH3F*> histosTH3F;
+  //...3D
+  //histosTH3F["hvtx3dimxyz"] = new TH3F("hvtx3dimxyz","XYZ vtx",1000,-1.,1.,1000,-1.,1.,300,-30.,30.);
+  ////histosTH3F["hvtx3dimxyz"] = new TH3F("hvtx3dimxyz","XYZ vtx",100,-1.,1.,100,-1.,1.,300,-15.,15.);
+  //ntrk==4
+  histosTH2F["hvtx2dimxy4"] = new TH2F("hvtx2dimxy4","X vs Y vtx",1000,-5.,5.,1000,-5.,5.);
+  histosTH2F["hvtx2dimxz4"] = new TH2F("hvtx2dimxz4","X vs Z vtx",1000,-5.,5.,300,-30.,30.);
+  histosTH2F["hvtx2dimyz4"] = new TH2F("hvtx2dimyz4","Y vs Z vtx",1000,-5.,5.,300,-30.,30.);
+  ////histosTH2F["hvtx2dimxy"] = new TH2F("hvtx2dimxy","X vs Y vtx",10000,-5000.,5000.,10000,-5000.,5000.);
+  //...3D
+  ////histosTH3F["hvtx3dimxyz4"] = new TH3F("hvtx3dimxyz4","XYZ vtx",100,-1.,1.,100,-1.,1.,300,-15.,15.);
+
+  //...secondaryVertex
+  ////histosTH1F["vertex_multiplicity"] = new TH1F("vertex_multiplicity","n vertices",30,0,30);
+  //
+  histosTH1F["sec_vtx_xpos"] = new TH1F("sec_vtx_xpos","X secondary vtx",150,-10.,10.);
+  histosTH1F["sec_vtx_ypos"] = new TH1F("sec_vtx_ypos","Y secondary vtx",150,-10.,10.);
+  histosTH1F["sec_vtx_zpos"] = new TH1F("sec_vtx_zpos","Z secondary vtx",150,-30.,30.);
+  //
+  ///// histosTH1F["sec_vtx_ndof"] = new TH1F("","Ndof secondary vtx",100,0.,15.);
+  /////histosTH1F["sec_vtx_chi2"] = new TH1F("","chi2 secondary vtx",100,0.,10.);
+  /////histosTH1F["sec_vtx_chi2n"] = new TH1F("","chi2n secondary vtx",100,0.,10.);
+  /////histosTH1F["sec_vtx_ntracks"] = new TH1F("","Ntracks secondary vtx",30,0,30);
+  /////histosTH1F["sec_vtx_sumpt"] = new TH1F("","SumPt secondary vtx",100,0.,100.);
+
+  //...Kshort
+  histosTH1F["hxk"] = new TH1F("hxk","X vtx kshorts",1000,-10.,10.);
+  histosTH1F["hyk"] = new TH1F("hyk","Y vtx kshorts",1000,-10.,10.);
+  histosTH1F["hzk"] = new TH1F("hzk","Z vtx kshorts",300,-30.,30.);
+  histosTH2F["h2dimxyk"] = new TH2F("h2dimxyk","X vs Y vtx kshorts",1000,-10.,10.,1000,-10.,10.);
+  histosTH2F["h2dimxzk"] = new TH2F("h2dimxzk","X vs Z vtx kshorts",1000,-10.,10.,300,-30.,30.);
+  histosTH2F["h2dimyzk"] = new TH2F("h2dimyzk","Y vs Z vtx kshorts",1000,-10.,10.,300,-30.,30.);
+  
+  
   //histosTH1F["hvtxchi2"] = new TH1F("hvtxchi2","chi2 vtx",1100,-100.,1000.);
   //histosTH1F["hvtxchi2fin"] = new TH1F("hvtxchi2fin","chi2 vtx",1100,-100.,1000.);
   //...Luiz
   histosTH1F["hvtxchi2"] = new TH1F("hvtxchi2","#chi^{2} vtx",1100,-100.,1000.);
+  histosTH1F["hvtxndof"] = new TH1F("hvtxndof","ndof vtx",1020,-2.,100.);
   histosTH1F["hvtxchi2fin"] = new TH1F("hvtxchi2fin","#chi^{2} vtx fin",1100,-100.,1000.);
-  
+
   //histosTH1F["heHF"] = new TH1F("heHF","HF tower energy",550,-10,100);
   //...Luiz
   histosTH1F["heHF"] = new TH1F("heHF","HF tower energy (GeV)",550,-10,100);
@@ -349,145 +471,259 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   
   int massbins=250;
   
-  histosTH1F["hm"] = new TH1F("hm","M_{#pi#pi} ",massbins,0,5.);
+  histosTH1F["hm"] = new TH1F("hm","M_{4#pi} ",massbins,0,5.);
   //...Luiz
-  //  histosTH1F["hmxicut"] = new TH1F("hmxicit","M_{#pi#pi} ",massbins,0,5.);
-  histosTH1F["hmxicut"] = new TH1F("hmxicut","M_{#pi#pi} ",massbins,0,5.);
+  //  histosTH1F["hmxicut"] = new TH1F("hmxicit","M_{4#pi} ",massbins,0,5.);
+  histosTH1F["hmxicut"] = new TH1F("hmxicut","M_{4#pi} ",massbins,0,5.);
   
-  histosTH1F["hm2rec"] = new TH1F("hm2rec","M_{#pi#pi} ",massbins,0,5.);
-  histosTH1F["hm2recbis"] = new TH1F("hm2recbis","M_{#pi#pi}",2*massbins,0,5.);
+  histosTH1F["hm2rec"] = new TH1F("hm2rec","M_{4#pi} ",massbins,0,5.);
+  histosTH1F["hm2recbis"] = new TH1F("hm2recbis","M_{4#pi}",2*massbins,0,5.);
 
   //...Luiz
   histosTH1F["hm2recPPPP"] = new TH1F("hm2recPPPP","M_{4#pi} ",massbins,0,5.);
   //histosTH1F["hm2recPP"] = new TH1F("hm2recPP","M_{#pi#pi} ",massbins,0,5.);
-  histosTH1F["hm2recKK"] = new TH1F("hm2recKK","M_{KK} ",massbins,0,5.);
-  histosTH1F["hm2recMM"] = new TH1F("hm2recMM","M_{#mu#mu} ",massbins,0,5.);
-  histosTH1F["hm2recEE"] = new TH1F("hm2recEE","M_{ee} ",massbins,0,5.);
+  histosTH1F["hm2recKKKK"] = new TH1F("hm2recKKKK","M_{4K} ",massbins,0,5.);
+  //histosTH1F["hm2recMM"] = new TH1F("hm2recMM","M_{2#mu} ",massbins,0,5.);
+  //histosTH1F["hm2recEE"] = new TH1F("hm2recEE","M_{2e} ",massbins,0,5.);
+  //histosTH1F["hm2recpp"] = new TH1F("hm2recpp","M_{2p} ",massbins,0,5.);
 
-  histosTH1F["hm2recOS"] = new TH1F("hm2recOS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2recSS"] = new TH1F("hm2recSS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2recOS_diag"] = new TH1F("hm2recOS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2recSS_diag"] = new TH1F("hm2recSS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2recOS_ttbb"] = new TH1F("hm2recOS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2recSS_ttbb"] = new TH1F("hm2recSS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
+  //...OS-SS
+  histosTH1F["hm2recOS"] = new TH1F("hm2recOS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2recOS2"] = new TH1F("hm2recOS2","M_{4#pi} OS",2.0*massbins,0,10.);
+  //
+  histosTH1F["hm2recSS"] = new TH1F("hm2recSS","M_{4#pi} SS",massbins,0,5.);
+  //
+  histosTH1F["hm2recOS_diag"] = new TH1F("hm2recOS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2recSS_diag"] = new TH1F("hm2recSS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  histosTH1F["hm2recOS_ttbb"] = new TH1F("hm2recOS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2recSS_ttbb"] = new TH1F("hm2recSS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
+
+  //...2OS-2SS
+  histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS2"] = new TH1F("hm2rec2OS2","M_{4#pi} OS",2.0*massbins,0,10.);
+  // 12 34 13 24  ...for now
+  histosTH1F["hm2rec2OS_pipi"] = new TH1F("hm2rec2OS_pipi","M_{#pi#pi} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2"] = new TH1F("hm2rec2OS_pi1pi2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4"] = new TH1F("hm2rec2OS_pi3pi4","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3"] = new TH1F("hm2rec2OS_pi1pi3","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4"] = new TH1F("hm2rec2OS_pi2pi4","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...v2
+  histosTH1F["hm2rec2OS_pi1pi2v2"] = new TH1F("hm2rec2OS_pi1pi2v2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4v2"] = new TH1F("hm2rec2OS_pi3pi4v2","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3v2"] = new TH1F("hm2rec2OS_pi1pi3v2","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4v2"] = new TH1F("hm2rec2OS_pi2pi4v2","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...2dim
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //...v2
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4v2"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4v2","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4v2"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4v2","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //
+  //...Kaons
+  histosTH1F["hm2rec2OS_k1k2"] = new TH1F("hm2rec2OS_k1k2","M_{k_{1}k_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k3k4"] = new TH1F("hm2rec2OS_k3k4","M_{k_{3}k_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k3"] = new TH1F("hm2rec2OS_k1k3","M_{k_{1}k_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k2k4"] = new TH1F("hm2rec2OS_k2k4","M_{k_{2}k_{4}} OS",massbins,0,5.);
+  //...v2
+  histosTH1F["hm2rec2OS_k1k2v2"] = new TH1F("hm2rec2OS_k1k2v2","M_{k_{1}k_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k3k4v2"] = new TH1F("hm2rec2OS_k3k4v2","M_{k_{3}k_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k3v2"] = new TH1F("hm2rec2OS_k1k3v2","M_{k_{1}k_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k2k4v2"] = new TH1F("hm2rec2OS_k2k4v2","M_{k_{2}k_{4}} OS",massbins,0,5.);
+  //...2dim
+  histosTH2F["hm2dim2OS_k1k2_k3k4"] = new TH2F("hm2dim2OS_k1k2_k3k4","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k3_k2k4"] = new TH2F("hm2dim2OS_k1k3_k2k4","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //...v2
+  histosTH2F["hm2dim2OS_k1k2_k3k4v2"] = new TH2F("hm2dim2OS_k1k2_k3k4v2","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k3_k2k4v2"] = new TH2F("hm2dim2OS_k1k3_k2k4v2","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //...Kaons
+  //
+  histosTH1F["hm2rec2SS"] = new TH1F("hm2rec2SS","M_{4#pi} SS",massbins,0,5.);
+  //...2OSdiag
+  histosTH1F["hm2rec2OS_diag"] = new TH1F("hm2rec2OS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_diag2"] = new TH1F("hm2rec2OS_diag2","M_{4#pi} TB/BT OS",1.60*massbins,0.0,8.0);
+  histosTH1F["hm2rec2OS_diag3"] = new TH1F("hm2rec2OS_diag3","M_{4#pi} TB/BT OS",0.50*massbins,0.0,2.5);
+  histosTH1F["hm2rec2OS_diag4"] = new TH1F("hm2rec2OS_diag4","M_{4#pi} TB/BT OS",0.24*massbins,2.5,4.0);
+  histosTH1F["hm2rec2OS_diag5"] = new TH1F("hm2rec2OS_diag5","M_{4#pi} TB/BT OS",0.32*massbins,4.0,8.0);
+
+ //0-2.5 (125bins), 2.5-4(60bins), 4-8(80bins)
+ double xmin1 = 0.;
+ double xmax1 = 2.5;
+ int nbins1 = 125;
+
+ double xmin2 = 2.5;
+ double xmax2 = 4.;
+ int nbins2 = 60;
+
+ double xmin3 = 4.;
+ double xmax3 = 8.;
+ int nbins3 = 80;
+
+ double bwidth1 = (xmax1 - xmin1)/nbins1;
+ double bwidth2 = (xmax2 - xmin2)/nbins2;
+ double bwidth3 = (xmax3 - xmin3)/nbins3;
+
+ int nbinstot = nbins1 + nbins2 + nbins3;
+ //...Luiz
+ double edges[nbinstot+1] ;
+ 
+ //nbinstot++;
+
+ int nbins=0;
+
+ for( int i=0; i<nbins1; i++){ edges[nbins] = xmin1 + bwidth1 * i; nbins++;}
+ for( int i=0; i<nbins2; i++){ edges[nbins] = xmin2 + bwidth2 * i; nbins++;}
+ //...Luiz
+ for( int i=0; i<=nbins3; i++){ edges[nbins] = xmin3 + bwidth3 * i; nbins++;}
+
+ histosTH1F["hm2rec2OS_ttbb2varbin"] = new TH1F("hm2rec2OS_ttbb2varbin","TTBB variable bins",nbinstot,edges);
+ histosTH1F["hm2rec2OS_diag2varbin"] = new TH1F("hm2rec2OS_diag2varbin","DIAG variable bins",nbinstot,edges);
+
+  //...Pions
+  histosTH1F["hm2rec2OS_diag_pi1pi2"] = new TH1F("hm2rec2OS_diag_pi1pi2","M_{#pi_{1}#pi_{2}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_pi3pi4"] = new TH1F("hm2rec2OS_diag_pi3pi4","M_{#pi_{3}#pi_{4}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_pi1pi3"] = new TH1F("hm2rec2OS_diag_pi1pi3","M_{#pi_{1}#pi_{3}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_pi2pi4"] = new TH1F("hm2rec2OS_diag_pi2pi4","M_{#pi_{2}#pi_{4}} OS",2.0*massbins,0,10.);
+  //...Kaons
+  histosTH1F["hm2rec2OS_diag_k1k2"] = new TH1F("hm2rec2OS_diag_k1k2","M_{k_{1}k_{2}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_k3k4"] = new TH1F("hm2rec2OS_diag_k3k4","M_{k_{3}k_{4}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_k1k3"] = new TH1F("hm2rec2OS_diag_k1k3","M_{k_{1}k_{3}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_diag_k2k4"] = new TH1F("hm2rec2OS_diag_k2k4","M_{k_{2}k_{4}} OS",2.0*massbins,0,10.);
   
-  histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec2SS"] = new TH1F("hm2rec2SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_diag"] = new TH1F("hm2rec2OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2rec2SS_diag"] = new TH1F("hm2rec2SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_ttbb"] = new TH1F("hm2rec2OS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2rec2SS_ttbb"] = new TH1F("hm2rec2SS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
-
-  //histosTH1F["hm2rec2OS_diag_trkP"] = new TH1F("hm2rec2OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec2OS_diag_trkM"] = new TH1F("hm2rec2OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //histosTH1F["hm2rec2OS_ttbb_trkP"] = new TH1F("hm2rec2OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec2OS_ttbb_trkM"] = new TH1F("hm2rec2OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //...Luiz
-  histosTH1F["hm2rec2OS_diag_trkP"] = new TH1F("hm2rec2OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi_{1}} py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec2OS_diag_trkM"] = new TH1F("hm2rec2OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi_{1}} py_{#pi_{2}}<0",massbins,0,5.);
-  histosTH1F["hm2rec2OS_ttbb_trkP"] = new TH1F("hm2rec2OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi_{1}} py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec2OS_ttbb_trkM"] = new TH1F("hm2rec2OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi_{1}} py_{#pi_{2}}<0",massbins,0,5.);
+  //...2SSdiag
+  histosTH1F["hm2rec2SS_diag"] = new TH1F("hm2rec2SS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  //
+  //...2OSttbb
+  histosTH1F["hm2rec2OS_ttbb"] = new TH1F("hm2rec2OS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_ttbb2"] = new TH1F("hm2rec2OS_ttbb2","M_{4#pi} TT/BB OS",1.60*massbins,0.0,8.0);
+  histosTH1F["hm2rec2OS_ttbb3"] = new TH1F("hm2rec2OS_ttbb3","M_{4#pi} TT/BB OS",0.50*massbins,0.0,2.5);
+  histosTH1F["hm2rec2OS_ttbb4"] = new TH1F("hm2rec2OS_ttbb4","M_{4#pi} TT/BB OS",0.24*massbins,2.5,4.0);
+  histosTH1F["hm2rec2OS_ttbb5"] = new TH1F("hm2rec2OS_ttbb5","M_{4#pi} TT/BB OS",0.32*massbins,4.0,8.0);
   
-  histosTH1F["hm2rec2OS_diag_pypxP"] = new TH1F("hm2rec2OS_diag_pypxP","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec2OS_diag_pypxM"] = new TH1F("hm2rec2OS_diag_pypxM","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-  histosTH1F["hm2rec2OS_ttbb_pypxP"] = new TH1F("hm2rec2OS_ttbb_pypxP","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec2OS_ttbb_pypxM"] = new TH1F("hm2rec2OS_ttbb_pypxM","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-
-  histosTH1F["hm2rec3OS"] = new TH1F("hm2rec3OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec3SS"] = new TH1F("hm2rec3SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec3OS_diag"] = new TH1F("hm2rec3OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2rec3SS_diag"] = new TH1F("hm2rec3SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2rec3OS_ttbb"] = new TH1F("hm2rec3OS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2rec3SS_ttbb"] = new TH1F("hm2rec3SS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
-
-  //histosTH1F["hm2rec3OS_diag_trkP"] = new TH1F("hm2rec3OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec3OS_diag_trkM"] = new TH1F("hm2rec3OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //histosTH1F["hm2rec3OS_ttbb_trkP"] = new TH1F("hm2rec3OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec3OS_ttbb_trkM"] = new TH1F("hm2rec3OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //...Luiz
-  histosTH1F["hm2rec3OS_diag_trkP"] = new TH1F("hm2rec3OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec3OS_diag_trkM"] = new TH1F("hm2rec3OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
-  histosTH1F["hm2rec3OS_ttbb_trkP"] = new TH1F("hm2rec3OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec3OS_ttbb_trkM"] = new TH1F("hm2rec3OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+  //...Pions
+  histosTH1F["hm2rec2OS_ttbb_pi1pi2"] = new TH1F("hm2rec2OS_ttbb_pi1pi2","M_{#pi_{1}#pi_{2}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_pi3pi4"] = new TH1F("hm2rec2OS_ttbb_pi3pi4","M_{#pi_{3}#pi_{4}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_pi1pi3"] = new TH1F("hm2rec2OS_ttbb_pi1pi3","M_{#pi_{1}#pi_{3}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_pi2pi4"] = new TH1F("hm2rec2OS_ttbb_pi2pi4","M_{#pi_{2}#pi_{4}} OS",2.0*massbins,0,10.);
+  //...Kaons
+  histosTH1F["hm2rec2OS_ttbb_k1k2"] = new TH1F("hm2rec2OS_ttbb_k1k2","M_{k_{1}k_{2}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_k3k4"] = new TH1F("hm2rec2OS_ttbb_k3k4","M_{k_{3}k_{4}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_k1k3"] = new TH1F("hm2rec2OS_ttbb_k1k3","M_{k_{1}k_{3}} OS",2.0*massbins,0,10.);
+  histosTH1F["hm2rec2OS_ttbb_k2k4"] = new TH1F("hm2rec2OS_ttbb_k2k4","M_{k_{2}k_{4}} OS",2.0*massbins,0,10.);
+  //...2SSttbb
+  histosTH1F["hm2rec2SS_ttbb"] = new TH1F("hm2rec2SS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
+  //
   
-  histosTH1F["hm2rec3OS_diag_pypxP"] = new TH1F("hm2rec3OS_diag_pypxP","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec3OS_diag_pypxM"] = new TH1F("hm2rec3OS_diag_pypxM","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-  histosTH1F["hm2rec3OS_ttbb_pypxP"] = new TH1F("hm2rec3OS_ttbb_pypxP","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec3OS_ttbb_pypxM"] = new TH1F("hm2rec3OS_ttbb_pypxM","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
+  //histosTH1F["hm2rec2OS_diag_trkP"] = new TH1F("hm2rec2OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec2OS_diag_trkM"] = new TH1F("hm2rec2OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //histosTH1F["hm2rec2OS_ttbb_trkP"] = new TH1F("hm2rec2OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec2OS_ttbb_trkM"] = new TH1F("hm2rec2OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //...Luiz
+  histosTH1F["hm2rec2OS_diag_trkP"] = new TH1F("hm2rec2OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec2OS_diag_trkM"] = new TH1F("hm2rec2OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+  histosTH1F["hm2rec2OS_ttbb_trkP"] = new TH1F("hm2rec2OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec2OS_ttbb_trkM"] = new TH1F("hm2rec2OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
   
-  histosTH1F["hm2rec4OS"] = new TH1F("hm2rec4OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec4SS"] = new TH1F("hm2rec4SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec4OS_diag"] = new TH1F("hm2rec4OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2rec4SS_diag"] = new TH1F("hm2rec4SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2rec4OS_ttbb"] = new TH1F("hm2rec4OS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2rec4SS_ttbb"] = new TH1F("hm2rec4SS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_diag_pypxP"] = new TH1F("hm2rec2OS_diag_pypxP","M_{4#pi} TB/BT OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec2OS_diag_pypxM"] = new TH1F("hm2rec2OS_diag_pypxM","M_{4#pi} TB/BT OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+  histosTH1F["hm2rec2OS_ttbb_pypxP"] = new TH1F("hm2rec2OS_ttbb_pypxP","M_{4#pi} TT/BB OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec2OS_ttbb_pypxM"] = new TH1F("hm2rec2OS_ttbb_pypxM","M_{4#pi} TT/BB OS, |py/px|_{4#pi} < 1",massbins,0,5.);
 
-  //histosTH1F["hm2rec4OS_diag_trkP"] = new TH1F("hm2rec4OS_diag_trkP","M_{#pi#pi}TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec4OS_diag_trkM"] = new TH1F("hm2rec4OS_diag_trkM","M_{#pi#pi}TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
-  //histosTH1F["hm2rec4OS_ttbb_trkP"] = new TH1F("hm2rec4OS_ttbb_trkP","M_{#pi#pi}TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec4OS_ttbb_trkM"] = new TH1F("hm2rec4OS_ttbb_trkM","M_{#pi#pi}TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  histosTH1F["hm2rec3OS"] = new TH1F("hm2rec3OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec3SS"] = new TH1F("hm2rec3SS","M_{4#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec3OS_diag"] = new TH1F("hm2rec3OS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2rec3SS_diag"] = new TH1F("hm2rec3SS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  histosTH1F["hm2rec3OS_ttbb"] = new TH1F("hm2rec3OS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2rec3SS_ttbb"] = new TH1F("hm2rec3SS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
+
+  //histosTH1F["hm2rec3OS_diag_trkP"] = new TH1F("hm2rec3OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec3OS_diag_trkM"] = new TH1F("hm2rec3OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //histosTH1F["hm2rec3OS_ttbb_trkP"] = new TH1F("hm2rec3OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec3OS_ttbb_trkM"] = new TH1F("hm2rec3OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
   //...Luiz
-  histosTH1F["hm2rec4OS_diag_trkP"] = new TH1F("hm2rec4OS_diag_trkP","M_{#pi#pi}TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec4OS_diag_trkM"] = new TH1F("hm2rec4OS_diag_trkM","M_{#pi#pi}TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
-  histosTH1F["hm2rec4OS_ttbb_trkP"] = new TH1F("hm2rec4OS_ttbb_trkP","M_{#pi#pi}TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec4OS_ttbb_trkM"] = new TH1F("hm2rec4OS_ttbb_trkM","M_{#pi#pi}TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
-
-  histosTH1F["hm2rec4OS_diag_pypxP"] = new TH1F("hm2rec4OS_diag_pypxP","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec4OS_diag_pypxM"] = new TH1F("hm2rec4OS_diag_pypxM","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-  histosTH1F["hm2rec4OS_ttbb_pypxP"] = new TH1F("hm2rec4OS_ttbb_pypxP","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec4OS_ttbb_pypxM"] = new TH1F("hm2rec4OS_ttbb_pypxM","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-
-  histosTH1F["hm2rec5OS"] = new TH1F("hm2rec5OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec5SS"] = new TH1F("hm2rec5SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec5OS_diag"] = new TH1F("hm2rec5OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2rec5SS_diag"] = new TH1F("hm2rec5SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2rec5OS_ttbb"] = new TH1F("hm2rec5OS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2rec5SS_ttbb"] = new TH1F("hm2rec5SS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
-
-  //histosTH1F["hm2rec5OS_diag_trkP"] = new TH1F("hm2rec5OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec5OS_diag_trkM"] = new TH1F("hm2rec5OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
-  //histosTH1F["hm2rec5OS_ttbb_trkP"] = new TH1F("hm2rec5OS_ttbb_trkP","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec5OS_ttbb_trkM"] = new TH1F("hm2rec5OS_ttbb_trkM","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //...Luiz
-  histosTH1F["hm2rec5OS_diag_trkP"] = new TH1F("hm2rec5OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec5OS_diag_trkM"] = new TH1F("hm2rec5OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
-  histosTH1F["hm2rec5OS_ttbb_trkP"] = new TH1F("hm2rec5OS_ttbb_trkP","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec5OS_ttbb_trkM"] = new TH1F("hm2rec5OS_ttbb_trkM","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
-
-  histosTH1F["hm2rec5OS_diag_pypxP"] = new TH1F("hm2rec5OS_diag_pypxP","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec5OS_diag_pypxM"] = new TH1F("hm2rec5OS_diag_pypxM","M_{#pi#pi} TB/BT OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-  histosTH1F["hm2rec5OS_ttbb_pypxP"] = new TH1F("hm2rec5OS_ttbb_pypxP","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} > 1",massbins,0,5.);
-  histosTH1F["hm2rec5OS_ttbb_pypxM"] = new TH1F("hm2rec5OS_ttbb_pypxM","M_{#pi#pi} TT/BB OS, |py/px|_{#pi#pi} < 1",massbins,0,5.);
-
-  histosTH1F["hm2rec6OS"] = new TH1F("hm2rec6OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec6SS"] = new TH1F("hm2rec6SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec6OS_diag"] = new TH1F("hm2rec6OS_diag","M_{#pi#pi} TB/BT OS",massbins,0,5.);
-  histosTH1F["hm2rec6SS_diag"] = new TH1F("hm2rec6SS_diag","M_{#pi#pi} TB/BT SS",massbins,0,5.);
-  histosTH1F["hm2rec6OS_ttbb"] = new TH1F("hm2rec6OS_ttbb","M_{#pi#pi} TT/BB OS",massbins,0,5.);
-  histosTH1F["hm2rec6SS_ttbb"] = new TH1F("hm2rec6SS_ttbb","M_{#pi#pi} TT/BB SS",massbins,0,5.);
-
-  //histosTH1F["hm2rec6OS_diag_trkP"] = new TH1F("hm2rec6OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec6OS_diag_trkM"] = new TH1F("hm2rec6OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
-  //histosTH1F["hm2rec6OS_ttbb_trkP"] = new TH1F("hm2rec6OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
-  //histosTH1F["hm2rec6OS_ttbb_trkM"] = new TH1F("hm2rec6OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
-  //...Luiz
-  histosTH1F["hm2rec6OS_diag_trkP"] = new TH1F("hm2rec6OS_diag_trkP","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec6OS_diag_trkM"] = new TH1F("hm2rec6OS_diag_trkM","M_{#pi#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
-  histosTH1F["hm2rec6OS_ttbb_trkP"] = new TH1F("hm2rec6OS_ttbb_trkP","M_{#pi#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
-  histosTH1F["hm2rec6OS_ttbb_trkM"] = new TH1F("hm2rec6OS_ttbb_trkM","M_{#pi#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
-
-  histosTH1F["hm2recHFvetoOS"] = new TH1F("hm2recHFvetoOS","M_{#pi#pi} HFv OS",massbins,0,5.);
-  histosTH1F["hm2recHFvetoSS"] = new TH1F("hm2recHFvetoSS","M_{#pi#pi} HFv SS",massbins,0,5.);
+  histosTH1F["hm2rec3OS_diag_trkP"] = new TH1F("hm2rec3OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec3OS_diag_trkM"] = new TH1F("hm2rec3OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+  histosTH1F["hm2rec3OS_ttbb_trkP"] = new TH1F("hm2rec3OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec3OS_ttbb_trkM"] = new TH1F("hm2rec3OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
   
-  histosTH1F["hm2rec45OS"] = new TH1F("hm2rec45OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec45SS"] = new TH1F("hm2rec45SS","M_{#pi#pi} SS",massbins,0,5.);
-  histosTH1F["hm2rec4515OS"] = new TH1F("hm2rec4515OS","M_{#pi#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec4515SS"] = new TH1F("hm2rec4515SS","M_{#pi#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec3OS_diag_pypxP"] = new TH1F("hm2rec3OS_diag_pypxP","M_{4#pi} TB/BT OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec3OS_diag_pypxM"] = new TH1F("hm2rec3OS_diag_pypxM","M_{4#pi} TB/BT OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+  histosTH1F["hm2rec3OS_ttbb_pypxP"] = new TH1F("hm2rec3OS_ttbb_pypxP","M_{4#pi} TT/BB OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec3OS_ttbb_pypxM"] = new TH1F("hm2rec3OS_ttbb_pypxM","M_{4#pi} TT/BB OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+  
+  histosTH1F["hm2rec4OS"] = new TH1F("hm2rec4OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec4SS"] = new TH1F("hm2rec4SS","M_{4#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec4OS_diag"] = new TH1F("hm2rec4OS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2rec4SS_diag"] = new TH1F("hm2rec4SS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  histosTH1F["hm2rec4OS_ttbb"] = new TH1F("hm2rec4OS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2rec4SS_ttbb"] = new TH1F("hm2rec4SS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
 
-  histosTH1F["hm2rec9919"] = new TH1F("hm2rec9919","M_{#pi#pi} 9919",massbins,0,5.);
-  histosTH1F["hm2rec9922"] = new TH1F("hm2rec9922","M_{#pi#pi} 9919,9922",massbins,0,5.);
-  histosTH1F["hm2rec9971"] = new TH1F("hm2rec9971","M_{#pi#pi} 9971",massbins,0,5.);
-  histosTH1F["hm2rec9978"] = new TH1F("hm2rec9978","M_{#pi#pi} 9978",massbins,0,5.);
+  //histosTH1F["hm2rec4OS_diag_trkP"] = new TH1F("hm2rec4OS_diag_trkP","M_{4#pi}TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec4OS_diag_trkM"] = new TH1F("hm2rec4OS_diag_trkM","M_{4#pi}TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
+  //histosTH1F["hm2rec4OS_ttbb_trkP"] = new TH1F("hm2rec4OS_ttbb_trkP","M_{4#pi}TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec4OS_ttbb_trkM"] = new TH1F("hm2rec4OS_ttbb_trkM","M_{4#pi}TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //...Luiz
+  histosTH1F["hm2rec4OS_diag_trkP"] = new TH1F("hm2rec4OS_diag_trkP","M_{4#pi}TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec4OS_diag_trkM"] = new TH1F("hm2rec4OS_diag_trkM","M_{4#pi}TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
+  histosTH1F["hm2rec4OS_ttbb_trkP"] = new TH1F("hm2rec4OS_ttbb_trkP","M_{4#pi}TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec4OS_ttbb_trkM"] = new TH1F("hm2rec4OS_ttbb_trkM","M_{4#pi}TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+
+  histosTH1F["hm2rec4OS_diag_pypxP"] = new TH1F("hm2rec4OS_diag_pypxP","M_{4#pi} TB/BT OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec4OS_diag_pypxM"] = new TH1F("hm2rec4OS_diag_pypxM","M_{4#pi} TB/BT OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+  histosTH1F["hm2rec4OS_ttbb_pypxP"] = new TH1F("hm2rec4OS_ttbb_pypxP","M_{4#pi} TT/BB OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec4OS_ttbb_pypxM"] = new TH1F("hm2rec4OS_ttbb_pypxM","M_{4#pi} TT/BB OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+
+  histosTH1F["hm2rec5OS"] = new TH1F("hm2rec5OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec5SS"] = new TH1F("hm2rec5SS","M_{4#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec5OS_diag"] = new TH1F("hm2rec5OS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2rec5SS_diag"] = new TH1F("hm2rec5SS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  histosTH1F["hm2rec5OS_ttbb"] = new TH1F("hm2rec5OS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2rec5SS_ttbb"] = new TH1F("hm2rec5SS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
+
+  //histosTH1F["hm2rec5OS_diag_trkP"] = new TH1F("hm2rec5OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec5OS_diag_trkM"] = new TH1F("hm2rec5OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
+  //histosTH1F["hm2rec5OS_ttbb_trkP"] = new TH1F("hm2rec5OS_ttbb_trkP","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec5OS_ttbb_trkM"] = new TH1F("hm2rec5OS_ttbb_trkM","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //...Luiz
+  histosTH1F["hm2rec5OS_diag_trkP"] = new TH1F("hm2rec5OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec5OS_diag_trkM"] = new TH1F("hm2rec5OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
+  histosTH1F["hm2rec5OS_ttbb_trkP"] = new TH1F("hm2rec5OS_ttbb_trkP","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec5OS_ttbb_trkM"] = new TH1F("hm2rec5OS_ttbb_trkM","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+
+  histosTH1F["hm2rec5OS_diag_pypxP"] = new TH1F("hm2rec5OS_diag_pypxP","M_{4#pi} TB/BT OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec5OS_diag_pypxM"] = new TH1F("hm2rec5OS_diag_pypxM","M_{4#pi} TB/BT OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+  histosTH1F["hm2rec5OS_ttbb_pypxP"] = new TH1F("hm2rec5OS_ttbb_pypxP","M_{4#pi} TT/BB OS, |py/px|_{4#pi} > 1",massbins,0,5.);
+  histosTH1F["hm2rec5OS_ttbb_pypxM"] = new TH1F("hm2rec5OS_ttbb_pypxM","M_{4#pi} TT/BB OS, |py/px|_{4#pi} < 1",massbins,0,5.);
+
+  histosTH1F["hm2rec6OS"] = new TH1F("hm2rec6OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec6SS"] = new TH1F("hm2rec6SS","M_{4#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec6OS_diag"] = new TH1F("hm2rec6OS_diag","M_{4#pi} TB/BT OS",massbins,0,5.);
+  histosTH1F["hm2rec6SS_diag"] = new TH1F("hm2rec6SS_diag","M_{4#pi} TB/BT SS",massbins,0,5.);
+  histosTH1F["hm2rec6OS_ttbb"] = new TH1F("hm2rec6OS_ttbb","M_{4#pi} TT/BB OS",massbins,0,5.);
+  histosTH1F["hm2rec6SS_ttbb"] = new TH1F("hm2rec6SS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
+
+  //histosTH1F["hm2rec6OS_diag_trkP"] = new TH1F("hm2rec6OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec6OS_diag_trkM"] = new TH1F("hm2rec6OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);  
+  //histosTH1F["hm2rec6OS_ttbb_trkP"] = new TH1F("hm2rec6OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}>0",massbins,0,5.);
+  //histosTH1F["hm2rec6OS_ttbb_trkM"] = new TH1F("hm2rec6OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi1}py_{#pi2}<0",massbins,0,5.);
+  //...Luiz
+  histosTH1F["hm2rec6OS_diag_trkP"] = new TH1F("hm2rec6OS_diag_trkP","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec6OS_diag_trkM"] = new TH1F("hm2rec6OS_diag_trkM","M_{4#pi} TB/BT OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);  
+  histosTH1F["hm2rec6OS_ttbb_trkP"] = new TH1F("hm2rec6OS_ttbb_trkP","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}>0",massbins,0,5.);
+  histosTH1F["hm2rec6OS_ttbb_trkM"] = new TH1F("hm2rec6OS_ttbb_trkM","M_{4#pi} TT/BB OS, py_{#pi_{1}}py_{#pi_{2}}<0",massbins,0,5.);
+
+  histosTH1F["hm2recHFvetoOS"] = new TH1F("hm2recHFvetoOS","M_{4#pi} HFv OS",massbins,0,5.);
+  histosTH1F["hm2recHFvetoSS"] = new TH1F("hm2recHFvetoSS","M_{4#pi} HFv SS",massbins,0,5.);
+  
+  histosTH1F["hm2rec45OS"] = new TH1F("hm2rec45OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec45SS"] = new TH1F("hm2rec45SS","M_{4#pi} SS",massbins,0,5.);
+  histosTH1F["hm2rec4515OS"] = new TH1F("hm2rec4515OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec4515SS"] = new TH1F("hm2rec4515SS","M_{4#pi} SS",massbins,0,5.);
+
+  histosTH1F["hm2rec9919"] = new TH1F("hm2rec9919","M_{4#pi} 9919",massbins,0,5.);
+  histosTH1F["hm2rec9922"] = new TH1F("hm2rec9922","M_{4#pi} 9919,9922",massbins,0,5.);
+  histosTH1F["hm2rec9971"] = new TH1F("hm2rec9971","M_{4#pi} 9971",massbins,0,5.);
+  histosTH1F["hm2rec9978"] = new TH1F("hm2rec9978","M_{4#pi} 9978",massbins,0,5.);
 
   histosTH1F["hnclusters"] = new TH1F("hnclusters","nPixelClusters",500,0,500.);
   histosTH1F["hnclusters2"] = new TH1F("hnclusters2","nStripClusters",500,0,500.);
@@ -602,14 +838,15 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //...Luiz
   histosTH2F["hlndedx"]  = new TH2F("hlndedx","ln dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
   histosTH2F["hl10dedx"] = new TH2F("hl10dedx","log10 dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
-  
+
   //---------------------------------------------------
 
   for(map<string,TH1F*>::const_iterator it = histosTH1F.begin(); it != histosTH1F.end(); ++it)
       it->second->Sumw2();
   for(map<string,TH2F*>::const_iterator it = histosTH2F.begin(); it != histosTH2F.end(); ++it)
       it->second->Sumw2();
- 
+  //for(map<string,TH3F*>::const_iterator it = histosTH3F.begin(); it != histosTH3F.end(); ++it)
+  //  it->second->Sumw2();
   //===================
 
   //vector<TString>* vfiles = new vector<TString>(1,"merged_reduced_8372_198903_LP_Jets1_1_test_v1.root"); 
@@ -622,6 +859,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   vector<MyCaloTower>* calo_coll = NULL;
   vector<MyTracks>*   track_coll = NULL;
   vector<MyVertex>*  vertex_coll = NULL;
+  vector<MyKshorts>* kshort_coll = NULL;
+  vector<MyLambdas>* lambda_coll = NULL;
   vector<MySiPixelCluster>* sipixelcluster_coll = NULL;
   MySiStripCluster*         sistripcluster_coll = NULL;
 
@@ -794,11 +1033,94 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   M215M(5,4)= 0.000000000000000e+00   ;
   M215M(5,5)= 1.000000000000000e+00   ;
 
+  //...Luiz
+TMatrix M213P(6,6);
+
+M213P(0,0)=-2.275629113585150e+00    ;
+M213P(0,1)=3.816429268068490e+00    ;
+M213P(0,2)=0.000000000000000e+00    ;
+M213P(0,3)=0.000000000000000e+00    ;
+M213P(0,4)=7.029569133459326e-02    ;
+M213P(0,5)=7.029569133459326e-02    ;
+M213P(1,0)=5.401504221523073e-02   ;
+M213P(1,1)=-5.300268751290215e-01   ;
+M213P(1,2)= 0.000000000000000e+00   ; 
+M213P(1,3)=0.000000000000000e+00    ;
+M213P(1,4)=-2.668640114664157e-03   ;
+M213P(1,5)=-2.668640114664157e-03   ; 
+M213P(2,0)=0.000000000000000e+00   ; 
+M213P(2,1)=0.000000000000000e+00   ; 
+M213P(2,2)=2.673172909778739e-02    ;
+M213P(2,3)=2.291259162249677e+02   ; 
+M213P(2,4)=0.000000000000000e+00    ;
+M213P(2,5)=0.000000000000000e+00    ;
+M213P(3,0)=0.000000000000000e+00    ;
+M213P(3,1)=0.000000000000000e+00   ;
+M213P(3,2)=-3.818818897730703e-03    ;
+M213P(3,3)=4.676450995853369e+00    ;
+M213P(3,4)=0.000000000000000e+00    ;
+M213P(3,5)=0.000000000000000e+00   ;
+M213P(4,0)=-2.275810403624082e-03   ;
+M213P(4,1)=-2.707392937356277e-02  ;  
+M213P(4,2)=0.000000000000000e+00    ;
+M213P(4,3)=0.000000000000000e+00    ;
+M213P(4,4)=1.000000000000000e+00   ;
+M213P(4,5)= 1.115872491557145e-04   ;
+M213P(5,0)= 0.000000000000000e+00   ;
+M213P(5,1)= 0.000000000000000e+00    ;
+M213P(5,2)=0.000000000000000e+00   ;
+M213P(5,3)= 0.000000000000000e+00   ;
+M213P(5,4)= 0.000000000000000e+00   ;
+M213P(5,5)= 1.000000000000000e+00  ;
+
+TMatrix M213M(6,6);
+
+M213M(0,0)= -2.143392591666300e+00  ; 
+M213M(0,1)= 3.761734515572186e+00   ;
+M213M(0,2)= 0.000000000000000e+00   ;
+M213M(0,3)= 0.000000000000000e+00   ;
+M213M(0,4)= -5.453847013733222e-02  ;
+M213M(0,5)= -5.453847013733222e-02   ;
+M213M(1,0)= 5.528023408827136e-02  ;
+M213M(1,1)= -5.349147148886547e-01   ;
+M213M(1,2)= 0.000000000000000e+00   ;
+M213M(1,3)= 0.000000000000000e+00   ;
+M213M(1,4)= 2.332546482011731e-03   ;
+M213M(1,5)= 2.332546482011731e-03   ;
+M213M(2,0)= 0.000000000000000e+00   ;
+M213M(2,1)= 0.000000000000000e+00   ;
+M213M(2,2)= 2.662075254734354e-02   ;
+M213M(2,3)= 2.298317286740411e+02   ;
+M213M(2,4)= 0.000000000000000e+00   ;
+M213M(2,5)= 0.000000000000000e+00   ;
+M213M(3,0)= 0.000000000000000e+00   ;
+M213M(3,1)= 0.000000000000000e+00  ;
+M213M(3,2)= -3.802967965874805e-03  ; 
+M213M(3,3)= 4.731545364353734e+00   ;
+M213M(3,4)= 0.000000000000000e+00   ;
+M213M(3,5)= 0.000000000000000e+00   ;
+M213M(4,0)= 2.252479550701315e-03   ;
+M213M(4,1)= 2.039900959093559e-02  ;
+M213M(4,2)= 0.000000000000000e+00   ;
+M213M(4,3)= 0.000000000000000e+00   ;
+M213M(4,4)= 1.000000000000000e+00   ;
+M213M(4,5)= 9.569558449226801e-05   ;
+M213M(5,0)= 0.000000000000000e+00   ;
+M213M(5,1)= 0.000000000000000e+00   ;
+M213M(5,2)= 0.000000000000000e+00   ;
+M213M(5,3)= 0.000000000000000e+00   ;
+M213M(5,4)= 0.000000000000000e+00   ;
+M213M(5,5)= 1.000000000000000e+00   ;
+
+ 
   AlltransportMatrixPlus.insert(std::make_pair(220,M220P));
   AlltransportMatrixMinus.insert(std::make_pair(220,M220M));
 
   AlltransportMatrixPlus.insert(std::make_pair(215,M215P));
   AlltransportMatrixMinus.insert(std::make_pair(215,M215M));
+  //...Luiz
+  AlltransportMatrixPlus.insert(std::make_pair(213,M213P));
+  AlltransportMatrixMinus.insert(std::make_pair(213,M213M));
 
   //===================
 
@@ -829,6 +1151,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
     tree->SetBranchAddress("cmsTracksPIDUA", &track_coll); // refittedTracks
 
     tree->SetBranchAddress("cmsVerticesUA",&vertex_coll);
+    //...Kshorts
+    tree->SetBranchAddress("Kshort",&kshort_coll);
+    tree->SetBranchAddress("Lambda",&lambda_coll);
     tree->SetBranchAddress("SiPixelClusters", &sipixelcluster_coll);
     tree->SetBranchAddress("SiStripClusters", &sistripcluster_coll);
     
@@ -1171,6 +1496,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
       //...Luiz
       double phi_proton_right = rec_proton_right->phi;
       double phi_proton_left = rec_proton_left->phi;
+      double dphi_proton = phi_proton_right-phi_proton_left;
       //
       
       //-----------------------------------
@@ -1207,7 +1533,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
       //...Luiz
       histosTH2F["phi_proton_right_t"]->Fill( -t_proton_right, phi_proton_right );
       histosTH2F["phi_proton_left_t"]->Fill( -t_proton_left, phi_proton_left );
-      //
+      // delta phi between protons
+      histosTH1F["dphi_proton"]->Fill( dphi_proton );
       
       if(diag_top45_bot56 || diag_bot45_top56){
 	histosTH1F["proton_right_t_diag"]->Fill( -t_proton_right, wei );
@@ -1215,14 +1542,18 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	//...Luiz
 	histosTH2F["phi_proton_right_t_diag"]->Fill( -t_proton_right, phi_proton_right );
 	histosTH2F["phi_proton_left_t_diag"]->Fill( -t_proton_left, phi_proton_left );
-      //
+        // delta phi between protons
+	histosTH1F["dphi_proton_diag"]->Fill( dphi_proton );
+	//
       }else{
 	histosTH1F["proton_right_t_ttbb"]->Fill( -t_proton_right, wei );
 	histosTH1F["proton_left_t_ttbb"]->Fill( -t_proton_left, wei );
 	//...Luiz
 	histosTH2F["phi_proton_right_t_ttbb"]->Fill( -t_proton_right, phi_proton_right );
 	histosTH2F["phi_proton_left_t_ttbb"]->Fill( -t_proton_left, phi_proton_left );
-      //	
+        // delta phi between protons
+       	histosTH1F["dphi_proton_ttbb"]->Fill( dphi_proton );
+	//
       }
       //...Luiz
       if(top45_top56){
@@ -1253,9 +1584,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
       */
 
 
-//comment if not writing to txt file
-//      int HFveto = 0;
-//      if(nHF>0) HFveto = 1;
+      //comment if not writing to txt file
+      //      int HFveto = 0;
+      //      if(nHF>0) HFveto = 1;
       
       //-------------------
       // After selection 
@@ -1276,11 +1607,34 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
       // 10e-4 = 1e-3
       // xi<0.001 -> m<13
       //      double pyTOTEM= 6500.*(thy_proton_left+thy_proton_right);
+
+      //...Luiz
+      double TOTEMpy1= 6500.*(ThyL);
+      double TOTEMpy2= 6500.*(ThyR);
+      //
       double TOTEMpy= 6500.*(ThyL+ThyR);
       //For p_x it is more delicate and at the moment we do it for low-xi protons only (|xi| < 3. * 0.006). We first reconstruct th_x as for
       //elastic scattering (see attachment) and then do the sum as above:  3*0.006 = 0.018
+      //...Luiz
+      double TOTEMpx1=-6500*(ThxL);
+      double TOTEMpx2=-6500*(ThxR);
+      //
       double TOTEMpx=-6500*(ThxL+ThxR);
 
+      //...Luiz
+      double TOTEMpt1= TMath::Sqrt(pow(TOTEMpx1,2)+pow(TOTEMpy1,2));
+      double TOTEMpt2= TMath::Sqrt(pow(TOTEMpx2,2)+pow(TOTEMpy2,2));
+
+      double TOTEMphiL = TMath::ATan2(ThyL,ThxL);
+      double TOTEMphiR = TMath::ATan2(ThyR,ThxR);
+      
+      double TOTEMdphi = TOTEMphiL-TOTEMphiR;
+
+      if(TOTEMdphi<0) TOTEMdphi = TOTEMdphi + 2*TMath::Pi();           // from (-2pi,2pi) to (0,2pi)
+      if(TOTEMdphi>TMath::Pi()) TOTEMdphi = 2*TMath::Pi() - TOTEMdphi; // from (0,2pi) to (0,pi)
+
+      //
+      
       histosTH1F["totem_py"]->Fill(TOTEMpy, wei);
       histosTH1F["totem_px"]->Fill(TOTEMpx, wei);
 
@@ -1326,6 +1680,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        //double m_mu = 0.1056583715;
        double m_mu = 0.1056583745;
        double m_e = 0.0005109989461;
+
+       //...Luiz
+       double m_p = 0.9382720813;
        
        //-------------------------------
        //accept only 9919, 9922
@@ -1414,7 +1771,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        bool fiducialRegionPt = false;
        //double ptCut= 0.2;
        //...Luiz
-       double ptCut= 0.1;
+       //double ptCut= 0.1;
+       double ptCut= 0.0;
        
        //tracks in 4track-events (npixelhits>0)
        //...Luiz
@@ -1422,6 +1780,22 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        TLorentzVector pi2(0.,0.,0.,0.);
        TLorentzVector pi3(0.,0.,0.,0.);
        TLorentzVector pi4(0.,0.,0.,0.);
+       //...Luiz
+       TLorentzVector k1(0.,0.,0.,0.);
+       TLorentzVector k2(0.,0.,0.,0.);
+       TLorentzVector k3(0.,0.,0.,0.);
+       TLorentzVector k4(0.,0.,0.,0.);
+       //...Luiz
+       //TLorentzVector pipiRec(0.,0.,0.,0.);
+       TLorentzVector pi1pi2Rec(0.,0.,0.,0.);
+       TLorentzVector pi3pi4Rec(0.,0.,0.,0.);
+       TLorentzVector pi1pi3Rec(0.,0.,0.,0.);
+       TLorentzVector pi2pi4Rec(0.,0.,0.,0.);
+       //
+       TLorentzVector k1k2Rec(0.,0.,0.,0.);
+       TLorentzVector k3k4Rec(0.,0.,0.,0.);
+       TLorentzVector k1k3Rec(0.,0.,0.,0.);
+       TLorentzVector k2k4Rec(0.,0.,0.,0.);
        //
        //TLorentzVector pipiRec(0.,0.,0.,0.);
        //...Luiz
@@ -1429,9 +1803,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
        int totcharge=0;
 
-       TLorentzVector kkRec(0.,0.,0.,0.);
-       TLorentzVector mmRec(0.,0.,0.,0.);
-       TLorentzVector eeRec(0.,0.,0.,0.);
+       //...Luiz
+       TLorentzVector kkkkRec(0.,0.,0.,0.);
+       //TLorentzVector mmRec(0.,0.,0.,0.);
+       //TLorentzVector eeRec(0.,0.,0.,0.);
+       //...Luiz
+       //TLorentzVector ppRec(0.,0.,0.,0.);
 
        //int charray[2]={0,0};
        //double chi2array[2]={0.,0.};
@@ -1442,7 +1819,14 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        double chi2array[4]={0.,0.,0.,0.};
        double d0array[4]={0.,0.,0.,0.};
        double dzarray[4]={0.,0.,0.,0.};
-      
+       int pidarray[4]={0,0,0,0};
+       //
+       int charrayk[4]={0,0,0,0};
+       double chi2arrayk[4]={0.,0.,0.,0.};
+       double d0arrayk[4]={0.,0.,0.,0.};
+       double dzarrayk[4]={0.,0.,0.,0.};
+       int pidarrayk[4]={0,0,0,0};
+	 
        int ntrk0=0;
        int ntrk=0;
        int ntrkvtx=0;    
@@ -1496,45 +1880,108 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	   if(ntrk==1) pi2 = trk_lorentz;
 	   if(ntrk==2) pi3 = trk_lorentz;
 	   if(ntrk==3) pi4 = trk_lorentz;
+
+	   if(ntrk==0 || ntrk==1) pi1pi2Rec += trk_lorentz;
+	   if(ntrk==2 || ntrk==3) pi3pi4Rec += trk_lorentz;
+	   if(ntrk==0 || ntrk==2) pi1pi3Rec += trk_lorentz;
+	   if(ntrk==1 || ntrk==3) pi2pi4Rec += trk_lorentz;
 	   
+	   EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
+
 	   if(ntrk==0){
 	     charray[0]=charge;	
 	     chi2array[0]=chi2;
 	     d0array[0]=d0;
 	     dzarray[0]=dz;
+	     pidarray[0]=pid2;
 	   }
 	   if(ntrk==1){
 	     charray[1]=charge;	
 	     chi2array[1]=chi2;
 	     d0array[1]=d0;
 	     dzarray[1]=dz;
+	     pidarray[1]=pid2;	     
 	   }
 	   if(ntrk==2){
 	     charray[2]=charge;	
 	     chi2array[2]=chi2;
 	     d0array[2]=d0;
 	     dzarray[2]=dz;
+	     pidarray[2]=pid2;
 	   }
 	   if(ntrk==3){
 	     charray[3]=charge;	
 	     chi2array[3]=chi2;
 	     d0array[3]=d0;
 	     dzarray[3]=dz;
+	     pidarray[3]=pid2;
+	   }
+
+	   //-----------------------
+	   double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
+	   TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
+	   kkkkRec += trk_lorentzK; 
+
+	   //...Kaons
+	   if(ntrk==0) k1 = trk_lorentzK;
+	   if(ntrk==1) k2 = trk_lorentzK;
+	   if(ntrk==2) k3 = trk_lorentzK;
+	   if(ntrk==3) k4 = trk_lorentzK;
+
+	   if(ntrk==0 || ntrk==1) k1k2Rec += trk_lorentzK;
+	   if(ntrk==2 || ntrk==3) k3k4Rec += trk_lorentzK;
+	   if(ntrk==0 || ntrk==2) k1k3Rec += trk_lorentzK;
+	   if(ntrk==1 || ntrk==3) k2k4Rec += trk_lorentzK;
+	   
+	   //EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
+
+	   if(ntrk==0){
+	     charrayk[0]=charge;	
+	     chi2arrayk[0]=chi2;
+	     d0arrayk[0]=d0;
+	     dzarrayk[0]=dz;
+	     pidarrayk[0]=pid2;
+	   }
+	   if(ntrk==1){
+	     charrayk[1]=charge;	
+	     chi2arrayk[1]=chi2;
+	     d0arrayk[1]=d0;
+	     dzarrayk[1]=dz;
+	     pidarrayk[1]=pid2;	     
+	   }
+	   if(ntrk==2){
+	     charrayk[2]=charge;	
+	     chi2arrayk[2]=chi2;
+	     d0arrayk[2]=d0;
+	     dzarrayk[2]=dz;
+	     pidarrayk[2]=pid2;
+	   }
+	   if(ntrk==3){
+	     charrayk[3]=charge;	
+	     chi2arrayk[3]=chi2;
+	     d0arrayk[3]=d0;
+	     dzarrayk[3]=dz;
+	     pidarrayk[3]=pid2;
 	   }
 	   
 	   ntrk++;
 
 	   //-----------------------
-	   double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
-	   TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
-	   kkRec += trk_lorentzK; 
+	   //double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
+	   //TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
+	   //kkkkRec += trk_lorentzK; 
 
-	   double eneM=TMath::Sqrt(pt*pt+pz*pz+m_mu*m_mu);
-	   TLorentzVector trk_lorentzM(itTrack->px(),itTrack->py(),itTrack->pz(),eneM);
-	   mmRec += trk_lorentzM; 
-	   double eneE=TMath::Sqrt(pt*pt+pz*pz+m_e*m_e);
-	   TLorentzVector trk_lorentzE(itTrack->px(),itTrack->py(),itTrack->pz(),eneE);
-	   eeRec += trk_lorentzE; 
+	   //double eneM=TMath::Sqrt(pt*pt+pz*pz+m_mu*m_mu);
+	   //TLorentzVector trk_lorentzM(itTrack->px(),itTrack->py(),itTrack->pz(),eneM);
+	   //mmRec += trk_lorentzM; 
+	   //double eneE=TMath::Sqrt(pt*pt+pz*pz+m_e*m_e);
+	   //TLorentzVector trk_lorentzE(itTrack->px(),itTrack->py(),itTrack->pz(),eneE);
+	   //eeRec += trk_lorentzE; 
+
+	   //...Luiz
+	   //double enep=TMath::Sqrt(pt*pt+pz*pz+m_p*m_p);
+	   //TLorentzVector trk_lorentzp(itTrack->px(),itTrack->py(),itTrack->pz(),enep);
+	   //ppRec += trk_lorentzp; 
 
 	 }
        }
@@ -1552,6 +1999,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 histosTH1F["hnclusters2"]->Fill(nclusters2);
        }
 
+       
        int nvtx=0;
        //       for(VertexCollection::const_iterator itVtx = vertices->begin();itVtx != vertices->end();++itVtx) {
        for(vector<MyVertex>::iterator itVtx = vertex_coll->begin() ; itVtx != vertex_coll->end() ; ++itVtx){
@@ -1560,16 +2008,23 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 else continue;
 
 	 ntrkvtx = itVtx->ntracks;
-	 
+	 //...Luiz
+	 //////itVtx->Print();
        }
 
        histosTH1F["hnvtx"]->Fill(nvtx);
        if(nvtx==1) histosTH1F["hntrkvtx"]->Fill(ntrkvtx);
+       //...Luiz
+       if(nvtx==0) histosTH1F["hntrkvtx0"]->Fill(ntrkvtx);
+       if(nvtx==2) histosTH1F["hntrkvtx2"]->Fill(ntrkvtx);
+       if(nvtx==3) histosTH1F["hntrkvtx3"]->Fill(ntrkvtx);
+       if(nvtx==4) histosTH1F["hntrkvtx4"]->Fill(ntrkvtx);
+
        
        //not yet vertex cut, checking vertex-finding efficiency
-
        int  isfake = vertex_coll->begin()->fake;  
        double xvtx = vertex_coll->begin()->x;
+       //double xvtx = vertex_coll->begin()->x; only primary vertex?
        double yvtx = vertex_coll->begin()->y;
        double zvtx = vertex_coll->begin()->z;
 
@@ -1577,11 +2032,126 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        // not sure if the same variable.
        // myvertex.chi2        = p->chi2();
        double chi2vtx = vertex_coll->begin()->chi2;
+       double ndofvtx = vertex_coll->begin()->ndof;
        //       double ndofvtx = vertex_coll->begin()->ndof;
 
        //       ntrkvtx = vertex_coll->begin()->ntracks;
-       
 
+        //............     
+        //...Kshort collection...Luiz
+       int nks=0;
+       for(vector<MyKshorts>::iterator it_ks = kshort_coll->begin() ; it_ks != kshort_coll->end() ; ++it_ks){
+	 
+	 nks++;
+	 bool isKshort = nks;
+	 double ksvertexx = it_ks->vertexx;
+	 double ksvertexy = it_ks->vertexy;
+	 double ksvertexz = it_ks->vertexz;
+	 double kspt = it_ks->pt;
+	 double kseta = it_ks->eta;
+	 double ksphi = it_ks->phi;
+	 double ksmass = it_ks->mass;
+	 double ksradius = TMath::Sqrt((ksvertexx-xvtx)*(ksvertexx-xvtx)+(ksvertexy-yvtx)*(ksvertexy-yvtx));
+	 double energy = TMath::Sqrt(kspt*kspt+0.4976*0.4976);
+	 double gammalorentz = energy/0.4976;
+	 double kslifetime = ksradius/gammalorentz;  
+	 histosTH1F["hkspt"]->Fill(kspt,wei);
+	 histosTH1F["hkseta"]->Fill(kseta,wei);
+	 histosTH1F["hksphi"]->Fill(ksphi,wei);
+	 histosTH1F["hksmass"]->Fill(ksmass,wei);
+	 //
+	 if(nks == 1)histosTH1F["hksmassv1"]->Fill(ksmass,wei);
+	 if(nks == 2)histosTH1F["hksmassv2"]->Fill(ksmass,wei);
+	 //
+	 histosTH1F["hksvertexx"]->Fill(ksvertexx,wei);
+	 histosTH1F["hksvertexy"]->Fill(ksvertexy,wei);
+	 histosTH1F["hksvertexz"]->Fill(ksvertexz,wei);
+	 histosTH1F["hksradius"]->Fill(ksradius,wei);
+	 histosTH1F["hkslifetime"]->Fill(kslifetime,wei);
+	 histosTH2F["h2dimksxy"]->Fill(ksvertexx,ksvertexy);
+	 histosTH2F["h2dimksxz"]->Fill(ksvertexx,ksvertexz);
+	 histosTH2F["h2dimksyz"]->Fill(ksvertexy,ksvertexz);
+	 std::cout << " nks = " << nks << std::endl;
+	 std::cout << " ksvertexx = " << ksvertexx << std::endl;
+	 std::cout << " ksvertexy = " << ksvertexy << std::endl;
+	 std::cout << " ksvertexz = " << ksvertexz << std::endl;
+	 std::cout << " ksmass = " << ksmass << std::endl;
+	 it_ks->Print();
+       }
+       //...Kshort
+       histosTH1F["hnks"]->Fill(nks);
+       //
+      //................
+ 
+      /*
+       //...Kshort...secondaryVertex
+       //int  isfake = kshorts_coll->begin()->fake;  
+       double xk = kshort_coll->begin()->vertexx;
+       double yk = kshort_coll->begin()->vertexy;
+       double zk = kshort_coll->begin()->vertexz;
+       ////double chi2vtxk = kshorts_coll->begin()->chi2n;
+       //...Kshort
+       histosTH1F["hxk"]->Fill(xk,wei);
+       histosTH1F["hyk"]->Fill(yk,wei);
+       histosTH1F["hzk"]->Fill(zk,wei);
+       //
+       histosTH2F["h2dimxyk"]->Fill(xk,yk);
+       histosTH2F["h2dimxzk"]->Fill(xk,zk);
+       histosTH2F["h2dimyzk"]->Fill(yk,zk);
+       */
+       /*
+       //...secondaryVertex
+       //      
+       MyKshorts& secondaryVertex = kshort_coll->at(0);
+       //  at 2.6844 cm
+       histosTH1F["sec_vtx_xpos"]->Fill(secondaryVertex.vertexx,wei);
+       histosTH1F["sec_vtx_ypos"]->Fill(secondaryVertex.vertexy,wei);
+       histosTH1F["sec_vtx_zpos"]->Fill(secondaryVertex.vertexz,wei);
+       */
+       
+       //
+      /////histosTH1F["sec_vtx_ndof"]->Fill(secondaryVertex.ndof);
+      /////histosTH1F["sec_vtx_chi2"]->Fill(secondaryVertex.chi2);
+      /////histosTH1F["sec_vtx_chi2n"]->Fill(secondaryVertex.chi2n());
+      /////histosTH1F["sec_vtx_ntracks"]->Fill(secondaryVertex.ntracks);
+      /////histosTH1F["sec_vtx_sumpt"]->Fill(secondaryVertex.SumPtTracks);
+
+       //...Lambda collection...Luiz
+       int nlam=0;
+       for(vector<MyLambdas>::iterator it_lam = lambda_coll->begin() ; it_lam != lambda_coll->end() ; ++it_lam){
+	 
+	 nlam++;
+	 bool isLambda = nlam;
+	 double lamvertexx = it_lam->vertexx;
+	 double lamvertexy = it_lam->vertexy;
+	 double lamvertexz = it_lam->vertexz;
+	 double lampt = it_lam->pt;
+	 double lameta = it_lam->eta;
+	 double lamphi = it_lam->phi;
+	 double lammass = it_lam->mass;
+	 double lamradius = TMath::Sqrt((lamvertexx-xvtx)*(lamvertexx-xvtx)+(lamvertexy-yvtx)*(lamvertexy-yvtx));
+	 histosTH1F["hlampt"]->Fill(lampt,wei);
+	 histosTH1F["hlameta"]->Fill(lameta,wei);
+	 histosTH1F["hlamphi"]->Fill(lamphi,wei);
+	 histosTH1F["hlammass"]->Fill(lammass,wei);
+	 histosTH1F["hlamvertexx"]->Fill(lamvertexx,wei);
+	 histosTH1F["hlamvertexy"]->Fill(lamvertexy,wei);
+	 histosTH1F["hlamvertexz"]->Fill(lamvertexz,wei);
+	 histosTH1F["hlamradius"]->Fill(lamradius,wei);
+	 histosTH2F["h2dimlamxy"]->Fill(lamvertexx,lamvertexy);
+	 histosTH2F["h2dimlamxz"]->Fill(lamvertexx,lamvertexz);
+	 histosTH2F["h2dimlamyz"]->Fill(lamvertexy,lamvertexz);
+	 //std::cout << " ksvertexx = " << ksvertexx << std::endl;
+	 //std::cout << " ksvertexy = " << ksvertexy << std::endl;
+	 //std::cout << " ksvertexz = " << ksvertexz << std::endl;
+	 //std::cout << " ksmass = " << ksmass << std::endl;
+	 //it_ks->Print();
+       }
+       //...Lambda
+       histosTH1F["hnlam"]->Fill(nlam);
+
+
+       
        //for vertex plots
        //...Luiz  ntrk==4
        //fiducialRegion   = (ntrk==2 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut);  
@@ -1599,29 +2169,70 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 histosTH1F["hvtx2"]->Fill( isfake );
 	 if(fiducialRegion && totcharge==0) histosTH1F["hvtx3"]->Fill( isfake );
        }    
-
+       
+       
        //...Luiz ?????? cut nvtx=1 or 2
-       //if(nvtx!=1) continue;
+       //////if(nvtx!=1) continue;
        //
        // if(nvtx!=2) continue;
 
+       //if(nvtx!=0) continue;
+       ////if(nvtx!=1) continue;
        if(nvtx!=1) {
-         if(nvtx!=2) continue;
-       }
+          if(nvtx!=2) continue;
+       	 }
+       //if(nvtx!=2) continue;
+
+       //...vertex
        histosTH1F["hvtxx"]->Fill(xvtx);
        histosTH1F["hvtxy"]->Fill(yvtx);
        histosTH1F["hvtxz"]->Fill(zvtx);
+       //...Luiz
+       histosTH2F["hvtx2dimxy"]->Fill(xvtx,yvtx);
+       histosTH2F["hvtx2dimxz"]->Fill(xvtx,zvtx);
+       histosTH2F["hvtx2dimyz"]->Fill(yvtx,zvtx);
+       //...3D
+       ////histosTH3F["hvtx3dimxyz"]->Fill(xvtx,yvtx,zvtx);
+
+       if(ntrk==4){
+       histosTH1F["hvtxx4"]->Fill(xvtx);
+       histosTH1F["hvtxy4"]->Fill(yvtx);
+       histosTH1F["hvtxz4"]->Fill(zvtx);
+       //...Luiz...2D
+       histosTH2F["hvtx2dimxy4"]->Fill(xvtx,yvtx);
+       histosTH2F["hvtx2dimxz4"]->Fill(xvtx,zvtx);
+       histosTH2F["hvtx2dimyz4"]->Fill(yvtx,zvtx);
+       //...3D
+       ////histosTH3F["hvtx3dimxyz4"]->Fill(xvtx,yvtx,zvtx);
+      }
+       
        histosTH1F["hvtxchi2"]->Fill(chi2vtx);
+       //////histosTH1F["hvtxndof"]->Fill(ndofvtx);
        histosTH2F["hntrkntrkvtx"]->Fill(ntrkvtx,ntrk);
+
        
        //----------------------------
        //invariant mass
        //...Luiz
        double mrec=pipipipiRec.M();      
-       double mrecKK=kkRec.M();      
-       double mrecMM=mmRec.M();      
-       double mrecEE=eeRec.M();      
+       double mrecKKKK=kkkkRec.M();      
+       //double mrecMM=mmRec.M();      
+       //double mrecEE=eeRec.M();      
+       //...Luiz
+       //double mrecpp=ppRec.M();
 
+       // M(1,2) M(3,4) M(1,3) M(2,4) 
+       double mrecpi1pi2=pi1pi2Rec.M();
+       double mrecpi3pi4=pi3pi4Rec.M();
+       double mrecpi1pi3=pi1pi3Rec.M();
+       double mrecpi2pi4=pi2pi4Rec.M();
+
+       // M(1,2) M(3,4) M(1,3) M(2,4) 
+       double mreck1k2=k1k2Rec.M();
+       double mreck3k4=k3k4Rec.M();
+       double mreck1k3=k1k3Rec.M();
+       double mreck2k4=k2k4Rec.M();
+              
        //----------------------------
        // xi cut
        // Mmax=13000*xi_max
@@ -1682,13 +2293,13 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 }
        }
        
-
        // last one, before Simone
        bool CTpycut = TMath::Abs(CMSpy+TOTEMpy)<0.06;
        //  bool CTpycut = TMath::Abs(CMSpy+TOTEMpy)<0.03;
        //  bool CTpycut = TMath::Abs(CMSpy+TOTEMpy)<0.015; // 1/4
-       
-       if(!CTpycut) continue;
+
+       // Robert's suggestion
+       //if(!CTpycut) continue;
        
        // px for completeness
        histosTH2F["h2dimdpxAll"]->Fill(CMSpx,TOTEMpx);
@@ -1786,8 +2397,6 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 
        }
        
-       //...cut 1    nvtx==1 or 2
-       
        //-----------------------------       
        ////fR: ntrk==2, nvtx==1, |eta|<etaCut
        //
@@ -1805,8 +2414,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 histosTH1F["hm2rec"]->Fill(mrec);      
 	 histosTH1F["hm2recbis"]->Fill(mrec);
 	 
+       //...cut 1    nvtx==1 or 2
+       
 	 if(totcharge==0){
+	   //...Luiz
 	   histosTH1F["hm2recOS"]->Fill(mrec);      
+	   histosTH1F["hm2recOS2"]->Fill(mrec);      
 	   if(diag) histosTH1F["hm2recOS_diag"]->Fill(mrec);
 	   else     histosTH1F["hm2recOS_ttbb"]->Fill(mrec);      
 	 }else{
@@ -1816,18 +2429,118 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	 }
 
 	 //...cut 2            
-	 if(RPvertex && CTpxcut && CTvertex){
+	 //	 if(RPvertex && CTpxcut && CTvertex){
+
+	 //Robert's suggestion...remove CTpxcut
+	 //if(CTpxcut){
+
+	 /////...nvtx=2
+	 /////if(nvtx==2){
+
+	 //if(ntrkvtx==2){
+
+	 //...using PID Pions
+	 if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
+	 	    pidarray[2]==pidPion && pidarray[3]==pidPion)
+	       {
 	   
 	   if(totcharge==0){
 
+	     //...Luiz
 	     histosTH1F["hm2rec2OS"]->Fill(mrec);      
-	     if(diag) histosTH1F["hm2rec2OS_diag"]->Fill(mrec);
-	     else     histosTH1F["hm2rec2OS_ttbb"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OS2"]->Fill(mrec);
+
+	     // dphi(pp) vs mrec(4pi)
+	     histosTH2F["dphi_proton_mrec"]->Fill( dphi_proton, mrec );
+	     
+	     // 12 34 13 24..using PID
+	     //if(charray[0]*charray[1] < 0 && pidarray[0]==pidPion && pidarray[1]==pidPion)
+             //if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
+	     //	    pidarray[2]==pidPion && pidarray[3]==pidPion)
+	     //  {
+
+	       //...nvtx=1
+               if(nvtx==1){
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	        }else{
+		 if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		   }
+		 }
+	       } //nvtx=1
+
+	       //...nvtx=2
+               if(nvtx==2){
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2v2"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4v2"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4v2"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	        }else{
+		 if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3v2"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4v2"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4v2"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		   }
+		 }
+	       } //nvtx=2
+	       
+	       //}//endPID
+	       
+	     //...Luiz
+	     if(diag) {
+	       histosTH1F["hm2rec2OS_diag"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_diag2"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_diag2varbin"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_diag3"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_diag4"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_diag5"]->Fill(mrec);
+	       // dphi_proton_mrec_diag
+	       histosTH2F["dphi_proton_mrec_diag"]->Fill( dphi_proton, mrec );
+
+	     // 12 34 13 24...using PID
+	       if(charray[0]+charray[1] == 0){
+	       histosTH1F["hm2rec2OS_diag_pi1pi2"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_diag_pi3pi4"]->Fill(mrecpi3pi4);
+	       }else{
+	       if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_diag_pi1pi3"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_diag_pi2pi4"]->Fill(mrecpi2pi4);
+	        }
+	       }
+	     }else{
+	       histosTH1F["hm2rec2OS_ttbb"]->Fill(mrec);      
+	       histosTH1F["hm2rec2OS_ttbb2"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_ttbb2varbin"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_ttbb3"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_ttbb4"]->Fill(mrec);
+	       histosTH1F["hm2rec2OS_ttbb5"]->Fill(mrec);
+	       // dphi_proton_mrec_ttbb
+	       histosTH2F["dphi_proton_mrec_ttbb"]->Fill( dphi_proton, mrec );
+
+	       // 12 34 13 24...using PID
+	       if(charray[0]+charray[1] == 0){
+	       histosTH1F["hm2rec2OS_ttbb_pi1pi2"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_ttbb_pi3pi4"]->Fill(mrecpi3pi4);
+	       }else{
+	       if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_ttbb_pi1pi3"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_ttbb_pi2pi4"]->Fill(mrecpi2pi4);
+	        }
+	       }
+	     }//ttbb
 	   }else{
 	     histosTH1F["hm2rec2SS"]->Fill(mrec);      
 	     if(diag) histosTH1F["hm2rec2SS_diag"]->Fill(mrec);
 	     else     histosTH1F["hm2rec2SS_ttbb"]->Fill(mrec);      
-	   }
+	   }//...end of totalcharge=0	    
+	   
 	   //....???????
 	   if(totcharge==0 && diag){
 	     if(pi1.Py()*pi2.Py()*pi3.Py()*pi4.Py()>0) histosTH1F["hm2rec2OS_diag_trkP"]->Fill(mrec);
@@ -1860,13 +2573,115 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	   //...Luiz
 	   if(totcharge==0 && diag){
 	     histosTH1F["hm2recPPPP"]->Fill(mrec);      
-	     histosTH1F["hm2recKK"]->Fill(mrecKK);      
-	     histosTH1F["hm2recMM"]->Fill(mrecMM);      
-	     histosTH1F["hm2recEE"]->Fill(mrecEE);      
+	     //histosTH1F["hm2recKKKK"]->Fill(mrecKKKK);      
+	     //histosTH1F["hm2recMM"]->Fill(mrecMM);      
+	     //histosTH1F["hm2recEE"]->Fill(mrecEE);      
+	     //...Luiz
+	     //histosTH1F["hm2recpp"]->Fill(mrecpp);      
 	   }
 
-	 }
+	   //...Luiz : dphi new definition
+	   if(totcharge==0){
+	     histosTH1F["hphiL"]->Fill(TOTEMphiL);
+	     histosTH1F["hphiR"]->Fill(TOTEMphiR);
+	     histosTH1F["hdphi"]->Fill(TOTEMdphi);
+	     if(diag) histosTH1F["hdphi_diag"]->Fill(TOTEMdphi);
+	     else     histosTH1F["hdphi_ttbb"]->Fill(TOTEMdphi);
+	   }
+
+	  }//...end PID Pions
+	 //...Luiz
+	 //}//ntrkvtx==2,4
+	 //}...Robert's suggestion
+
 	 
+	  //...using PID Kaons
+	  //////if(pidarrayk[0]==pidKaon && pidarrayk[1]==pidKaon &&
+	 //////    pidarrayk[2]==pidKaon && pidarrayk[3]==pidKaon)
+	 //////{
+		 
+	   if(totcharge==0){
+
+	     //...Luiz
+	     /*
+	     histosTH1F["hm2rec2OS"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OS2"]->Fill(mrec);
+	     */
+	     // dphi(pp) vs mrec(4pi)
+	     ////histosTH2F["dphi_proton_mrec"]->Fill( dphi_proton, mrec );
+	     
+	     // 12 34 13 24..using PID
+	     //if(charray[0]*charray[1] < 0 && pidarray[0]==pidPion && pidarray[1]==pidPion)
+             //if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
+	     //	    pidarray[2]==pidPion && pidarray[3]==pidPion)
+	     //  {
+
+	       //...nvtx=1
+               if(nvtx==1){
+		 if(charrayk[0]+charrayk[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_k1k2"]->Fill(mreck1k2);
+	       histosTH1F["hm2rec2OS_k3k4"]->Fill(mreck3k4);
+	       histosTH2F["hm2dim2OS_k1k2_k3k4"]->Fill(mreck1k2,mreck3k4);
+	        }else{
+		 if(charrayk[0]+charrayk[2] == 0){
+	       histosTH1F["hm2rec2OS_k1k3"]->Fill(mreck1k3);
+	       histosTH1F["hm2rec2OS_k2k4"]->Fill(mreck2k4);
+	       histosTH2F["hm2dim2OS_k1k3_k2k4"]->Fill(mreck1k3,mreck2k4);
+		   }
+		 }
+	       } //nvtx=1
+
+	       //...nvtx=2
+               if(nvtx==2){
+		 if(charrayk[0]+charrayk[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_k1k2v2"]->Fill(mreck1k2);
+	       histosTH1F["hm2rec2OS_k3k4v2"]->Fill(mreck3k4);
+	       histosTH2F["hm2dim2OS_k1k2_k3k4v2"]->Fill(mreck1k2,mreck3k4);
+	        }else{
+		 if(charrayk[0]+charrayk[2] == 0){
+	       histosTH1F["hm2rec2OS_k1k3v2"]->Fill(mreck1k3);
+	       histosTH1F["hm2rec2OS_k2k4v2"]->Fill(mreck2k4);
+	       histosTH2F["hm2dim2OS_k1k3_k2k4v2"]->Fill(mreck1k3,mreck2k4);
+		   }
+		 }
+	       } //nvtx=2
+	       
+	     //...Luiz
+	     if(diag) {
+	       // 12 34 13 24...using PID
+	       if(charrayk[0]+charrayk[1] == 0){
+	       histosTH1F["hm2rec2OS_diag_k1k2"]->Fill(mreck1k2);
+	       histosTH1F["hm2rec2OS_diag_k3k4"]->Fill(mreck3k4);
+	       }else{
+	       if(charrayk[0]+charrayk[2] == 0){
+	       histosTH1F["hm2rec2OS_diag_k1k3"]->Fill(mreck1k3);
+	       histosTH1F["hm2rec2OS_diag_k2k4"]->Fill(mreck2k4);
+	        }
+	       }
+	     }else{
+	       // 12 34 13 24...using PID
+	       if(charrayk[0]+charrayk[1] == 0){
+	       histosTH1F["hm2rec2OS_ttbb_k1k2"]->Fill(mreck1k2);
+	       histosTH1F["hm2rec2OS_ttbb_k3k4"]->Fill(mreck3k4);
+	       }else{
+	       if(charrayk[0]+charrayk[2] == 0){
+	       histosTH1F["hm2rec2OS_ttbb_k1k3"]->Fill(mreck1k3);
+	       histosTH1F["hm2rec2OS_ttbb_k2k4"]->Fill(mreck2k4);
+	        }
+	       }
+	     }//ttbb
+	     
+	   }//totalcharge=0
+	   
+	   //...Luiz
+	   if(totcharge==0 && diag){
+	     histosTH1F["hm2recKKKK"]->Fill(mrecKKKK);       
+	   }
+	   //////}//...end PID Kaons
+
+	  
 	 //...cut 3
 	 //.... OS:totcharge==0 SS:totcharge!=0
 	 if(RPvertex && CTpxcut){
@@ -1939,7 +2754,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 	   }
 	   
 	 }
-    
+     
 	 //...cut 5   nvtx==1 or 2
 	 //.... OS:totcharge==0 SS:totcharge!=0
 	 //    if(RPvertex && CTpxcut && nvtx==1 && CTvertex && TMath::Abs(zvtx)>5.){//tails
@@ -2121,8 +2936,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
        }
     
     } // End of loop over events in a file
-    
-    
+     
     // Close current file
     file->Close();
     
