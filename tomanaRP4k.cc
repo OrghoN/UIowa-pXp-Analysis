@@ -1923,9 +1923,9 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                     if(totcharge == 0)
                     {
                         histosTH1F["hm2rec20S"]->Fill(mrec);
-                        if(nvtx == 1);
-                            {
-                        if(charray[0]+charray[1] == 0);
+                        if(nvtx == 1)
+                        {
+                        if(charray[0]+charray[1] == 0)
                             histosTH1F["hm2rec2OS_k1k2"]->Fill(mreck1k2);
                         if(charray[2]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k3k4"]->Fill(mreck3k4);
@@ -1933,10 +1933,10 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                             histosTH1F["hm2rec2OS_k1k3"]->Fill(mreck1k3);
                         if(charray[1]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k2k4"]->Fill(mreck2k4);
-                    }
-                         if(nvtx == 2);
-                            {
-                        if(charray[0]+charray[1] == 0);
+                        }
+                        if(nvtx == 2)
+                        {
+                        if(charray[0]+charray[1] == 0)
                             histosTH1F["hm2rec2OS_k1k2v2"]->Fill(mreck1k2);
                         if(charray[2]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k3k4v2"]->Fill(mreck3k4);
@@ -1944,7 +1944,8 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                             histosTH1F["hm2rec2OS_k1k3v2"]->Fill(mreck1k3);
                         if(charray[1]+charray[3] == 0)
                             histosTH1F["hm2rec2OS_k2k4v2"]->Fill(mreck2k4);
-                    }
+                        }
+
                         if(diag) histosTH1F["hm2rec2OS_diag"]->Fill(mrec);
                         else     histosTH1F["hm2rec2OS_ttbb"]->Fill(mrec);
                     }
