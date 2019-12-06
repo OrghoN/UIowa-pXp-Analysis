@@ -5,7 +5,7 @@ if (( $# != 2 )); then
   echo "Description: SCP a file or directory from local to lxplus7."
   echo ""
   echo "Usage:"
-  echo "./tomcp.sh <source> <destination>"
+  echo "./brancp.sh <source> <destination>"
   echo ""
   echo "Note: 1. source can be a directory or file."
   echo "      2. destination is within the workspace."
@@ -14,7 +14,7 @@ if (( $# != 2 )); then
 fi
 
 # this is the username used to connect to lxplus.
-NAME="tmcdowel"
+NAME="brwillia"
 
 # this is the server incase that changes.
 SERVER="lxplus7.cern.ch"
