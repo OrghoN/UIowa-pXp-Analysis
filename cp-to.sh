@@ -37,10 +37,10 @@ echo "****************************************"
 echo "(in my best mario voice) HERE WE GO!"
 
 if [ -d "$SOURCE" ]; then
-  echo "Copying directory $SOURCE to $DEST"
+  echo "Copying directory $LOCAL to $REMOTE"
   scp -r $PARAMS
 else
-  echo "Copying file $SOURCE to $DEST"
+  echo "Copying file $LOCAL to $REMOTE"
   scp $PARAMS
 fi
 
