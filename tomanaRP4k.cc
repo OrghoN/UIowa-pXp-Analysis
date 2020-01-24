@@ -1917,7 +1917,7 @@ void anaRP(vector<string> const &fileNames, string const &outputFileName = "outp
                 //...cut 2
                 // if(CTpxcut)
                 //{
-                if(pidarray[0] == pidKaon && pidarray[1] == pidKaon && pidarray[2] == pidKaon && pidarray[3] == pidKaon)
+                if(pidarray[0] == 2 && pidarray[1] == 2 && pidarray[2] == 2 && pidarray[3] == 2)
                 {
 
                     if(totcharge == 0)
