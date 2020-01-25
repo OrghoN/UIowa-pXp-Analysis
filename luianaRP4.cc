@@ -378,6 +378,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //
   histosTH1F["hksmassv1"] = new TH1F("hksmassv1","K0s mass 1 vertex",250,0.,5.);
   histosTH1F["hksmassv2"] = new TH1F("hksmassv2","K0sK0s mass 2 vertices",250,0.,5.);
+  histosTH1F["hksmassv3"] = new TH1F("hksmassv3","K0s mass 3 vertices",250,0.,5.);
 
 
   //...Lambdas
@@ -500,10 +501,22 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
   //...2OS-2SS
   histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee"] = new TH1F("hm2rec2OSvee","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee90"] = new TH1F("hm2rec2OSvee90","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee91"] = new TH1F("hm2rec2OSvee91","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee92"] = new TH1F("hm2rec2OSvee92","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx0"] = new TH1F("hm2rec2OSvtx0","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx01"] = new TH1F("hm2rec2OSvtx01","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx02"] = new TH1F("hm2rec2OSvtx02","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx11"] = new TH1F("hm2rec2OSvtx11","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx1"] = new TH1F("hm2rec2OSvtx1","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvtx2"] = new TH1F("hm2rec2OSvtx2","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSveeno"] = new TH1F("hm2rec2OSveeno","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS2"] = new TH1F("hm2rec2OS2","M_{4#pi} OS",2.0*massbins,0,10.);
   // 12 34 13 24  ...for now
   histosTH1F["hm2rec2OS_pipi"] = new TH1F("hm2rec2OS_pipi","M_{#pi#pi} OS",massbins,0,5.);
   //
+  //...primary
   histosTH1F["hm2rec2OS_pi1pi2"] = new TH1F("hm2rec2OS_pi1pi2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi3pi4"] = new TH1F("hm2rec2OS_pi3pi4","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi1pi3"] = new TH1F("hm2rec2OS_pi1pi3","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
@@ -520,22 +533,105 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH2F["hm2dim2OS_pi1pi2_pi3pi4v2"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4v2","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
   histosTH2F["hm2dim2OS_pi1pi3_pi2pi4v2"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4v2","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
   //
+  //...testing vee90
+  histosTH1F["hm2rec2OS_pi1pi2vee90"] = new TH1F("hm2rec2OS_pi1pi2vee90","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee90"] = new TH1F("hm2rec2OS_pi3pi4vee90","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee90"] = new TH1F("hm2rec2OS_pi1pi3vee90","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee90"] = new TH1F("hm2rec2OS_pi2pi4vee90","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2vee91"] = new TH1F("hm2rec2OS_pi1pi2vee91","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee91"] = new TH1F("hm2rec2OS_pi3pi4vee91","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee91"] = new TH1F("hm2rec2OS_pi1pi3vee91","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee91"] = new TH1F("hm2rec2OS_pi2pi4vee91","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2vee92"] = new TH1F("hm2rec2OS_pi1pi2vee92","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee92"] = new TH1F("hm2rec2OS_pi3pi4vee92","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee92"] = new TH1F("hm2rec2OS_pi1pi3vee92","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee92"] = new TH1F("hm2rec2OS_pi2pi4vee92","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2vtx0"] = new TH1F("hm2rec2OS_pi1pi2vtx0","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx0"] = new TH1F("hm2rec2OS_pi3pi4vtx0","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx0"] = new TH1F("hm2rec2OS_pi1pi3vtx0","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx0"] = new TH1F("hm2rec2OS_pi2pi4vtx0","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   //
+  histosTH1F["hm2rec2OS_pi1pi2vtx01"] = new TH1F("hm2rec2OS_pi1pi2vtx01","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx01"] = new TH1F("hm2rec2OS_pi3pi4vtx01","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx01"] = new TH1F("hm2rec2OS_pi1pi3vtx01","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx01"] = new TH1F("hm2rec2OS_pi2pi4vtx01","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   //
+  histosTH1F["hm2rec2OS_pi1pi2vtx02"] = new TH1F("hm2rec2OS_pi1pi2vtx02","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx02"] = new TH1F("hm2rec2OS_pi3pi4vtx02","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx02"] = new TH1F("hm2rec2OS_pi1pi3vtx02","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx02"] = new TH1F("hm2rec2OS_pi2pi4vtx02","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   //
+  histosTH1F["hm2rec2OS_pi1pi2vtx11"] = new TH1F("hm2rec2OS_pi1pi2vtx11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx11"] = new TH1F("hm2rec2OS_pi3pi4vtx11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx11"] = new TH1F("hm2rec2OS_pi1pi3vtx11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx11"] = new TH1F("hm2rec2OS_pi2pi4vtx11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2vtx1"] = new TH1F("hm2rec2OS_pi1pi2vtx1","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx1"] = new TH1F("hm2rec2OS_pi3pi4vtx1","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx1"] = new TH1F("hm2rec2OS_pi1pi3vtx1","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx1"] = new TH1F("hm2rec2OS_pi2pi4vtx1","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2vtx2"] = new TH1F("hm2rec2OS_pi1pi2vtx2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vtx2"] = new TH1F("hm2rec2OS_pi3pi4vtx2","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vtx2"] = new TH1F("hm2rec2OS_pi1pi3vtx2","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vtx2"] = new TH1F("hm2rec2OS_pi2pi4vtx2","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  
+  //...secondary vee11
+  histosTH1F["hm2rec2OS_pi1pi2vee11"] = new TH1F("hm2rec2OS_pi1pi2vee11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee11"] = new TH1F("hm2rec2OS_pi3pi4vee11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee11"] = new TH1F("hm2rec2OS_pi1pi3vee11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee11"] = new TH1F("hm2rec2OS_pi2pi4vee11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...vee02
+  histosTH1F["hm2rec2OS_pi1pi2vee02"] = new TH1F("hm2rec2OS_pi1pi2vee02","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee02"] = new TH1F("hm2rec2OS_pi3pi4vee02","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee02"] = new TH1F("hm2rec2OS_pi1pi3vee02","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee02"] = new TH1F("hm2rec2OS_pi2pi4vee02","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...2dim vee11
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4vee11"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4vee11","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee11"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4vee11","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //...vee02
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4vee02"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4vee02","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee02"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4vee02","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //
+  //...secondary vee11 with no PID
+  histosTH1F["hm2rec2OS_pi1pi2veeno11"] = new TH1F("hm2rec2OS_pi1pi2veeno11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4veeno11"] = new TH1F("hm2rec2OS_pi3pi4veeno11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3veeno11"] = new TH1F("hm2rec2OS_pi1pi3veeno11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4veeno11"] = new TH1F("hm2rec2OS_pi2pi4veeno11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...veeno02
+  histosTH1F["hm2rec2OS_pi1pi2veeno02"] = new TH1F("hm2rec2OS_pi1pi2veeno02","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4veeno02"] = new TH1F("hm2rec2OS_pi3pi4veeno02","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3veeno02"] = new TH1F("hm2rec2OS_pi1pi3veeno02","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4veeno02"] = new TH1F("hm2rec2OS_pi2pi4veeno02","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //...2dim veeno11
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4veeno11"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4veeno11","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4veeno11"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4veeno11","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //...veeno02
+  histosTH2F["hm2dim2OS_pi1pi2_pi3pi4veeno02"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4veeno02","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_pi1pi3_pi2pi4veeno02"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4veeno02","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
+  //
+  //...........
+  //
   //...Kaons
-  histosTH1F["hm2rec2OS_k1k2"] = new TH1F("hm2rec2OS_k1k2","M_{k_{1}k_{2}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k3k4"] = new TH1F("hm2rec2OS_k3k4","M_{k_{3}k_{4}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k1k3"] = new TH1F("hm2rec2OS_k1k3","M_{k_{1}k_{3}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k2k4"] = new TH1F("hm2rec2OS_k2k4","M_{k_{2}k_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k2"] = new TH1F("hm2rec2OS_k1k2","M_{k_{1}k_{2}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k3k4"] = new TH1F("hm2rec2OS_k3k4","M_{k_{3}k_{4}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k3"] = new TH1F("hm2rec2OS_k1k3","M_{k_{1}k_{3}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k2k4"] = new TH1F("hm2rec2OS_k2k4","M_{k_{2}k_{4}} OS",2*massbins,0,5.);
   //...v2
-  histosTH1F["hm2rec2OS_k1k2v2"] = new TH1F("hm2rec2OS_k1k2v2","M_{k_{1}k_{2}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k3k4v2"] = new TH1F("hm2rec2OS_k3k4v2","M_{k_{3}k_{4}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k1k3v2"] = new TH1F("hm2rec2OS_k1k3v2","M_{k_{1}k_{3}} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OS_k2k4v2"] = new TH1F("hm2rec2OS_k2k4v2","M_{k_{2}k_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k2v2"] = new TH1F("hm2rec2OS_k1k2v2","M_{k_{1}k_{2}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k3k4v2"] = new TH1F("hm2rec2OS_k3k4v2","M_{k_{3}k_{4}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k1k3v2"] = new TH1F("hm2rec2OS_k1k3v2","M_{k_{1}k_{3}} OS",2*massbins,0,5.);
+  histosTH1F["hm2rec2OS_k2k4v2"] = new TH1F("hm2rec2OS_k2k4v2","M_{k_{2}k_{4}} OS",2*massbins,0,5.);
   //...2dim
-  histosTH2F["hm2dim2OS_k1k2_k3k4"] = new TH2F("hm2dim2OS_k1k2_k3k4","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",massbins,0,5.,massbins,0,5.);
-  histosTH2F["hm2dim2OS_k1k3_k2k4"] = new TH2F("hm2dim2OS_k1k3_k2k4","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k2_k3k4"] = new TH2F("hm2dim2OS_k1k2_k3k4","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",2*massbins,0,5.,2*massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k3_k2k4"] = new TH2F("hm2dim2OS_k1k3_k2k4","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",2*massbins,0,5.,2*massbins,0,5.);
   //...v2
-  histosTH2F["hm2dim2OS_k1k2_k3k4v2"] = new TH2F("hm2dim2OS_k1k2_k3k4v2","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",massbins,0,5.,massbins,0,5.);
-  histosTH2F["hm2dim2OS_k1k3_k2k4v2"] = new TH2F("hm2dim2OS_k1k3_k2k4v2","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",massbins,0,5.,massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k2_k3k4v2"] = new TH2F("hm2dim2OS_k1k2_k3k4v2","M_{k_{1}k_{2}} vs M_{k_{3}k_{4}} OS",2*massbins,0,5.,2*massbins,0,5.);
+  histosTH2F["hm2dim2OS_k1k3_k2k4v2"] = new TH2F("hm2dim2OS_k1k3_k2k4v2","M_{k_{1}k_{3}} vs M_{k_{2}k_{4}} OS",2*massbins,0,5.,2*massbins,0,5.);
   //...Kaons
   //
   histosTH1F["hm2rec2SS"] = new TH1F("hm2rec2SS","M_{4#pi} SS",massbins,0,5.);
@@ -1675,9 +1771,11 @@ M213M(5,5)= 1.000000000000000e+00   ;
        ///////////////////////////////////////////////////////////////////////////////
 
       //...Luiz
-       double m_pi=0.13957;
-       double m_k =0.493667;
-       //double m_mu = 0.1056583715;
+      //double m_pi=0.13957; new PDG
+       double m_pi=0.13957061;
+       //double m_k =0.493667; new PDG
+       double m_k =0.493677;
+       //double m_mu = 0.1056583715; new PDG
        double m_mu = 0.1056583745;
        double m_e = 0.0005109989461;
 
@@ -1796,6 +1894,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
        TLorentzVector k3k4Rec(0.,0.,0.,0.);
        TLorentzVector k1k3Rec(0.,0.,0.,0.);
        TLorentzVector k2k4Rec(0.,0.,0.,0.);
+
+       //---TLorentzVector kpiRec(0.,0.,0.,0.);
+
        //
        //TLorentzVector pipiRec(0.,0.,0.,0.);
        //...Luiz
@@ -1815,18 +1916,13 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //double d0array[2]={0.,0.};
        //double dzarray[2]={0.,0.};
        //...Luiz
+       
        int charray[4]={0,0,0,0};
        double chi2array[4]={0.,0.,0.,0.};
        double d0array[4]={0.,0.,0.,0.};
        double dzarray[4]={0.,0.,0.,0.};
        int pidarray[4]={0,0,0,0};
-       //
-       int charrayk[4]={0,0,0,0};
-       double chi2arrayk[4]={0.,0.,0.,0.};
-       double d0arrayk[4]={0.,0.,0.,0.};
-       double dzarrayk[4]={0.,0.,0.,0.};
-       int pidarrayk[4]={0,0,0,0};
-	 
+       
        int ntrk0=0;
        int ntrk=0;
        int ntrkvtx=0;    
@@ -1885,9 +1981,11 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(ntrk==2 || ntrk==3) pi3pi4Rec += trk_lorentz;
 	   if(ntrk==0 || ntrk==2) pi1pi3Rec += trk_lorentz;
 	   if(ntrk==1 || ntrk==3) pi2pi4Rec += trk_lorentz;
-	   
+
 	   EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
 
+	   //std::cout << "pid2 = " << pid2 << std::endl;
+	   
 	   if(ntrk==0){
 	     charray[0]=charge;	
 	     chi2array[0]=chi2;
@@ -1916,7 +2014,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     dzarray[3]=dz;
 	     pidarray[3]=pid2;
 	   }
-
+	   
 	   //-----------------------
 	   double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
 	   TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
@@ -1932,37 +2030,6 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(ntrk==2 || ntrk==3) k3k4Rec += trk_lorentzK;
 	   if(ntrk==0 || ntrk==2) k1k3Rec += trk_lorentzK;
 	   if(ntrk==1 || ntrk==3) k2k4Rec += trk_lorentzK;
-	   
-	   //EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
-
-	   if(ntrk==0){
-	     charrayk[0]=charge;	
-	     chi2arrayk[0]=chi2;
-	     d0arrayk[0]=d0;
-	     dzarrayk[0]=dz;
-	     pidarrayk[0]=pid2;
-	   }
-	   if(ntrk==1){
-	     charrayk[1]=charge;	
-	     chi2arrayk[1]=chi2;
-	     d0arrayk[1]=d0;
-	     dzarrayk[1]=dz;
-	     pidarrayk[1]=pid2;	     
-	   }
-	   if(ntrk==2){
-	     charrayk[2]=charge;	
-	     chi2arrayk[2]=chi2;
-	     d0arrayk[2]=d0;
-	     dzarrayk[2]=dz;
-	     pidarrayk[2]=pid2;
-	   }
-	   if(ntrk==3){
-	     charrayk[3]=charge;	
-	     chi2arrayk[3]=chi2;
-	     d0arrayk[3]=d0;
-	     dzarrayk[3]=dz;
-	     pidarrayk[3]=pid2;
-	   }
 	   
 	   ntrk++;
 
@@ -1986,7 +2053,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 }
        }
 
-
+       //std::cout << "***track***   " << std::endl;
+       //std::cout << "pidarray[0] = " << pidarray[0] << std::endl;
+       //std::cout << "pidarray[1] = " << pidarray[1] << std::endl;
+       //std::cout << "pidarray[2] = " << pidarray[2] << std::endl;
+       //std::cout << "pidarray[3] = " << pidarray[3] << std::endl;
+	   
        
        histosTH1F["hntrk0"]->Fill(ntrk0);
        histosTH1F["hntrk"]->Fill(ntrk);
@@ -1999,7 +2071,6 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 histosTH1F["hnclusters2"]->Fill(nclusters2);
        }
 
-       
        int nvtx=0;
        //       for(VertexCollection::const_iterator itVtx = vertices->begin();itVtx != vertices->end();++itVtx) {
        for(vector<MyVertex>::iterator itVtx = vertex_coll->begin() ; itVtx != vertex_coll->end() ; ++itVtx){
@@ -2037,13 +2108,15 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
        //       ntrkvtx = vertex_coll->begin()->ntracks;
 
-        //............     
-        //...Kshort collection...Luiz
+       //............     
+       //...Kshort collection...Luiz
+       //..isVee
+       bool isKshort = false;
        int nks=0;
        for(vector<MyKshorts>::iterator it_ks = kshort_coll->begin() ; it_ks != kshort_coll->end() ; ++it_ks){
 	 
 	 nks++;
-	 bool isKshort = nks;
+	 isKshort = nks;
 	 double ksvertexx = it_ks->vertexx;
 	 double ksvertexy = it_ks->vertexy;
 	 double ksvertexz = it_ks->vertexz;
@@ -2062,6 +2135,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 //
 	 if(nks == 1)histosTH1F["hksmassv1"]->Fill(ksmass,wei);
 	 if(nks == 2)histosTH1F["hksmassv2"]->Fill(ksmass,wei);
+	 if(nks == 3)histosTH1F["hksmassv3"]->Fill(ksmass,wei);
 	 //
 	 histosTH1F["hksvertexx"]->Fill(ksvertexx,wei);
 	 histosTH1F["hksvertexy"]->Fill(ksvertexy,wei);
@@ -2071,18 +2145,17 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 histosTH2F["h2dimksxy"]->Fill(ksvertexx,ksvertexy);
 	 histosTH2F["h2dimksxz"]->Fill(ksvertexx,ksvertexz);
 	 histosTH2F["h2dimksyz"]->Fill(ksvertexy,ksvertexz);
-	 std::cout << " nks = " << nks << std::endl;
-	 std::cout << " ksvertexx = " << ksvertexx << std::endl;
-	 std::cout << " ksvertexy = " << ksvertexy << std::endl;
-	 std::cout << " ksvertexz = " << ksvertexz << std::endl;
-	 std::cout << " ksmass = " << ksmass << std::endl;
-	 it_ks->Print();
+	 //std::cout << " nks = " << nks << std::endl;
+	 //std::cout << " ksvertexx = " << ksvertexx << std::endl;
+	 //std::cout << " ksvertexy = " << ksvertexy << std::endl;
+	 //std::cout << " ksvertexz = " << ksvertexz << std::endl;
+	 //std::cout << " ksmass = " << ksmass << std::endl;
+	 //it_ks->Print();
        }
-       //...Kshort
+       //...end Kshort
        histosTH1F["hnks"]->Fill(nks);
-       //
-      //................
- 
+       //................
+       
       /*
        //...Kshort...secondaryVertex
        //int  isfake = kshorts_coll->begin()->fake;  
@@ -2117,11 +2190,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
       /////histosTH1F["sec_vtx_sumpt"]->Fill(secondaryVertex.SumPtTracks);
 
        //...Lambda collection...Luiz
+       bool isLambda = false;
        int nlam=0;
        for(vector<MyLambdas>::iterator it_lam = lambda_coll->begin() ; it_lam != lambda_coll->end() ; ++it_lam){
 	 
 	 nlam++;
-	 bool isLambda = nlam;
+	 isLambda = nlam;
 	 double lamvertexx = it_lam->vertexx;
 	 double lamvertexy = it_lam->vertexy;
 	 double lamvertexz = it_lam->vertexz;
@@ -2147,11 +2221,10 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 //std::cout << " ksmass = " << ksmass << std::endl;
 	 //it_ks->Print();
        }
-       //...Lambda
+       //...end Lambda
        histosTH1F["hnlam"]->Fill(nlam);
 
 
-       
        //for vertex plots
        //...Luiz  ntrk==4
        //fiducialRegion   = (ntrk==2 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut);  
@@ -2169,20 +2242,269 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 histosTH1F["hvtx2"]->Fill( isfake );
 	 if(fiducialRegion && totcharge==0) histosTH1F["hvtx3"]->Fill( isfake );
        }    
+
+       //...very important...needed for theVees
+       //......not this---> if(nvtx!=0 || nvtx!=1) continue;
+       if(nvtx!=0){
+	 if(nvtx!=1){
+	   if(nvtx!=2) continue;
+	 }
+       }
+       //----------------------------
+       //invariant mass
+       //...Luiz
+       double mrec=pipipipiRec.M();      
+       double mrecKKKK=kkkkRec.M();      
+       //double mrecMM=mmRec.M();      
+       //double mrecEE=eeRec.M();      
+       //...Luiz
+       //double mrecpp=ppRec.M();
+
+       // M(1,2) M(3,4) M(1,3) M(2,4) 
+       double mrecpi1pi2=pi1pi2Rec.M();
+       double mrecpi3pi4=pi3pi4Rec.M();
+       double mrecpi1pi3=pi1pi3Rec.M();
+       double mrecpi2pi4=pi2pi4Rec.M();
+
+       // M(1,2) M(3,4) M(1,3) M(2,4) 
+       double mreck1k2=k1k2Rec.M();
+       double mreck3k4=k3k4Rec.M();
+       double mreck1k3=k1k3Rec.M();
+       double mreck2k4=k2k4Rec.M();
+              
+       //----------------------------
+       // xi cut
+       // Mmax=13000*xi_max
+       // 0.1 -> 1300 GeV
+       // 0.01 -> 130 GeV
+       // 0.001 -> 13 GeV
+
+	//...Luiz...rapidity = 1/2 ln ( xi_proton_2/xi_proton_1 )
+        double rapy = 0.5*TMath::Log(xiR/xiL);
+	//
+       //----------------------------
+
+	//...cut 9...........theVees
+
+	   if(ntrk==4){
+	   if(totcharge==0){
+	     if(isKshort){
+
+	       histosTH1F["hm2rec2OSvee90"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vee90"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee90"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee90"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee90"]->Fill(mrecpi2pi4);
+		   }
+	       	       
+	     if(nks==1){
+	       histosTH1F["hm2rec2OSvee91"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vee91"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee91"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee91"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee91"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nks=1
+
+	     if(nks==2){
+	       histosTH1F["hm2rec2OSvee92"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vee92"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee92"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee92"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee92"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nks=2
+
+	     if(nvtx==0){
+	       histosTH1F["hm2rec2OSvtx0"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx0"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx0"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx0"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx0"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=0
+
+	     if(nvtx==0 && nks==1){
+	       histosTH1F["hm2rec2OSvtx01"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx01"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx01"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx01"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx01"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=0 and nks=1
+
+	     if(nvtx==0 && nks==2){
+	       histosTH1F["hm2rec2OSvtx02"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx02"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx02"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx02"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx02"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=0 and nks=2
+	     
+	     if(nvtx==1 && nks==1){
+	       histosTH1F["hm2rec2OSvtx11"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx11"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx11"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx11"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx11"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=1 and nks=1
+
+	     if(nvtx==1){
+	       histosTH1F["hm2rec2OSvtx1"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx1"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx1"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx1"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx1"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=1
+
+	     if(nvtx==2){
+	       histosTH1F["hm2rec2OSvtx2"]->Fill(mrec);      
+		 if(charray[0]+charray[2] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vtx2"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vtx2"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vtx2"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vtx2"]->Fill(mrecpi2pi4);
+		   }
+	       } //end of nvtx=2
+
+	      } //...end of isKshort
+	     } //...end of totalcharge=0
+            } //end of ntrk=4
+	//...end of cut 9
+
+	   
+	//...fiducial Vees
+        if(fiducialRegion && fiducialRegionPt){
+
+	  //...cut 8..................theVees
+	  //00...using PID Pions
+	 if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
+	 	    pidarray[2]==pidPion && pidarray[3]==pidPion)
+	   {
+	   
+	   if(totcharge==0){
+
+	     if(isKshort){
+	       
+	     //...Luiz
+	     histosTH1F["hm2rec2OSvee"]->Fill(mrec);      
+
+	     if(nvtx==1 && nks==1){
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4vee11"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee11"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		   }
+	       } //end of nks=1
+
+             if(nvtx==0 && nks==2){
+		 if(charray[0]+charray[1] == 0)
+	         {
+	       histosTH1F["hm2rec2OS_pi1pi2vee02"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee02"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4vee02"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	         }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee02"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee02"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee02"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		 }
+	       } //end of nks=2
+	       
+	     } //...end of isKshort
+	   } //...end of totalcharge=0	    
+	   } //00...end of PID Pions
+
+	   //01...no PID Pions
+     	   if(totcharge==0){
+
+	     if(isKshort){
+	       
+	     //...Luiz
+	     histosTH1F["hm2rec2OSveeno"]->Fill(mrec);      
+
+	     if(nvtx==1 && nks==1){
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4veeno11"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4veeno11"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		   }
+	       } //end of nks=1
+
+             if(nvtx==0 && nks==2){
+		 if(charray[0]+charray[1] == 0)
+	         {
+	       histosTH1F["hm2rec2OS_pi1pi2veeno02"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4veeno02"]->Fill(mrecpi3pi4);
+	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4veeno02"]->Fill(mrecpi1pi2,mrecpi3pi4);
+	         }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3veeno02"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4veeno02"]->Fill(mrecpi2pi4);
+	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4veeno02"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		 }
+	       } //end of nks=2
+
+	     } //...end of isKshort
+	   } //01...end of totalcharge=0
+        } //...end of fiducial Vees
+	   
+	   //-----------end of cut 8
+
        
-       
-       //...Luiz ?????? cut nvtx=1 or 2
+       //...Luiz ...nvtx=1 or 2
        //////if(nvtx!=1) continue;
        //
        // if(nvtx!=2) continue;
 
        //if(nvtx!=0) continue;
-       ////if(nvtx!=1) continue;
-       if(nvtx!=1) {
-          if(nvtx!=2) continue;
-       	 }
-       //if(nvtx!=2) continue;
+       //////if(nvtx!=1) continue;
 
+       ////...for now, no nvtx cut
+       ////if(nvtx!=1) {
+       ////if(nvtx!=2) continue;
+       ////}
+       //if(nvtx!=2) continue;
+       //
+       if(nvtx!=1) continue;
+       
        //...vertex
        histosTH1F["hvtxx"]->Fill(xvtx);
        histosTH1F["hvtxy"]->Fill(yvtx);
@@ -2204,12 +2526,13 @@ M213M(5,5)= 1.000000000000000e+00   ;
        histosTH2F["hvtx2dimyz4"]->Fill(yvtx,zvtx);
        //...3D
        ////histosTH3F["hvtx3dimxyz4"]->Fill(xvtx,yvtx,zvtx);
-      }
+       }
        
        histosTH1F["hvtxchi2"]->Fill(chi2vtx);
        //////histosTH1F["hvtxndof"]->Fill(ndofvtx);
        histosTH2F["hntrkntrkvtx"]->Fill(ntrkvtx,ntrk);
 
+       /*
        
        //----------------------------
        //invariant mass
@@ -2244,6 +2567,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 double rapy = 0.5*TMath::Log(xiR/xiL);
 	 //
        
+	 */
+
        if(fiducialRegion && fiducialRegionPt){
 	 histosTH1F["hxiL"]->Fill(xiL);
 	 histosTH1F["hxiR"]->Fill(xiR);
@@ -2442,13 +2767,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 //...using PID Pions
 	 if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
 	 	    pidarray[2]==pidPion && pidarray[3]==pidPion)
-	       {
+	   {
 	   
 	   if(totcharge==0){
-
+	       
 	     //...Luiz
 	     histosTH1F["hm2rec2OS"]->Fill(mrec);      
-	     histosTH1F["hm2rec2OS2"]->Fill(mrec);
 
 	     // dphi(pp) vs mrec(4pi)
 	     histosTH2F["dphi_proton_mrec"]->Fill( dphi_proton, mrec );
@@ -2460,36 +2784,36 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     //  {
 
 	       //...nvtx=1
-               if(nvtx==1){
+	     if(nvtx==1){
+
+	         histosTH1F["hm2rec2OS2"]->Fill(mrec);
+	       
 		 if(charray[0]+charray[1] == 0)
 	            {
 	       histosTH1F["hm2rec2OS_pi1pi2"]->Fill(mrecpi1pi2);
 	       histosTH1F["hm2rec2OS_pi3pi4"]->Fill(mrecpi3pi4);
 	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4"]->Fill(mrecpi1pi2,mrecpi3pi4);
-	        }else{
-		 if(charray[0]+charray[2] == 0){
+	            }else if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_pi1pi3"]->Fill(mrecpi1pi3);
 	       histosTH1F["hm2rec2OS_pi2pi4"]->Fill(mrecpi2pi4);
 	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4"]->Fill(mrecpi1pi3,mrecpi2pi4);
 		   }
-		 }
-	       } //nvtx=1
+	       } //end of nvtx=1
 
 	       //...nvtx=2
-               if(nvtx==2){
+             if(nvtx==2){
+	       
 		 if(charray[0]+charray[1] == 0)
-	            {
+	         {
 	       histosTH1F["hm2rec2OS_pi1pi2v2"]->Fill(mrecpi1pi2);
 	       histosTH1F["hm2rec2OS_pi3pi4v2"]->Fill(mrecpi3pi4);
 	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4v2"]->Fill(mrecpi1pi2,mrecpi3pi4);
-	        }else{
-		 if(charray[0]+charray[2] == 0){
+	         }else if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_pi1pi3v2"]->Fill(mrecpi1pi3);
 	       histosTH1F["hm2rec2OS_pi2pi4v2"]->Fill(mrecpi2pi4);
 	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4v2"]->Fill(mrecpi1pi3,mrecpi2pi4);
-		   }
 		 }
-	       } //nvtx=2
+	       } //end of nvtx=2
 	       
 	       //}//endPID
 	       
@@ -2534,12 +2858,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       histosTH1F["hm2rec2OS_ttbb_pi2pi4"]->Fill(mrecpi2pi4);
 	        }
 	       }
-	     }//ttbb
+	     }//end of ttbb/diag
 	   }else{
 	     histosTH1F["hm2rec2SS"]->Fill(mrec);      
 	     if(diag) histosTH1F["hm2rec2SS_diag"]->Fill(mrec);
-	     else     histosTH1F["hm2rec2SS_ttbb"]->Fill(mrec);      
-	   }//...end of totalcharge=0	    
+	     else     histosTH1F["hm2rec2SS_ttbb"]->Fill(mrec);	   
+	   } //...end of totalcharge=0	    
 	   
 	   //....???????
 	   if(totcharge==0 && diag){
@@ -2567,9 +2891,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     if(TMath::Abs(pipipipiRec.Py()) > TMath::Abs(pipipipiRec.Px())) histosTH1F["hm2rec2OS_ttbb_pypxP"]->Fill(mrec);
 	     else  histosTH1F["hm2rec2OS_ttbb_pypxM"]->Fill(mrec);
 	   }
-	   
+
 	   //--------------------------
-	   
 	   //...Luiz
 	   if(totcharge==0 && diag){
 	     histosTH1F["hm2recPPPP"]->Fill(mrec);      
@@ -2589,16 +2912,19 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     else     histosTH1F["hdphi_ttbb"]->Fill(TOTEMdphi);
 	   }
 
-	  }//...end PID Pions
+       }//00...end of PID Pions
 	 //...Luiz
 	 //}//ntrkvtx==2,4
-	 //}...Robert's suggestion
+	 //}...end of Robert's suggestion
 
 	 
 	  //...using PID Kaons
-	  //////if(pidarrayk[0]==pidKaon && pidarrayk[1]==pidKaon &&
-	 //////    pidarrayk[2]==pidKaon && pidarrayk[3]==pidKaon)
-	 //////{
+	  if(pidarray[0]==pidKaon && pidarray[1]==pidKaon &&
+	     pidarray[2]==pidKaon && pidarray[3]==pidKaon)
+	 // {
+         ////if(pidarray[0]==2 && pidarray[1]==2 &&
+	 ////    pidarray[2]==2 && pidarray[3]==2)
+	  {
 		 
 	   if(totcharge==0){
 
@@ -2618,55 +2944,51 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
 	       //...nvtx=1
                if(nvtx==1){
-		 if(charrayk[0]+charrayk[1] == 0)
+		 if(charray[0]+charray[1] == 0)
 	            {
 	       histosTH1F["hm2rec2OS_k1k2"]->Fill(mreck1k2);
 	       histosTH1F["hm2rec2OS_k3k4"]->Fill(mreck3k4);
 	       histosTH2F["hm2dim2OS_k1k2_k3k4"]->Fill(mreck1k2,mreck3k4);
-	        }else{
-		 if(charrayk[0]+charrayk[2] == 0){
+	        }else if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_k1k3"]->Fill(mreck1k3);
 	       histosTH1F["hm2rec2OS_k2k4"]->Fill(mreck2k4);
 	       histosTH2F["hm2dim2OS_k1k3_k2k4"]->Fill(mreck1k3,mreck2k4);
-		   }
 		 }
-	       } //nvtx=1
+	       } //end of nvtx=1
 
 	       //...nvtx=2
                if(nvtx==2){
-		 if(charrayk[0]+charrayk[1] == 0)
+		 if(charray[0]+charray[1] == 0)
 	            {
 	       histosTH1F["hm2rec2OS_k1k2v2"]->Fill(mreck1k2);
 	       histosTH1F["hm2rec2OS_k3k4v2"]->Fill(mreck3k4);
 	       histosTH2F["hm2dim2OS_k1k2_k3k4v2"]->Fill(mreck1k2,mreck3k4);
-	        }else{
-		 if(charrayk[0]+charrayk[2] == 0){
+	        }else if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_k1k3v2"]->Fill(mreck1k3);
 	       histosTH1F["hm2rec2OS_k2k4v2"]->Fill(mreck2k4);
 	       histosTH2F["hm2dim2OS_k1k3_k2k4v2"]->Fill(mreck1k3,mreck2k4);
-		   }
 		 }
-	       } //nvtx=2
+	       } //end of nvtx=2
 	       
 	     //...Luiz
 	     if(diag) {
 	       // 12 34 13 24...using PID
-	       if(charrayk[0]+charrayk[1] == 0){
+	       if(charray[0]+charray[1] == 0){
 	       histosTH1F["hm2rec2OS_diag_k1k2"]->Fill(mreck1k2);
 	       histosTH1F["hm2rec2OS_diag_k3k4"]->Fill(mreck3k4);
 	       }else{
-	       if(charrayk[0]+charrayk[2] == 0){
+	       if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_diag_k1k3"]->Fill(mreck1k3);
 	       histosTH1F["hm2rec2OS_diag_k2k4"]->Fill(mreck2k4);
 	        }
 	       }
 	     }else{
 	       // 12 34 13 24...using PID
-	       if(charrayk[0]+charrayk[1] == 0){
+	       if(charray[0]+charray[1] == 0){
 	       histosTH1F["hm2rec2OS_ttbb_k1k2"]->Fill(mreck1k2);
 	       histosTH1F["hm2rec2OS_ttbb_k3k4"]->Fill(mreck3k4);
 	       }else{
-	       if(charrayk[0]+charrayk[2] == 0){
+	       if(charray[0]+charray[2] == 0){
 	       histosTH1F["hm2rec2OS_ttbb_k1k3"]->Fill(mreck1k3);
 	       histosTH1F["hm2rec2OS_ttbb_k2k4"]->Fill(mreck2k4);
 	        }
@@ -2679,8 +3001,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(totcharge==0 && diag){
 	     histosTH1F["hm2recKKKK"]->Fill(mrecKKKK);       
 	   }
-	   //////}//...end PID Kaons
-
+	 }//...end PID Kaons
+	  //-----------end of cut 2
 	  
 	 //...cut 3
 	 //.... OS:totcharge==0 SS:totcharge!=0
@@ -2859,7 +3181,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(run==259388 && LS>=369 && LS<=747) histosTH1F["hm2rec9978"]->Fill(mrec);
 	 }
 	 
-       }  
+       } //...end of fiducial cut=1
+
 
        //-----------------------------    
        // track variables
@@ -2932,9 +3255,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   histosTH1F["hnclustersOSdiag"]->Fill(nclustersOSdiag);
 	   histosTH1F["hnclusters2OSdiag"]->Fill(nclusters2OSdiag);
 	   
-	 }
-       }
-    
+	 }//...end of totalcharge=0 and diag
+      }//...end of track variables
+      
     } // End of loop over events in a file
      
     // Close current file
