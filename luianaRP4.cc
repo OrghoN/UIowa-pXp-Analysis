@@ -361,6 +361,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
   //...Kshorts
   histosTH1F["hnks"] = new TH1F("hnks","N Kshorts",10,0,10);
+  histosTH2F["hntrknks"] = new TH2F("hntrknks","# of Vees vs # of Tracks",150,0,150,10,0,10);
+  histosTH2F["hnvtxnks"] = new TH2F("hnvtxnks","# of Vees vs # of Vertices",150,0,150,10,0,10);
+  histosTH2F["hntrknvtx"] = new TH2F("hntrknvtx","# of Vertices vs # of Tracks",150,0,150,150,0,150);
   histosTH1F["hksvertexx"] = new TH1F("hksvertexx","K0s X vertex",120,-30.,30.);
   histosTH1F["hksvertexy"] = new TH1F("hksvertexy","K0s Y vertex",120,-30.,30.);
   histosTH1F["hksvertexz"] = new TH1F("hksvertexz","K0s Z vertex",120,-30.,30.);
@@ -502,6 +505,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //...2OS-2SS
   histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee"] = new TH1F("hm2rec2OSvee","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee9"] = new TH1F("hm2rec2OSvee9","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee90"] = new TH1F("hm2rec2OSvee90","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee91"] = new TH1F("hm2rec2OSvee91","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee92"] = new TH1F("hm2rec2OSvee92","M_{4#pi} OS",massbins,0,5.);
@@ -533,7 +537,12 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH2F["hm2dim2OS_pi1pi2_pi3pi4v2"] = new TH2F("hm2dim2OS_pi1pi2_pi3pi4v2","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
   histosTH2F["hm2dim2OS_pi1pi3_pi2pi4v2"] = new TH2F("hm2dim2OS_pi1pi3_pi2pi4v2","M_{#pi_{1}#pi_{3}} vs M_{#pi_{2}#pi_{4}} OS",massbins,0,5.,massbins,0,5.);
   //
-  //...testing vee90
+  //...testing vee9  ........cut 9
+  histosTH1F["hm2rec2OS_pi1pi2vee9"] = new TH1F("hm2rec2OS_pi1pi2vee9","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4vee9"] = new TH1F("hm2rec2OS_pi3pi4vee9","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3vee9"] = new TH1F("hm2rec2OS_pi1pi3vee9","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4vee9"] = new TH1F("hm2rec2OS_pi2pi4vee9","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
   histosTH1F["hm2rec2OS_pi1pi2vee90"] = new TH1F("hm2rec2OS_pi1pi2vee90","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi3pi4vee90"] = new TH1F("hm2rec2OS_pi3pi4vee90","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi1pi3vee90"] = new TH1F("hm2rec2OS_pi1pi3vee90","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
@@ -2154,6 +2163,15 @@ M213M(5,5)= 1.000000000000000e+00   ;
        }
        //...end Kshort
        histosTH1F["hnks"]->Fill(nks);
+       histosTH2F["hntrknks"]->Fill(ntrk,nks);
+       histosTH2F["hnvtxnks"]->Fill(nvtx,nks);
+       histosTH2F["hntrknvtx"]->Fill(ntrk,nvtx);
+       std::cout << " --------------------------- " << std::endl;
+       std::cout << " nks  = " << nks << std::endl;
+       std::cout << " ntrk = " << ntrk << std::endl;
+       std::cout << " nvtx = " << nvtx << std::endl;
+       std::cout << " isKshort = " << isKshort << std::endl;
+       std::cout << " --------------------------- " << std::endl;
        //................
        
       /*
@@ -2290,6 +2308,17 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(totcharge==0){
 	     if(isKshort){
 
+	       histosTH1F["hm2rec2OSvee9"]->Fill(mrec);      
+		 if(charray[0]+charray[1] == 0)
+	            {
+	       histosTH1F["hm2rec2OS_pi1pi2vee9"]->Fill(mrecpi1pi2);
+	       histosTH1F["hm2rec2OS_pi3pi4vee9"]->Fill(mrecpi3pi4);
+	            }else if(charray[0]+charray[2] == 0){
+	       histosTH1F["hm2rec2OS_pi1pi3vee9"]->Fill(mrecpi1pi3);
+	       histosTH1F["hm2rec2OS_pi2pi4vee9"]->Fill(mrecpi2pi4);
+		   }
+	       
+	       if(nvtx==0){
 	       histosTH1F["hm2rec2OSvee90"]->Fill(mrec);      
 		 if(charray[0]+charray[1] == 0)
 	            {
@@ -2299,8 +2328,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       histosTH1F["hm2rec2OS_pi1pi3vee90"]->Fill(mrecpi1pi3);
 	       histosTH1F["hm2rec2OS_pi2pi4vee90"]->Fill(mrecpi2pi4);
 		   }
+	       } //end of nvtx=0
 	       	       
-	     if(nks==1){
+	     if(nvtx==1 && nks==1){
 	       histosTH1F["hm2rec2OSvee91"]->Fill(mrec);      
 		 if(charray[0]+charray[1] == 0)
 	            {
@@ -2312,7 +2342,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 		   }
 	       } //end of nks=1
 
-	     if(nks==2){
+	     if(nvtx==0 && nks==2){
 	       histosTH1F["hm2rec2OSvee92"]->Fill(mrec);      
 		 if(charray[0]+charray[1] == 0)
 	            {
