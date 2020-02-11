@@ -9,7 +9,7 @@ JOB_CSV="all-trks.csv"
 
 if (( $# != 1 )); then
     echo "****************************************"
-    echo "Run one of the jobs for all-trks."
+    echo "Run one of the jobs from all-trks."
     echo "The job_ids are numbered 1-14."
     echo ""
     echo "Usage:"
@@ -28,7 +28,7 @@ do
         # Used purely for the output seen at the end of this file.
         found_job=1
 
-        echo "sh ./submit-condorRP.csh $APPNAME $jobname $inputfile"
+        csh "./submit-condorRP.csh" $APPNAME $jobname $inputfile
         exit 0
     else
         echo "$id,$jobname,$inputfile"

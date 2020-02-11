@@ -45,9 +45,9 @@ do
             else
                 # Move into the directory, hadd the outputs, then move it 
                 # one directory above.
-                echo "cd $JOB_DIR"
-                echo "hadd $OUTPUT_FILE output_${jobname}_*.root"
-                echo "mv $OUTPUT_FILE .."
+                cd $JOB_DIR
+                hadd $OUTPUT_FILE "output_${jobname}_*.root"
+                mv $OUTPUT_FILE ".."
                 echo "$OUTPUT_FILE successfully created."
                 exit 0
             fi
