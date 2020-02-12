@@ -33,28 +33,30 @@ do
         # This is the directory created when running the job_id.
         JOB_DIR="$JOB_DIR_PREFIX$jobname"
         
-        # If directory exists
-        if [ -d $JOB_DIR ]; then
-
-            # This is the output file created by this script.
-            OUTPUT_FILE="output_$jobname.root"
-
-            if [ -f "$OUTPUT_FILE" ]; then
-                echo "$OUTPUT_FILE exists already!"
-                echo "Make sure the job isn't already done."
-            else
-                # Move into the directory, hadd the outputs, then move it 
-                # one directory above.
-                cd $JOB_DIR
-                hadd $OUTPUT_FILE "output_${jobname}_*.root"
-                mv $OUTPUT_FILE ".."
-                echo "$OUTPUT_FILE successfully created."
-                exit 0
-            fi
-        else
+        # If the directory doesn't exist, then the job needs to be ran.
+        if [ ! -d $JOB_DIR ]; then
             echo "Directory '$JOB_DIR' doesn't exist! Make sure to run the job first."
+            exit 1        
+        fi
+
+        # This is the output file created by this script.
+        OUTPUT_FILE="output_$jobname.root"
+
+        # Ensure the output file doesn't already exist as well.
+        if [ -f "$OUTPUT_FILE" ]; then
+            echo "$OUTPUT_FILE exists already!"
+            echo "Have you already ran this job?"
             exit 1
         fi
+
+        # Move into the directory, hadd the outputs, then move it one 
+        # directory above.
+        cd $JOB_DIR
+        hadd $OUTPUT_FILE "output_${jobname}_*.root"
+        mv $OUTPUT_FILE ".."
+
+        echo "$OUTPUT_FILE successfully created."
+        exit 0
     fi
 done < $JOB_CSV
 
