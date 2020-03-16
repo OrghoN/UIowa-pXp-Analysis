@@ -505,9 +505,27 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //...2OS-2SS
   histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee"] = new TH1F("hm2rec2OSvee","M_{4#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OSvee11"] = new TH1F("hm2rec2OSvee11","M_{4#pi} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OSvee11"] = new TH1F("hm2rec2OSvee11","M_{K#pi} OS",massbins,0,5.);
+
+
+  histosTH1F["hm2rec2OSvee11a"] = new TH1F("hm2rec2OSvee11a","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11b"] = new TH1F("hm2rec2OSvee11b","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11c"] = new TH1F("hm2rec2OSvee11c","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11d"] = new TH1F("hm2rec2OSvee11d","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11e"] = new TH1F("hm2rec2OSvee11e","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11f"] = new TH1F("hm2rec2OSvee11f","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11g"] = new TH1F("hm2rec2OSvee11g","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11h"] = new TH1F("hm2rec2OSvee11h","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11i"] = new TH1F("hm2rec2OSvee11i","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11j"] = new TH1F("hm2rec2OSvee11j","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11k"] = new TH1F("hm2rec2OSvee11k","M_{K#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee11m"] = new TH1F("hm2rec2OSvee11m","M_{K#pi} OS",massbins,0,5.);
+
+  
   histosTH1F["hm2rec2OSvee02"] = new TH1F("hm2rec2OSvee02","M_{4#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OSvee01"] = new TH1F("hm2rec2OSvee01","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee01"] = new TH1F("hm2rec2OSvee01","M_{2#pi} OS",massbins,0,5.);
+  //
   histosTH1F["hm2rec2OSvee9"] = new TH1F("hm2rec2OSvee9","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee90"] = new TH1F("hm2rec2OSvee90","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSvee91"] = new TH1F("hm2rec2OSvee91","M_{4#pi} OS",massbins,0,5.);
@@ -522,6 +540,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hm2rec2OSveeno11"] = new TH1F("hm2rec2OSveeno11","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSveeno02"] = new TH1F("hm2rec2OSveeno02","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2rec2OSveeno01"] = new TH1F("hm2rec2OSveeno01","M_{4#pi} OS",massbins,0,5.);
+  //
   histosTH1F["hm2rec2OS2"] = new TH1F("hm2rec2OS2","M_{4#pi} OS",2.0*massbins,0,10.);
   // 12 34 13 24  ...for now
   histosTH1F["hm2rec2OS_pipi"] = new TH1F("hm2rec2OS_pipi","M_{#pi#pi} OS",massbins,0,5.);
@@ -596,10 +615,75 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //
   
   //...secondary vee11
+  /*
   histosTH1F["hm2rec2OS_pi1pi2vee11"] = new TH1F("hm2rec2OS_pi1pi2vee11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi3pi4vee11"] = new TH1F("hm2rec2OS_pi3pi4vee11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi1pi3vee11"] = new TH1F("hm2rec2OS_pi1pi3vee11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi2pi4vee11"] = new TH1F("hm2rec2OS_pi2pi4vee11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  */
+  
+   /* 
+     ...first combining, then select the Q_pairs=0
+
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+ 
+   */
+
+   //...A
+   histosTH1F["hm2rec2OS_pi1pi2vee11"] = new TH1F("hm2rec2OS_pi1pi2vee11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_pi3k4vee11"] = new TH1F("hm2rec2OS_pi3k4vee11","M_{#pi_{3}K_{4}} OS",massbins,0,5.);
+   //  
+   histosTH1F["hm2rec2OS_pi1pi3vee11"] = new TH1F("hm2rec2OS_pi1pi3vee11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_pi2k4vee11"] = new TH1F("hm2rec2OS_pi2k4vee11","M_{#pi_{2}K_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_pi2pi3vee11"] = new TH1F("hm2rec2OS_pi2pi3vee11","M_{#pi_{2}#pi_{3}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_pi1k4vee11"] = new TH1F("hm2rec2OS_pi1k4vee11","M_{#pi_{1}K_{4}} OS",massbins,0,5.);
+
+   //...B  
+   //histosTH1F["hm2rec2OS_pi1pi2vee11"] = new TH1F("hm2rec2OS_pi1pi2vee11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_k3pi4vee11"] = new TH1F("hm2rec2OS_k3pi4vee11","M_{K_{3}#pi_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_pi1pi4vee11"] = new TH1F("hm2rec2OS_pi1pi4vee11","M_{#pi_{1}#pi_{4}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_k3pi2vee11"] = new TH1F("hm2rec2OS_k3pi2vee11","M_{K_{3}#pi_{2}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_pi2pi4vee11"] = new TH1F("hm2rec2OS_pi2pi4vee11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_k3pi1vee11"] = new TH1F("hm2rec2OS_k3pi1vee11","M_{K_{3}#pi_{1}} OS",massbins,0,5.);
+
+   //...C
+   histosTH1F["hm2rec2OS_pi1k2vee11"] = new TH1F("hm2rec2OS_pi1k2vee11","M_{#pi_{1}K_{2}} OS",massbins,0,5.);
+   histosTH1F["hm2rec2OS_pi3pi4vee11"] = new TH1F("hm2rec2OS_pi3pi4vee11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_pi3k2vee11"] = new TH1F("hm2rec2OS_pi3k2vee11","M_{#pi_{3}K_{2}} OS",massbins,0,5.);
+   //histosTH1F["hm2rec2OS_pi1pi4vee11"] = new TH1F("hm2rec2OS_pi1pi4vee11","M_{#pi_{1}#pi_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_pi4k2vee11"] = new TH1F("hm2rec2OS_pi4k2vee11","M_{#pi_{4}K_{2}} OS",massbins,0,5.);
+   //histosTH1F["hm2rec2OS_pi1pi3vee11"] = new TH1F("hm2rec2OS_pi1pi3vee11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+
+   //...D
+   histosTH1F["hm2rec2OS_k1pi2vee11"] = new TH1F("hm2rec2OS_k1pi2vee11","M_{K_{1}#pi_{2}} OS",massbins,0,5.);
+   //histosTH1F["hm2rec2OS_pi3pi4vee11"] = new TH1F("hm2rec2OS_pi3pi4vee11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_k1pi3vee11"] = new TH1F("hm2rec2OS_k1pi3vee11","M_{K_{1}#pi_{3}} OS",massbins,0,5.);
+   //histosTH1F["hm2rec2OS_pi2pi4vee11"] = new TH1F("hm2rec2OS_pi2pi4vee11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm2rec2OS_k1pi4vee11"] = new TH1F("hm2rec2OS_k1pi4vee11","M_{K_{1}#pi_{4}} OS",massbins,0,5.);
+   //histosTH1F["hm2rec2OS_pi2pi3vee11"] = new TH1F("hm2rec2OS_pi2pi3vee11","M_{#pi_{2}#pi_{3}} OS",massbins,0,5.);
+
+
   //...vee02
   histosTH1F["hm2rec2OS_pi1pi2vee02"] = new TH1F("hm2rec2OS_pi1pi2vee02","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi3pi4vee02"] = new TH1F("hm2rec2OS_pi3pi4vee02","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
@@ -961,7 +1045,13 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //  histosTH2F["hdedx"] = new TH2F("hdedx","dE/dx vs p", 300, 0.,5.,500, 0.,100.);
   //histosTH2F["hdedx"] = new TH2F("hdedx","dE/dx vs p", 300, 0.,5.,1000, 0.,200.);
   //...Luiz
-  histosTH2F["hdedx"] = new TH2F("hdedx","dE/dx vs p", 500, 0.,5.,1000, 0.,200.);
+  //histosTH2F["hdedx"] = new TH2F("hdedx","dE/dx vs p", 500, 0.,5.,1000, 0.,200.);
+  histosTH2F["hdedx"] = new TH2F("hdedx","dE/dx vs p", 1000, 0.,20.,1000, 0.,200.);
+  histosTH2F["hdedxvee11"] = new TH2F("hdedxvee11","dE/dx vs p type:11", 1000, 0.,20.,1000, 0.,200.);
+  histosTH2F["hdedxvee02"] = new TH2F("hdedxvee02","dE/dx vs p type:02", 1000, 0.,20.,1000, 0.,200.);
+  histosTH2F["hdedxvee01"] = new TH2F("hdedxvee01","dE/dx vs p type:01", 1000, 0.,20.,1000, 0.,200.);
+  //histosTH2F["hdedxvee02"] = new TH2F("hdedxvee02","dE/dx vs p type:02", 500, 0.,5.,1000, 0.,200.);
+  //histosTH2F["hdedxvee01"] = new TH2F("hdedxvee01","dE/dx vs p type:02", 500, 0.,5.,1000, 0.,200.);
   //...Luiz
   histosTH2F["hlndedx"]  = new TH2F("hlndedx","ln dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
   histosTH2F["hl10dedx"] = new TH2F("hl10dedx","log10 dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
@@ -1896,8 +1986,10 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //---------------------------------------------------
 
        bool fiducialRegion = false;
+       bool fiducialRegionK = false;
        double etaCut= 2.5;
        bool fiducialRegionPt = false;
+       bool fiducialRegionPtK = false;
        //double ptCut= 0.2;
        //...Luiz
        //double ptCut= 0.1;
@@ -1909,11 +2001,22 @@ M213M(5,5)= 1.000000000000000e+00   ;
        TLorentzVector pi2(0.,0.,0.,0.);
        TLorentzVector pi3(0.,0.,0.,0.);
        TLorentzVector pi4(0.,0.,0.,0.);
-       //...Luiz
+       //
        TLorentzVector k1(0.,0.,0.,0.);
        TLorentzVector k2(0.,0.,0.,0.);
        TLorentzVector k3(0.,0.,0.,0.);
        TLorentzVector k4(0.,0.,0.,0.);
+       //
+       TLorentzVector piA(0.,0.,0.,0.);
+       TLorentzVector piB(0.,0.,0.,0.);
+       TLorentzVector piC(0.,0.,0.,0.);
+       TLorentzVector piD(0.,0.,0.,0.);
+       //
+       TLorentzVector kA(0.,0.,0.,0.);
+       TLorentzVector kB(0.,0.,0.,0.);
+       TLorentzVector kC(0.,0.,0.,0.);
+       TLorentzVector kD(0.,0.,0.,0.);
+      
        //...Luiz
        //TLorentzVector pipiRec(0.,0.,0.,0.);
        TLorentzVector pi1pi2Rec(0.,0.,0.,0.);
@@ -1925,10 +2028,54 @@ M213M(5,5)= 1.000000000000000e+00   ;
        TLorentzVector k3k4Rec(0.,0.,0.,0.);
        TLorentzVector k1k3Rec(0.,0.,0.,0.);
        TLorentzVector k2k4Rec(0.,0.,0.,0.);
-
-       //---TLorentzVector kpiRec(0.,0.,0.,0.);
-
        //
+       //...for completeness
+       TLorentzVector pi1pi4Rec(0.,0.,0.,0.);
+       TLorentzVector pi2pi3Rec(0.,0.,0.,0.);
+       //...for completeness
+       TLorentzVector k1k4Rec(0.,0.,0.,0.);
+       TLorentzVector k2k3Rec(0.,0.,0.,0.);
+
+     //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
+	   /* 
+     ...first combining, then select the Q_pairs=0
+
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+
+ 	   */
+       TLorentzVector pi3k4Rec(0.,0.,0.,0.);
+       TLorentzVector pi2k4Rec(0.,0.,0.,0.);
+       TLorentzVector pi1k4Rec(0.,0.,0.,0.);
+       //TLorentzVector pi2pi3Rec(0.,0.,0.,0.); //...pay attention
+       //
+       TLorentzVector k3pi4Rec(0.,0.,0.,0.);
+       TLorentzVector k3pi2Rec(0.,0.,0.,0.);
+       TLorentzVector k3pi1Rec(0.,0.,0.,0.);
+       //TLorentzVector pi1pi4Rec(0.,0.,0.,0.); //...pay attention
+       //
+       TLorentzVector pi1k2Rec(0.,0.,0.,0.);
+       TLorentzVector pi3k2Rec(0.,0.,0.,0.);
+       TLorentzVector pi4k2Rec(0.,0.,0.,0.);
+       //
+       TLorentzVector k1pi2Rec(0.,0.,0.,0.);
+       TLorentzVector k1pi3Rec(0.,0.,0.,0.);
+       TLorentzVector k1pi4Rec(0.,0.,0.,0.);
+       //
+       
        //TLorentzVector pipiRec(0.,0.,0.,0.);
        //...Luiz
        TLorentzVector pipipipiRec(0.,0.,0.,0.);
@@ -1939,25 +2086,34 @@ M213M(5,5)= 1.000000000000000e+00   ;
        TLorentzVector kkkkRec(0.,0.,0.,0.);
        //TLorentzVector mmRec(0.,0.,0.,0.);
        //TLorentzVector eeRec(0.,0.,0.,0.);
-       //...Luiz
-       //TLorentzVector ppRec(0.,0.,0.,0.);
+       //...Luiz./submit-condorRP.csh luianaRP4 t0RP389relui4 eos.t0.re.4499.txt
 
+       //TLorentzVector ppRec(0.,0.,0.,0.);
+       
        //int charray[2]={0,0};
        //double chi2array[2]={0.,0.};
        //double d0array[2]={0.,0.};
        //double dzarray[2]={0.,0.};
        //...Luiz
-       
+       //
        int charray[4]={0,0,0,0};
        double chi2array[4]={0.,0.,0.,0.};
        double d0array[4]={0.,0.,0.,0.};
        double dzarray[4]={0.,0.,0.,0.};
        int pidarray[4]={0,0,0,0};
-       
+       //...ordering
+       int arraych[4]={0,0,0,0};
+       double arraychi2[4]={0.,0.,0.,0.};
+       double arrayd0[4]={0.,0.,0.,0.};
+       double arraydz[4]={0.,0.,0.,0.};
+       int arraypid[4]={0,0,0,0};
+      
        int ntrk0=0;
        int ntrk=0;
        int ntrkvtx=0;    
-  
+
+       std::cout << " *** <<charge>> ***   " << std::endl;
+	 
        //       for(TrackCollection::const_iterator itTrack = tracks->begin();itTrack != tracks->end();++itTrack) {
        for(vector<MyTracks>::iterator itTrack = track_coll->begin() ; itTrack != track_coll->end() ; ++itTrack){
 
@@ -2003,6 +2159,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   TLorentzVector trk_lorentz(itTrack->px(),itTrack->py(),itTrack->pz(),ene);
 	   pipipipiRec += trk_lorentz; 
 
+	   //...beware of the index here
+	   //...beware of the index here
+	   /*
 	   if(ntrk==0) pi1 = trk_lorentz;
 	   if(ntrk==1) pi2 = trk_lorentz;
 	   if(ntrk==2) pi3 = trk_lorentz;
@@ -2012,11 +2171,21 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(ntrk==2 || ntrk==3) pi3pi4Rec += trk_lorentz;
 	   if(ntrk==0 || ntrk==2) pi1pi3Rec += trk_lorentz;
 	   if(ntrk==1 || ntrk==3) pi2pi4Rec += trk_lorentz;
+	   */
+	   
+	   //...first, tagging by track number
+	   if(ntrk==0) piA = trk_lorentz;
+	   if(ntrk==1) piB = trk_lorentz;
+	   if(ntrk==2) piC = trk_lorentz;
+	   if(ntrk==3) piD = trk_lorentz;
 
-	   EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
+       EPID pid2 = GetPIDSafe2(itTrack->p, itTrack->harmonic2_dEdx);
 
 	   //std::cout << "pid2 = " << pid2 << std::endl;
+
+           std::cout << " charge = " << charge << std::endl;
 	   
+	   //...beware of the index here
 	   if(ntrk==0){
 	     charray[0]=charge;	
 	     chi2array[0]=chi2;
@@ -2045,12 +2214,123 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     dzarray[3]=dz;
 	     pidarray[3]=pid2;
 	   }
+
+       //...ordering pions and kaons by momentum, index=1 is the highest Pt
+       //...we need to include kaons for the selection 11 : one primary and one Vee
 	   
+       vector<Double_t> piVec = { piA.Pt(), piB.Pt(), piC.Pt(), piD.Pt() };
+       //
+       sort(piVec.begin(), piVec.end());
+       
+       //...ordering by Pt and connecting the charges & PID's to the particles...tricky!
+
+       if(piVec[3]!=0.0 && piVec[3]==piA.Pt()){ pi1 = piA ; 
+	 arraych[0]=charray[0];
+       arraychi2[0]=chi2array[0];
+	 arrayd0[0]=d0array[0];
+	 arraydz[0]=dzarray[0];
+        arraypid[0]=pidarray[0];}
+       if(piVec[3]!=0.0 && piVec[3]==piB.Pt()){ pi1 = piB ; 
+	 arraych[0]=charray[1];
+       arraychi2[0]=chi2array[1];
+	 arrayd0[0]=d0array[1];
+	 arraydz[0]=dzarray[1];
+        arraypid[0]=pidarray[1];}
+       if(piVec[3]!=0.0 && piVec[3]==piC.Pt()){ pi1 = piC ; 
+	 arraych[0]=charray[2];
+       arraychi2[0]=chi2array[2];
+	 arrayd0[0]=d0array[2];
+	 arraydz[0]=dzarray[2];
+        arraypid[0]=pidarray[2];}
+       if(piVec[3]!=0.0 && piVec[3]==piD.Pt()){ pi1 = piD ; 
+	 arraych[0]=charray[3];
+       arraychi2[0]=chi2array[3];
+	 arrayd0[0]=d0array[3];
+	 arraydz[0]=dzarray[3];
+	arraypid[0]=pidarray[3];}
+       //	 
+       if(piVec[2]!=0.0 && piVec[2]==piA.Pt()){ pi2 = piA ; 
+	 arraych[1]=charray[0];
+       arraychi2[1]=chi2array[0];
+	 arrayd0[1]=d0array[0];
+	 arraydz[1]=dzarray[0];
+        arraypid[1]=pidarray[0];}
+       if(piVec[2]!=0.0 && piVec[2]==piB.Pt()){ pi2 = piB ; 
+	 arraych[1]=charray[1];
+       arraychi2[1]=chi2array[1];
+	 arrayd0[1]=d0array[1];
+	 arraydz[1]=dzarray[1];
+	arraypid[1]=pidarray[1];}
+       if(piVec[2]!=0.0 && piVec[2]==piC.Pt()){ pi2 = piC ; 
+	 arraych[1]=charray[2];
+       arraychi2[1]=chi2array[2];
+	 arrayd0[1]=d0array[2];
+	 arraydz[1]=dzarray[2];
+	arraypid[1]=pidarray[2];}
+       if(piVec[2]!=0.0 && piVec[2]==piD.Pt()){ pi2 = piD ; 
+	 arraych[1]=charray[3];
+       arraychi2[1]=chi2array[3];
+	 arrayd0[1]=d0array[3];
+	 arraydz[1]=dzarray[3];
+	arraypid[1]=pidarray[3];}
+       //	 
+       if(piVec[1]!=0.0 && piVec[1]==piA.Pt()){ pi3 = piA ; 
+	 arraych[2]=charray[0];
+       arraychi2[2]=chi2array[0];
+	 arrayd0[2]=d0array[0];
+	 arraydz[2]=dzarray[0];
+        arraypid[2]=pidarray[0];}
+       if(piVec[1]!=0.0 && piVec[1]==piB.Pt()){ pi3 = piB ; 
+	 arraych[2]=charray[1];
+	 arraychi2[2]=chi2array[1];
+	 arrayd0[2]=d0array[1];
+	 arraydz[2]=dzarray[1];
+	 arraypid[2]=pidarray[1];}
+       if(piVec[1]!=0.0 && piVec[1]==piC.Pt()){ pi3 = piC ; 
+	 arraych[2]=charray[2];
+       arraychi2[2]=chi2array[2];
+	 arrayd0[2]=d0array[2];
+	 arraydz[2]=dzarray[2];
+	arraypid[2]=pidarray[2];}
+       if(piVec[1]!=0.0 && piVec[1]==piD.Pt()){ pi3 = piD ; 
+	 arraych[2]=charray[3];
+       arraychi2[2]=chi2array[3];
+	 arrayd0[2]=d0array[3];
+	 arraydz[2]=dzarray[3];
+	arraypid[2]=pidarray[3];}
+       //
+       if(piVec[0]!=0.0 && piVec[0]==piA.Pt()){ pi4 = piA ; 
+	 arraych[3]=charray[0];
+       arraychi2[3]=chi2array[0];
+	 arrayd0[3]=d0array[0];
+	 arraydz[3]=dzarray[0];
+	arraypid[3]=pidarray[0];}
+       if(piVec[0]!=0.0 && piVec[0]==piB.Pt()){ pi4 = piB ; 
+	 arraych[3]=charray[1];
+       arraychi2[3]=chi2array[1];
+	 arrayd0[3]=d0array[1];
+	 arraydz[3]=dzarray[1];
+	arraypid[3]=pidarray[1];}
+       if(piVec[0]!=0.0 && piVec[0]==piC.Pt()){ pi4 = piC ; 
+	 arraych[3]=charray[2];
+       arraychi2[3]=chi2array[2];
+	 arrayd0[3]=d0array[2];
+	 arraydz[3]=dzarray[2];
+	arraypid[3]=pidarray[2];}
+       if(piVec[0]!=0.0 && piVec[0]==piD.Pt()){ pi4 = piD ; 
+	 arraych[3]=charray[3];       
+       arraychi2[3]=chi2array[3];       
+	 arrayd0[3]=d0array[3];       
+	 arraydz[3]=dzarray[3];       
+	arraypid[3]=pidarray[3];}
+
+  
 	   //-----------------------
 	   double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
 	   TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
 	   kkkkRec += trk_lorentzK; 
 
+	   /*
 	   //...Kaons
 	   if(ntrk==0) k1 = trk_lorentzK;
 	   if(ntrk==1) k2 = trk_lorentzK;
@@ -2061,14 +2341,45 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(ntrk==2 || ntrk==3) k3k4Rec += trk_lorentzK;
 	   if(ntrk==0 || ntrk==2) k1k3Rec += trk_lorentzK;
 	   if(ntrk==1 || ntrk==3) k2k4Rec += trk_lorentzK;
-	   
+	   */
+
+	   if(ntrk==0) kA = trk_lorentzK;
+	   if(ntrk==1) kB = trk_lorentzK;
+	   if(ntrk==2) kC = trk_lorentzK;
+	   if(ntrk==3) kD = trk_lorentzK;
+
+       vector<Double_t> kVec = { kA.Pt(), kB.Pt(), kC.Pt(), kD.Pt() };
+       //
+       sort(kVec.begin(), kVec.end());
+
+        //
+       if(kVec[3]!=0.0 && kVec[3]==kA.Pt()){ k1 = kA ; }
+       if(kVec[3]!=0.0 && kVec[3]==kB.Pt()){ k1 = kB ; }
+       if(kVec[3]!=0.0 && kVec[3]==kC.Pt()){ k1 = kC ; }
+       if(kVec[3]!=0.0 && kVec[3]==kD.Pt()){ k1 = kD ; }
+       //	 
+       if(kVec[2]!=0.0 && kVec[2]==kA.Pt()){ k2 = kA ; }
+       if(kVec[2]!=0.0 && kVec[2]==kB.Pt()){ k2 = kB ; }
+       if(kVec[2]!=0.0 && kVec[2]==kC.Pt()){ k2 = kC ; }
+       if(kVec[2]!=0.0 && kVec[2]==kD.Pt()){ k2 = kD ; }
+       //	 
+       if(kVec[1]!=0.0 && kVec[1]==kA.Pt()){ k3 = kA ; }
+       if(kVec[1]!=0.0 && kVec[1]==kB.Pt()){ k3 = kB ; }
+       if(kVec[1]!=0.0 && kVec[1]==kC.Pt()){ k3 = kC ; }
+       if(kVec[1]!=0.0 && kVec[1]==kD.Pt()){ k3 = kD ; }
+       //	  
+       if(kVec[0]!=0.0 && kVec[0]==kA.Pt()){ k4 = kA ; }
+       if(kVec[0]!=0.0 && kVec[0]==kB.Pt()){ k4 = kB ; }
+       if(kVec[0]!=0.0 && kVec[0]==kC.Pt()){ k4 = kC ; }
+       if(kVec[0]!=0.0 && kVec[0]==kD.Pt()){ k4 = kD ; }       
+
+
 	   ntrk++;
 
-	   //-----------------------
-	   //double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
-	   //TLorentzVector trk_lorentzK(itTrack->px(),itTrack->py(),itTrack->pz(),eneK);
-	   //kkkkRec += trk_lorentzK; 
+	   } //...end of npixelhits>0
+	   } //...end of MyTracks
 
+	   //-----------------------
 	   //double eneM=TMath::Sqrt(pt*pt+pz*pz+m_mu*m_mu);
 	   //TLorentzVector trk_lorentzM(itTrack->px(),itTrack->py(),itTrack->pz(),eneM);
 	   //mmRec += trk_lorentzM; 
@@ -2081,18 +2392,204 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   //TLorentzVector trk_lorentzp(itTrack->px(),itTrack->py(),itTrack->pz(),enep);
 	   //ppRec += trk_lorentzp; 
 
-	 }
-       }
-
-       //std::cout << "***track***   " << std::endl;
-       //std::cout << "pidarray[0] = " << pidarray[0] << std::endl;
-       //std::cout << "pidarray[1] = " << pidarray[1] << std::endl;
-       //std::cout << "pidarray[2] = " << pidarray[2] << std::endl;
-       //std::cout << "pidarray[3] = " << pidarray[3] << std::endl;
+           //       
+           pi1pi2Rec = pi1 + pi2;
+           pi3pi4Rec = pi3 + pi4;
+           pi1pi3Rec = pi1 + pi3;
+           pi2pi4Rec = pi2 + pi4;      
 	   
+           //
+           k1k2Rec = k1 + k2;
+           k3k4Rec = k3 + k4;
+           k1k3Rec = k1 + k3;
+           k2k4Rec = k2 + k4;      
+      
+           //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
+           //
+	   /* 
+     ...first combining, then select the Q_pairs=0
+
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+
+ 	   */
+	   //...commented out means already defined
+	   //
+	   //pi1pi2Rec
+	   pi3k4Rec  = pi3 + k4;
+	   //pi1pi3Rec
+	   pi2k4Rec  = pi2 + k4; 
+	   pi2pi3Rec = pi2 + pi3; //...pay attention
+	   pi1k4Rec  = pi1 + k4;
+	   //
+	   //
+	   //pi1pi2Rec
+	   k3pi4Rec  = k3  + pi4;
+	   pi1pi4Rec = pi1 + pi4; //...pay attention
+	   k3pi2Rec  = k3  + pi2;
+	   //pi2pi4Rec
+	   k3pi1Rec  = k3  + pi1;
+	   //
+	   //
+	   pi1k2Rec  = pi1 + k2;
+	   //pi3pi4Rec
+	   pi3k2Rec  = pi3 + k2;
+	   //pi1pi4Rec
+	   pi4k2Rec  = pi4 + k2;
+	   //pi1pi3Rec	   
+	   //
+	   //
+	   k1pi2Rec  = k1  + pi2;
+	   //pi3pi4Rec
+	   k1pi3Rec  = k1  + pi3;
+	   //pi2pi4Rec
+
+	   k1pi4Rec  = k1  + pi4;
+	   //pi2pi3Rec
+	   
+	   /////} //...end of npixelhits>0
+    /////} //...end of MyTracks
+	   
+	   /*
+       std::cout << "***track***   " << std::endl;
+       std::cout << "pidarray[0] = " << pidarray[0] << std::endl;
+       std::cout << "pidarray[1] = " << pidarray[1] << std::endl;
+       std::cout << "pidarray[2] = " << pidarray[2] << std::endl;
+       std::cout << "pidarray[3] = " << pidarray[3] << std::endl;
+       std::cout << "pidarrayk[0] = " << pidarrayk[0] << std::endl;
+       std::cout << "pidarrayk[1] = " << pidarrayk[1] << std::endl;
+       std::cout << "pidarrayk[2] = " << pidarrayk[2] << std::endl;
+       std::cout << "pidarrayk[3] = " << pidarrayk[3] << std::endl;
+	   */
+
+	   /*
+       std::cout << " piA.Pt() = " << piA.Pt() << std::endl;
+       std::cout << " piB.Pt() = " << piB.Pt() << std::endl;
+       std::cout << " piC.Pt() = " << piC.Pt() << std::endl;
+       std::cout << " piD.Pt() = " << piD.Pt() << std::endl;
+       //
+       std::cout << " pi1.Pt() = " << pi1.Pt() << std::endl;
+       std::cout << " pi2.Pt() = " << pi2.Pt() << std::endl;
+       std::cout << " pi3.Pt() = " << pi3.Pt() << std::endl;
+       std::cout << " pi4.Pt() = " << pi4.Pt() << std::endl;
+      
+       std::cout << " kA.Pt() = " << kA.Pt() << std::endl;
+       std::cout << " kB.Pt() = " << kB.Pt() << std::endl;
+       std::cout << " kC.Pt() = " << kC.Pt() << std::endl;
+       std::cout << " kD.Pt() = " << kD.Pt() << std::endl;
+       //
+       std::cout << " k1.Pt() = " << k1.Pt() << std::endl;
+       std::cout << " k2.Pt() = " << k2.Pt() << std::endl;
+       std::cout << " k3.Pt() = " << k3.Pt() << std::endl;
+       std::cout << " k4.Pt() = " << k4.Pt() << std::endl;       
+	   */
+
+	   /*
+       std::cout << "***charge***   " << std::endl;
+       std::cout << "charray[0] = " << charray[0] << std::endl;
+       std::cout << "charray[1] = " << charray[1] << std::endl;
+       std::cout << "charray[2] = " << charray[2] << std::endl;
+       std::cout << "charray[3] = " << charray[3] << std::endl;
+       std::cout << "arraych[0] = " << arraych[0] << std::endl;
+       std::cout << "arraych[1] = " << arraych[1] << std::endl;
+       std::cout << "arraych[2] = " << arraych[2] << std::endl;
+       std::cout << "arraych[3] = " << arraych[3] << std::endl;
+	   */
+
+       //...reseting to original definition with new order
+
+         charray[0] =   arraych[0] ;// charge;	
+       chi2array[0] = arraychi2[0] ;// chi2;
+         d0array[0] =   arrayd0[0] ;// d0;
+         dzarray[0] =   arraydz[0] ;// dz;
+        pidarray[0] =  arraypid[0] ;// pid2;
+	//
+	 charray[1] =   arraych[1] ;// charge;	
+       chi2array[1] = arraychi2[1] ;// chi2;
+         d0array[1] =   arrayd0[1] ;// d0;
+         dzarray[1] =   arraydz[1] ;// dz;
+        pidarray[1] =  arraypid[1] ;// pid2;
+	//
+         charray[2] =   arraych[2] ;// charge;	
+       chi2array[2] = arraychi2[2] ;// chi2;
+	 d0array[2] =   arrayd0[2] ;// d0;
+	 dzarray[2] =   arraydz[2] ;// dz;
+	pidarray[2] =  arraypid[2] ;// pid2;
+	//
+         charray[3] =   arraych[3] ;// charge;	
+       chi2array[3] = arraychi2[3] ;// chi2;
+	 d0array[3] =   arrayd0[3] ;// d0;
+	 dzarray[3] =   arraydz[3] ;// dz;
+	pidarray[3] =  arraypid[3] ;// pid2;
+	//
+
+	/*
+       std::cout << "*** reseting ***   " << std::endl;
+       std::cout << "charray[0] = " << charray[0] << std::endl;
+       std::cout << "charray[1] = " << charray[1] << std::endl;
+       std::cout << "charray[2] = " << charray[2] << std::endl;
+       std::cout << "charray[3] = " << charray[3] << std::endl;
+	*/
+
+	   /*
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+	   */
+       /*
+       std::cout << " ***mass***********************   " << std::endl;
+       std::cout << " pi1pi2Rec.M() = " << pi1pi2Rec.M() << std::endl;
+       std::cout << " pi3pi4Rec.M() = " << pi3pi4Rec.M() << std::endl;
+       std::cout << " pi1pi3Rec.M() = " << pi1pi3Rec.M() << std::endl;
+       std::cout << " pi2pi4Rec.M() = " << pi2pi4Rec.M() << std::endl;
+       std::cout << " pi1pi4Rec.M() = " << pi1pi4Rec.M() << std::endl;
+       std::cout << " pi2pi3Rec.M() = " << pi2pi3Rec.M() << std::endl;
+       std::cout << " ...             " << std::endl;
+       std::cout << " pi3k4Rec.M()  = " << pi3k4Rec.M() << std::endl;
+       std::cout << " pi2k4Rec.M()  = " << pi2k4Rec.M() << std::endl;
+       std::cout << " pi1k4Rec.M()  = " << pi1k4Rec.M() << std::endl;
+       std::cout << " ...             " << std::endl;
+       std::cout << " k3pi4Rec.M()  = " << k3pi4Rec.M() << std::endl;
+       std::cout << " k3pi2Rec.M()  = " << k3pi2Rec.M() << std::endl;
+       std::cout << " k3pi1Rec.M()  = " << k3pi1Rec.M() << std::endl;
+       std::cout << " ...             " << std::endl;
+       std::cout << " pi1k2Rec.M()  = " << pi1k2Rec.M() << std::endl;
+       std::cout << " pi3k2Rec.M()  = " << pi3k2Rec.M() << std::endl;
+       std::cout << " pi4k2Rec.M()  = " << pi4k2Rec.M() << std::endl;
+       std::cout << " ...             " << std::endl;
+       std::cout << " k1pi2Rec.M()  = " << k1pi2Rec.M() << std::endl;
+       std::cout << " k1pi3Rec.M()  = " << k1pi3Rec.M() << std::endl;
+       std::cout << " k1pi4Rec.M()  = " << k1pi4Rec.M() << std::endl;
+       */  
        
        histosTH1F["hntrk0"]->Fill(ntrk0);
        histosTH1F["hntrk"]->Fill(ntrk);
+
        
        if(ntrk==0){
 	 int nclusters=  sipixelcluster_coll->size();
@@ -2112,6 +2609,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 ntrkvtx = itVtx->ntracks;
 	 //...Luiz
 	 //////itVtx->Print();
+
+	 //...nvtx counting is ok
        }
 
        histosTH1F["hnvtx"]->Fill(nvtx);
@@ -2188,12 +2687,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
        histosTH2F["hntrknks"]->Fill(ntrk,nks);
        histosTH2F["hnvtxnks"]->Fill(nvtx,nks);
        histosTH2F["hntrknvtx"]->Fill(ntrk,nvtx);
-       std::cout << " --------------------------- " << std::endl;
-       std::cout << " nks  = " << nks << std::endl;
-       std::cout << " ntrk = " << ntrk << std::endl;
-       std::cout << " nvtx = " << nvtx << std::endl;
-       std::cout << " isKshort = " << isKshort << std::endl;
-       std::cout << " --------------------------- " << std::endl;
+       //std::cout << " --------------------------- " << std::endl;
+       //std::cout << " nks  = " << nks << std::endl;
+       //std::cout << " ntrk = " << ntrk << std::endl;
+       //std::cout << " nvtx = " << nvtx << std::endl;
+       //std::cout << " isKshort = " << isKshort << std::endl;
+       //std::cout << " --------------------------- " << std::endl;
        //................
        
       /*
@@ -2270,10 +2769,16 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //fiducialRegion   = (ntrk==2 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut);  
        //fiducialRegionPt = (ntrk==2 && pi1.Pt()>ptCut && pi2.Pt()>ptCut);
        //...Luiz
+       //...Pions
        fiducialRegion   = (ntrk==4 && TMath::Abs(pi1.Eta())<etaCut && TMath::Abs(pi2.Eta())<etaCut &&
        		   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
        fiducialRegionPt = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
        			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
+       //...Kaons
+       fiducialRegionK   = (ntrk==4 && TMath::Abs(k1.Eta())<etaCut && TMath::Abs(k2.Eta())<etaCut &&
+       		   TMath::Abs(k3.Eta())<etaCut && TMath::Abs(k4.Eta())<etaCut);  
+       fiducialRegionPtK = (ntrk==4 && k1.Pt()>ptCut && k2.Pt()>ptCut &&
+       			   k3.Pt()>ptCut && k4.Pt()>ptCut);
        ////fiducialRegion   = (ntrk==4);
        ////fiducialRegionPt = (ntrk==4);
        histosTH1F["hvtx"]->Fill( isfake );    
@@ -2284,7 +2789,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
        }    
 
        //...very important...needed for theVees
-       //......not this---> if(nvtx!=0 || nvtx!=1) continue;
+       //......not this--> if(nvtx!=0 || nvtx!=1) continue;
        if(nvtx!=0){
 	 if(nvtx!=1){
 	   if(nvtx!=2) continue;
@@ -2311,7 +2816,50 @@ M213M(5,5)= 1.000000000000000e+00   ;
        double mreck3k4=k3k4Rec.M();
        double mreck1k3=k1k3Rec.M();
        double mreck2k4=k2k4Rec.M();
-              
+      
+     //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
+	   /* 
+     ...first combining, then select the Q_pairs=0
+
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+
+ 	   */
+       double mrecpi3k4=pi3k4Rec.M();
+       double mrecpi2k4=pi2k4Rec.M(); 
+       double mrecpi1k4=pi1k4Rec.M();
+       double mreck3pi4=k3pi4Rec.M();
+       double mreck3pi2=k3pi2Rec.M();
+       double mreck3pi1=k3pi1Rec.M();
+       double mrecpi1k2=pi1k2Rec.M();
+       double mrecpi3k2=pi3k2Rec.M();
+       double mrecpi4k2=pi4k2Rec.M();
+       double mreck1pi2=k1pi2Rec.M();
+       double mreck1pi3=k1pi3Rec.M();
+       double mreck1pi4=k1pi4Rec.M();
+       //
+       //...for completeness
+       double mrecpi1pi4=pi1pi4Rec.M();
+       double mrecpi2pi3=pi2pi3Rec.M();
+       //...for completeness
+       double mreck1k4=k1k4Rec.M();
+       double mreck2k3=k2k3Rec.M();
+
+       double mrecKpi = 0.0;
+
        //----------------------------
        // xi cut
        // Mmax=13000*xi_max
@@ -2324,6 +2872,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	//
        //----------------------------
 
+	
 	//...cut 9...........theVees
 
 	   if(ntrk==4){
@@ -2453,39 +3002,217 @@ M213M(5,5)= 1.000000000000000e+00   ;
             } //end of ntrk=4
 	//...end of cut 9
 
-	   
-	//...fiducial Vees
-        if(fiducialRegion && fiducialRegionPt){
+	   //...checking dEdx efficiency 11, 02, 01
+	   //...fiducial: each entry in the scatter plot dE/dx vs p is a track!
+	   // int ntrkvee=0;
+	     for(vector<MyTracks>::iterator itTrack = track_coll->begin() ; itTrack != track_coll->end() ; ++itTrack){
+	       int npixelhitsvee = itTrack->nValidPixelHits;
+	       if(npixelhitsvee>0){
+		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==1 && nks==1){
+		   histosTH2F["hdedxvee11"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
+		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==2){
+		   histosTH2F["hdedxvee02"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
+		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==1){
+		   histosTH2F["hdedxvee01"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
+	       }
+	     // ntrkvee++;
+	     // std::cout << " ntrkvee = " << ntrkvee << std::endl;
+	     } //...end of Mytracks-2
+	     
 
-	  //...cut 8..................theVees
-	  //00...using PID Pions
-	 if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
-	 	    pidarray[2]==pidPion && pidarray[3]==pidPion)
-	   {
-	   
-	   if(totcharge==0){
+	     
+	//...cut 8..................theVees	   
+	//...fiducial Vees
+        if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK){
+        //if(fiducialRegion && fiducialRegionPt){
+
+	  //AA...using PID...not yet
+      	  if(totcharge==0){
+	       
+	  //...using PID Pions & Kaons for selection=11
+	  //     if(
+	  //  (pidarray[0]==2 && pidarray[1]==3 && pidarray[2]==3 && pidarray[3]==3) ||
+	  //  (pidarray[0]==3 && pidarray[1]==2 && pidarray[2]==3 && pidarray[3]==3) ||
+	  //  (pidarray[0]==3 && pidarray[1]==3 && pidarray[2]==2 && pidarray[3]==3) ||
+	  //  (pidarray[0]==3 && pidarray[1]==3 && pidarray[2]==3 && pidarray[3]==2)   )
+	  // {
+	     //...Luiz
+	     //histosTH1F["hm2rec2OSvee"]->Fill(mrec);
 
 	     if(isKshort){
-	       
-	     //...Luiz
-	     histosTH1F["hm2rec2OSvee"]->Fill(mrec);      
 
+	     //...one primary & one Vee  //  K+pi- pi+pi-  or  K-pi+ pi+pi- 
 	     if(nvtx==1 && nks==1){
-	     histosTH1F["hm2rec2OSvee11"]->Fill(mrec);      
-		 if(charray[0]+charray[1] == 0)
-	            {
-	       histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
-	       histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
-	       histosTH2F["hm2dim2OS_pi1pi2_pi3pi4vee11"]->Fill(mrecpi1pi2,mrecpi3pi4);
-	            }else if(charray[0]+charray[2] == 0){
-	       histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
-	       histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
-	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee11"]->Fill(mrecpi1pi3,mrecpi2pi4);
-		   }
-	       } //end of nvtx=1 nks=1
 
-             if(nvtx==0 && nks==2){
-	     histosTH1F["hm2rec2OSvee02"]->Fill(mrec);      
+      	   /* 
+     ...first combining, then select the Q_pairs=0
+
+     pi1pi2 pi3k4
+     pi1pi3 pi2k4
+     pi2pi3 pi1k4
+
+     pi1pi2 k3pi4
+     pi1pi4 k3pi2
+     pi2pi4 k3pi1
+
+     pi1k2 pi3pi4
+     pi3k2 pi1pi4
+     pi4k2 pi1pi3
+
+     k1pi2 pi3pi4
+     k1pi3 pi2pi4
+     k1pi4 pi2pi3
+
+ 	   */
+	       //double mrecKpi = 0.0 ;
+	       //
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi3k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi2k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi1k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==2 && pidarray[3]==3 ) {mrecKpi = mreck3pi4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==2 && pidarray[1]==3 ) {mrecKpi = mreck3pi2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[2]+charray[0] == 0 && pidarray[2]==2 && pidarray[0]==3 ) {mrecKpi = mreck3pi1 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==2 ) {mrecKpi = mrecpi1k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==3 && pidarray[1]==2 ) {mrecKpi = mrecpi3k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[3]+charray[1] == 0 && pidarray[3]==3 && pidarray[1]==2 ) {mrecKpi = mrecpi4k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) {mrecKpi = mreck1pi2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) {mrecKpi = mreck1pi3 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) {mrecKpi = mreck1pi4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       
+	       
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11a"]->Fill( mrecpi3k4 );
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11b"]->Fill( mrecpi2k4 );
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11c"]->Fill( mrecpi1k4 );
+	       //
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OSvee11d"]->Fill( mreck3pi4 );
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OSvee11e"]->Fill( mreck3pi2 );
+	       if(charray[2]+charray[0] == 0 && pidarray[2]==2 && pidarray[0]==3 ) histosTH1F["hm2rec2OSvee11f"]->Fill( mreck3pi1 );
+	       //
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OSvee11g"]->Fill( mrecpi1k2 );
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OSvee11h"]->Fill( mrecpi3k2 );
+	       if(charray[3]+charray[1] == 0 && pidarray[3]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OSvee11i"]->Fill( mrecpi4k2 );
+	       //
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OSvee11j"]->Fill( mreck1pi2 );
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) histosTH1F["hm2rec2OSvee11k"]->Fill( mreck1pi3 );
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OSvee11m"]->Fill( mreck1pi4 );
+	       
+
+	       /*
+       std::cout << "*** charge cut 8 vee11 ***   " << std::endl;
+       std::cout << "charray[0] = " << charray[0] << std::endl;
+       std::cout << "charray[1] = " << charray[1] << std::endl;
+       std::cout << "charray[2] = " << charray[2] << std::endl;
+       std::cout << "charray[3] = " << charray[3] << std::endl;
+	       */
+
+	       /*
+               std::cout << " ***charged pairs***   " << std::endl;	       
+	       if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OSvee11a"]->Fill( mrecpi3k4 );
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+	       if(charray[1]+charray[3] == 0) histosTH1F["hm2rec2OSvee11b"]->Fill( mrecpi2k4 );
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+	       if(charray[0]+charray[3] == 0) histosTH1F["hm2rec2OSvee11c"]->Fill( mrecpi1k4 );
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+	       //
+	       if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OSvee11d"]->Fill( mreck3pi4 );
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+	       if(charray[2]+charray[1] == 0) histosTH1F["hm2rec2OSvee11e"]->Fill( mreck3pi2 );
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+	       if(charray[2]+charray[0] == 0) histosTH1F["hm2rec2OSvee11f"]->Fill( mreck3pi1 );
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+	       //
+	       if(charray[0]+charray[1] == 0) histosTH1F["hm2rec2OSvee11g"]->Fill( mrecpi1k2 );
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+	       if(charray[2]+charray[1] == 0) histosTH1F["hm2rec2OSvee11h"]->Fill( mrecpi3k2 );
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+	       if(charray[3]+charray[1] == 0) histosTH1F["hm2rec2OSvee11i"]->Fill( mrecpi4k2 );
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+	       //
+	       if(charray[0]+charray[1] == 0) histosTH1F["hm2rec2OSvee11j"]->Fill( mreck1pi2 );
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+       	       std::cout << "charray[1] = " << charray[1] << std::endl;
+	       if(charray[0]+charray[2] == 0) histosTH1F["hm2rec2OSvee11k"]->Fill( mreck1pi3 );
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+       	       std::cout << "charray[2] = " << charray[2] << std::endl;
+	       if(charray[0]+charray[3] == 0) histosTH1F["hm2rec2OSvee11m"]->Fill( mreck1pi4 );
+       	       std::cout << "charray[0] = " << charray[0] << std::endl;
+       	       std::cout << "charray[3] = " << charray[3] << std::endl;
+               std::cout << " ***end***   " << std::endl;
+	       */
+
+	       //A  
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi3k4vee11"]->Fill(mrecpi3k4);    
+	       ///histosTH2F["hm2dim2OS_pi1pi2_pi3k4vee11"]->Fill(mrecpi1pi2,mrecpi3k4);
+	       //     
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==3 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi2k4vee11"]->Fill(mrecpi2k4);
+	       ///histosTH2F["hm2dim2OS_pi1pi3_pi2k4vee11"]->Fill(mrecpi1pi3,mrecpi2k4);
+	       //
+	       if(charray[1]+charray[2] == 0 && pidarray[1]==3 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_pi2pi3vee11"]->Fill(mrecpi2pi3);
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi1k4vee11"]->Fill(mrecpi1k4);
+	       ///histosTH2F["hm2dim2OS_pi2pi3_pi1k4vee11"]->Fill(mrecpi2pi3,mrecpi1k4);
+
+	       //B  
+	       //if(charray[0]+charray[1] == 0) histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_k3pi4vee11"]->Fill(mreck3pi4);
+	       ///histosTH2F["hm2dim2OS_pi1pi2_k3pi4vee11"]->Fill(mrecpi1pi2,mreck3pi4);
+	       //
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi1pi4vee11"]->Fill(mrecpi1pi4);
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_k3pi2vee11"]->Fill(mreck3pi2);
+	       ///histosTH2F["hm2dim2OS_pi1pi4_k3pi2vee11"]->Fill(mrecpi1pi4,mreck3pi2);
+	       //
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
+	       if(charray[2]+charray[0] == 0 && pidarray[2]==2 && pidarray[0]==3 ) histosTH1F["hm2rec2OS_k3pi1vee11"]->Fill(mreck3pi1);
+	       ///histosTH2F["hm2dim2OS_pi2pi4_k3pi1vee11"]->Fill(mrecpi2pi4,mreck3pi1);
+
+	       //C
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi1k2vee11"]->Fill(mrecpi1k2);
+	       if(charray[2]+charray[4] == 0 && pidarray[2]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
+      	       ///histosTH2F["hm2dim2OS_pi1k2_pi3pi4vee11"]->Fill(mrecpi1k2,mrecpi3pi4);
+	       //
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi3k2vee11"]->Fill(mrecpi3k2);
+	       //if(charray[0]+charray[3] == 0) histosTH1F["hm2rec2OS_pi1pi4vee11"]->Fill(mrecpi1pi4);
+	       ///histosTH2F["hm2dim2OS_pi3k2_pi1pi4vee11"]->Fill(mrecpi3k2,mrecpi1pi4);
+	       //
+	       if(charray[3]+charray[1] == 0 && pidarray[3]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi4k2vee11"]->Fill(mrecpi4k2);
+	       //if(charray[0]+charray[2] == 0) histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
+	       ///histosTH2F["hm2dim2OS_pi4k2_pi1pi3vee11"]->Fill(mrecpi4k2,mrecpi1pi3);
+
+	       //D
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_k1pi2vee11"]->Fill(mreck1pi2);
+	       //if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
+	       ///histosTH2F["hm2dim2OS_k1pi2_pi3pi4vee11"]->Fill(mreck1pi2,mrecpi3pi4);
+	       //
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_k1pi3vee11"]->Fill(mreck1pi3);
+	       //if(charray[1]+charray[3] == 0) histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
+	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4vee11"]->Fill(mreck1pi3,mrecpi2pi4);
+	       //
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_k1pi4vee11"]->Fill(mreck1pi4);
+	       //if(charray[1]+charray[2] == 0) histosTH1F["hm2rec2OS_pi2pi3vee11"]->Fill(mrecpi2pi3);
+	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4vee11"]->Fill(mreck1pi3,mrecpi2pi4);
+
+	     } //end of nvtx=1 nks=1
+	     //} //...end of PID Pions & Kaons
+
+	  //...using PID Pions for selection=02 or 01
+	  //if(pidarray[0]==3 && pidarray[1]==3 && pidarray[2]==3 && pidarray[3]==3)
+	  //  {
+	     //...no primary & two Vees
+	     if(nvtx==0 && nks==2){
+	     histosTH1F["hm2rec2OSvee02"]->Fill(mrec);
 		 if(charray[0]+charray[1] == 0)
 	         {
 	       histosTH1F["hm2rec2OS_pi1pi2vee02"]->Fill(mrecpi1pi2);
@@ -2497,9 +3224,10 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee02"]->Fill(mrecpi1pi3,mrecpi2pi4);
 		 }
 	       } //end of nvtx=0 nks=2
-	       
+
+	     //...no primary & 1 Vee
              if(nvtx==0 && nks==1){
-	     histosTH1F["hm2rec2OSvee01"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OSvee01"]->Fill(mrec); 
 		 if(charray[0]+charray[1] == 0)
 	         {
 	       histosTH1F["hm2rec2OS_pi1pi2vee01"]->Fill(mrecpi1pi2);
@@ -2510,22 +3238,24 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       histosTH1F["hm2rec2OS_pi2pi4vee01"]->Fill(mrecpi2pi4);
 	       histosTH2F["hm2dim2OS_pi1pi3_pi2pi4vee01"]->Fill(mrecpi1pi3,mrecpi2pi4);
 		 }
-	       } //end of nvtx=0 nks=2
+	       } //end of nvtx=0 nks=1
 
+	     //} //...end of PID Pions	     
 	     } //...end of isKshort
 	   } //...end of totalcharge=0	    
-	   } //00...end of PID Pions
+	   //AA...end of PID
 
-	   //01...no PID Pions
+	  
+	   //BB...no PID Pions
      	   if(totcharge==0){
 
 	     if(isKshort){
 	       
 	     //...Luiz
-	     histosTH1F["hm2rec2OSveeno"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OSveeno"]->Fill(mrecKpi);      
 
 	     if(nvtx==1 && nks==1){
-	     histosTH1F["hm2rec2OSveeno11"]->Fill(mrec);      
+	     histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);      
 		 if(charray[0]+charray[1] == 0)
 	            {
 	       histosTH1F["hm2rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
@@ -2539,6 +3269,13 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       } //end of nvtx=1 nks=1
 
              if(nvtx==0 && nks==2){
+
+       std::cout << "*** charge cut 8 vee02 ***   " << std::endl;
+       std::cout << "charray[0] = " << charray[0] << std::endl;
+       std::cout << "charray[1] = " << charray[1] << std::endl;
+       std::cout << "charray[2] = " << charray[2] << std::endl;
+       std::cout << "charray[3] = " << charray[3] << std::endl;
+
 	     histosTH1F["hm2rec2OSveeno02"]->Fill(mrec);      
 		 if(charray[0]+charray[1] == 0)
 	         {
@@ -2553,6 +3290,13 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       } //end of nvtx=0 nks=2
 
              if(nvtx==0 && nks==1){
+
+       std::cout << "*** charge cut 8 vee01 ***   " << std::endl;
+       std::cout << "charray[0] = " << charray[0] << std::endl;
+       std::cout << "charray[1] = " << charray[1] << std::endl;
+       std::cout << "charray[2] = " << charray[2] << std::endl;
+       std::cout << "charray[3] = " << charray[3] << std::endl;
+
 	     histosTH1F["hm2rec2OSveeno01"]->Fill(mrec);      
 		 if(charray[0]+charray[1] == 0)
 	         {
@@ -2567,10 +3311,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       } //end of nvtx=0 nks=1
 
 	     } //...end of isKshort
-	   } //01...end of totalcharge=0
-        } //...end of fiducial Vees
-	   
-	   //-----------end of cut 8
+	   } //BB...end of totalcharge=0
+	 } //...end of fiducial Vees	   
+       //-----------end of cut 8
 
        
        //...Luiz ...nvtx=1 or 2
@@ -2581,13 +3324,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //if(nvtx!=0) continue;
        //////if(nvtx!=1) continue;
 
-       ////...for now, no nvtx cut
-       ////if(nvtx!=1) {
-       ////if(nvtx!=2) continue;
-       ////}
+       if(nvtx!=1) {
+        if(nvtx!=2) continue;
+       }
        //if(nvtx!=2) continue;
        //
-       if(nvtx!=1) continue;
+       //if(nvtx!=1) continue;
        
        //...vertex
        histosTH1F["hvtxx"]->Fill(xvtx);
