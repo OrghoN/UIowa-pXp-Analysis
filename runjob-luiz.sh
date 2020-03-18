@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This is the app being submitted.
-APPNAME="tomanaRP4k"
+APPNAME="luianaRP4"
 
 # This is the prefix given to every output directory created by running one of 
 # the all-trks jobs. This is defined by Luiz within "submit-condorRP.csh".
@@ -9,7 +9,7 @@ JOB_DIR_PREFIX="submit-"
 
 # All of the inputs to "submit-condorRP.csh" are located here along with a 
 # corresponding job_id.
-JOB_CSV="all-trks.csv"
+JOB_CSV="all-trks-luiz.csv"
 
 # Color codes.
 RESET="\e[39m"
