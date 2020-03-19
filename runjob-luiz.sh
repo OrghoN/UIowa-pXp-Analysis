@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source globals.sh
+
 # This is the app being submitted.
 APPNAME="luianaRP4"
 
@@ -11,32 +13,16 @@ JOB_DIR_PREFIX="submit-"
 # corresponding job_id.
 JOB_CSV="all-trks-luiz.csv"
 
-# Color codes.
-RESET="\e[39m"
-GRAY="\e[90m"
-GREEN="\e[32m"
-YELLOW="\e[93m"
-RED="\e[91m"
-
-# Colored prefix used to indicate which command is being executed.
-EXECUTING_PREFIX="[${GREEN}Executing${RESET}]:"
-
-# Colored prefix used to indicate information.
-INFO_PREFIX="[${YELLOW}INFO${RESET}]:"
-
-# Colored prefix used to indicate an error.
-ERROR_PREFIX="[${RED}ERROR${RESET}]:"
-
 # This is the format of jobs.
 JOB_FILE_FORMAT="$INFO_PREFIX job_id,job_name,inputfile"
 
 if (( $# != 1 )); then
     echo "****************************************"
-    echo "Run one of the jobs from all-trks."
+    echo "Run one of the jobs from all-trks-luiz."
     echo "The job_ids are numbered 1-14."
     echo ""
     echo "Usage:"
-    echo "./runjob.sh <job_id>"
+    echo "./runjob-luiz.sh <job_id>"
     echo "****************************************"
     exit 1
 fi
@@ -62,8 +48,8 @@ do
         # Check if the job directory already exists, indicating that the job has
         # already been ran.
         if [ -d $JOB_DIR ]; then
-            echo -e "$ERROR_PREFIX Directory $JOB_DIR already exists!"
-            echo -e "$ERROR_PREFIX Make sure the job hasn't already ran."
+            print_error "Directory $JOB_DIR already exists!"
+            print_error "Make sure the job hasn't already ran."
             exit 1
         fi        
 
@@ -72,15 +58,13 @@ do
 
         # Ensure the output file doesn't already exist as well.
         if [ -f "$OUTPUT_FILE" ]; then
-            echo -e "$ERROR_PREFIX $OUTPUT_FILE exists already!"
-            echo -e "$ERROR_PREFIX Have you already ran this job?"
+            print_error "$OUTPUT_FILE exists already!"
+            print_error "Have you already ran this job?"
             exit 1
         fi
-        
 
         # submit the jobs.
-        echo -e "$EXECUTING_PREFIX ./submit-condorRP.csh $APPNAME $jobname $inputfile"
-        csh "./submit-condorRP.csh" $APPNAME $jobname $inputfile
+        execute "csh ./submit-condorRP.csh $APPNAME $jobname $inputfile"
 
         exit 0
     fi

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source globals.sh
+check_vars
+
 if (( $# != 2 )); then
   echo "****************************************"
   echo "Description: SCP a file or directory from local to lxplus7."
@@ -21,9 +24,10 @@ REMOTE=$2
 
 # Append the workspace directory to the user-specified directory
 # and take into account forward slashes and periods.
-if [[ $REMOTE == "/"* ]]; then
+
+if [[ $REMOTE == "/"* ]]; then # True if the REMOTE begins with a '/'.
     REMOTE="$LXPLUS_WORKSPACE$REMOTE"
-elif [[ $REMOTE == "." ]]; then
+elif [[ $REMOTE == "." ]]; then # True if the REMOTE is a single '.'
     REMOTE="$LXPLUS_WORKSPACE/"
 else
     REMOTE="$LXPLUS_WORKSPACE/$REMOTE"
@@ -33,16 +37,11 @@ fi
 # The parameters given to the scp command
 PARAMS="$LOCAL $LXPLUS_REMOTE:$REMOTE"
 
-echo "****************************************"
-echo "(in my best mario voice) HERE WE GO!"
-
 if [ -d "$SOURCE" ]; then
-  echo "Copying directory $LOCAL to $REMOTE"
-  scp -r $PARAMS
+  print_info "Copying directory '$LOCAL' to '$REMOTE' ..."
+  execute "scp -r $PARAMS"
 else
-  echo "Copying file $LOCAL to $REMOTE"
-  scp $PARAMS
+  print_info "Copying file '$LOCAL' to '$REMOTE'..."
+  execute "scp $PARAMS"
 fi
 
-echo "That's all, folks!"
-echo "****************************************"
