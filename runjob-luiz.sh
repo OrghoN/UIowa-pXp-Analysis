@@ -48,8 +48,8 @@ do
         # Check if the job directory already exists, indicating that the job has
         # already been ran.
         if [ -d $JOB_DIR ]; then
-            print_error "Directory $JOB_DIR already exists!"
-            print_error "Make sure the job hasn't already ran."
+            print_err "Directory $JOB_DIR already exists!"
+            print_err "Make sure the job hasn't already ran."
             exit 1
         fi        
 
@@ -58,8 +58,8 @@ do
 
         # Ensure the output file doesn't already exist as well.
         if [ -f "$OUTPUT_FILE" ]; then
-            print_error "$OUTPUT_FILE exists already!"
-            print_error "Have you already ran this job?"
+            print_err "$OUTPUT_FILE exists already!"
+            print_err "Have you already ran this job?"
             exit 1
         fi
 
