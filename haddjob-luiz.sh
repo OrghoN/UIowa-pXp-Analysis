@@ -8,16 +8,16 @@ JOB_DIR_PREFIX="submit-"
 
 # All of the inputs to "submit-condorRP.csh" are located here along with a 
 # corresponding job_id.
-JOB_CSV="all-trks.csv"
+JOB_CSV="all-trks-luiz.csv"
 
 
 if (( $# != 1 )); then
     echo "****************************************"
-    echo "Hadd one of the jobs from all-trks."
+    echo "Hadd one of the jobs from all-trks-luiz."
     echo "The job_ids are numbered 1-14."
     echo ""
     echo "Usage:"
-    echo "./haddjob.sh <job_id>"
+    echo "./haddjob-luiz.sh <job_id>"
     echo "****************************************"
     exit 1
 fi
