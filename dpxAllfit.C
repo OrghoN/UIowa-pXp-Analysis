@@ -1,0 +1,89 @@
+// Quadratic background function
+Double_t background(Double_t *x, Double_t *par) {
+   return par[0] + par[1]*x[0] + par[2]*x[0]*x[0];
+}
+
+// Lorenzian Peak function
+Double_t lorentzianPeak(Double_t *x, Double_t *par) {
+  return (0.5*par[0]*par[1]/TMath::Pi()) /
+    TMath::Max( 1.e-10,(x[0]-par[2])*(x[0]-par[2])
+   + .25*par[1]*par[1]);
+}
+
+// Sum of background and peak function
+Double_t fitFunction(Double_t *x, Double_t *par) {
+  return background(x,par) + lorentzianPeak(x,&par[3]);
+}
+
+   TCanvas *c1 = new TCanvas("c1","Balance",10,10,700,500);
+   c1->SetFillColor(33);
+   c1->SetFrameFillColor(41);
+   c1->SetGrid();
+
+//   TH1F *hdpy = new TH1F("histo",
+//      "Lorentzian Peak on Quadratic Background",500,-0.5,0.5);
+   hdpxAll->SetMarkerStyle(21);
+   hdpxAll->SetMarkerSize(0.8);
+//hdpxAll->SetStats(0);
+
+   // create a TF1 with the range from -0.5 to 0.5 and 6 parameters
+   TF1 *fitFcn = new TF1("fitFcn",fitFunction,-0.5,0.5,6);
+   fitFcn->SetNpx(500);
+   fitFcn->SetLineWidth(4);
+   fitFcn->SetLineColor(kMagenta);
+
+   // first try without starting values for the parameters
+   // This defaults to 1 for each param.
+   // this results in an ok fit for the polynomial function
+   // however the non-linear part (lorenzian) does not
+   // respond well.
+   fitFcn->SetParameters(1,1,1,1,1,1);
+   hdpxAll->Fit("fitFcn","0");
+
+   // second try: set start values for some parameters
+   fitFcn->SetParameter(4,0.01); // width
+   fitFcn->SetParameter(5,0);   // peak
+   hdpxAll->GetYaxis()->SetRangeUser(0,32000);
+   hdpxAll->Fit("fitFcn","V+","ep");
+
+   // improve the picture:
+   TF1 *backFcn = new TF1("backFcn",background,-0.5,0.5,3);
+   backFcn->SetLineColor(kRed);
+   TF1 *signalFcn = new TF1("signalFcn",lorentzianPeak,-0.5,0.5,3);
+   signalFcn->SetLineColor(kBlue);
+   signalFcn->SetNpx(500);
+   Double_t par[6];
+
+// writes the fit results into the par array
+   fitFcn->GetParameters(par);
+
+   backFcn->SetParameters(par);
+   backFcn->Draw("same");
+
+   signalFcn->SetParameters(&par[3]);
+   signalFcn->Draw("same");
+
+   // draw the legend
+   TLegend *legend=new TLegend(0.585,0.683,0.879,0.850);
+   legend->SetTextFont(72);
+   legend->SetTextSize(0.03);
+   legend->AddEntry(hdpxAll,"Data","lpe");
+   legend->AddEntry(backFcn,"Background fit","l");
+   legend->AddEntry(signalFcn,"Signal fit","l");
+   legend->AddEntry(fitFcn,"Global Fit","l");
+   legend->Draw();
+
+//signalFcn->Integral(-0.5,0.5);
+double r = signalFcn->Integral(-0.2,0.2);
+std::cout << " r = " << r << std::endl
+
+double rr = backFcn->Integral(-0.2,0.2);
+std::cout << " rr = " << rr << std::endl
+
+double rrr = fitFcn->Integral(-0.2,0.2);
+std::cout << " rrrr = " << rrr << std::endl
+
+double rrrr = fitFcn->Integral(-0.5,0.5);
+std::cout << " rrrr = " << rrrr << std::endl
+
+//main->Fit("func","QWEMR"); // or with likelihood: "LQWEMR"
