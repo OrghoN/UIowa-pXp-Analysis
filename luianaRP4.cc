@@ -37,6 +37,7 @@
 
 #include "analysis_tools_Mirko2015.h"
 //#include "rp_aperture_config.h"
+//#include "V0Fitter.h"
 
 //STANDARD C++ INCLUDES
 #include <iostream>
@@ -341,6 +342,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
   histosTH1F["hntrk0"] = new TH1F("hntrk0","Ntrk",150,0,150);
   histosTH1F["hntrk"] = new TH1F("hntrk","Ntrk for nPixelHits>0",150,0,150);
+  histosTH1F["hntrk4q0"] = new TH1F("hntrk4q0","Ntrk for nPixelHits>0 Q=0",150,0,150);
   histosTH1F["hntrkvtx"] = new TH1F("hntrkvtx","Ntrkvtx",150,0,150);
   histosTH1F["hntrkvtx0"] = new TH1F("hntrkvtx0","Ntrkvtx0",150,0,150);
   histosTH1F["hntrkvtx2"] = new TH1F("hntrkvtx2","Ntrkvtx2",150,0,150);
@@ -361,8 +363,8 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
   //...Kshorts
   histosTH1F["hnks"] = new TH1F("hnks","N Kshorts",10,0,10);
-  histosTH2F["hntrknks"] = new TH2F("hntrknks","# of Vees vs # of Tracks",150,0,150,10,0,10);
-  histosTH2F["hnvtxnks"] = new TH2F("hnvtxnks","# of Vees vs # of Vertices",150,0,150,10,0,10);
+  histosTH2F["hntrknks"] = new TH2F("hntrknks","# of K0s Vees vs # of Tracks",150,0,150,10,0,10);
+  histosTH2F["hnvtxnks"] = new TH2F("hnvtxnks","# of K0s Vees vs # of Vertices",150,0,150,10,0,10);
   histosTH2F["hntrknvtx"] = new TH2F("hntrknvtx","# of Vertices vs # of Tracks",150,0,150,150,0,150);
   histosTH1F["hksvertexx"] = new TH1F("hksvertexx","K0s X vertex",120,-30.,30.);
   histosTH1F["hksvertexy"] = new TH1F("hksvertexy","K0s Y vertex",120,-30.,30.);
@@ -385,7 +387,9 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
 
   //...Lambdas
-  histosTH1F["hnlam"] = new TH1F("hnlam","N #Lambda's",10,0,10);
+  histosTH1F["hnlam"] = new TH1F("hnlam","N Lambdas",10,0,10);
+  histosTH2F["hntrknlam"] = new TH2F("hntrknlam","# of #Lambda Vees vs # of Tracks",150,0,150,10,0,10);
+  histosTH2F["hnvtxnlam"] = new TH2F("hnvtxnlam","# of #Lambda Vees vs # of Vertices",150,0,150,10,0,10);
   histosTH1F["hlamvertexx"] = new TH1F("hlamvertexx","#Lambda X vertex",120,-30.,30.);
   histosTH1F["hlamvertexy"] = new TH1F("hlamvertexy","#Lambda Y vertex",120,-30.,30.);
   histosTH1F["hlamvertexz"] = new TH1F("hlamvertexz","#Lambda Z vertex",120,-30.,30.);
@@ -491,6 +495,27 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   //histosTH1F["hm2recEE"] = new TH1F("hm2recEE","M_{2e} ",massbins,0,5.);
   //histosTH1F["hm2recpp"] = new TH1F("hm2recpp","M_{2p} ",massbins,0,5.);
 
+  //...transverse impact parameter histograms d0 (dxy)
+  histosTH1F["hd01"] = new TH1F("hd01","d01 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hd02"] = new TH1F("hd02","d02 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hd03"] = new TH1F("hd03","d03 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hd04"] = new TH1F("hd04","d04 ntrk=4 OS",5000,-5.,5.);
+  //...longitudinal impact parameter histograms dz
+  histosTH1F["hdz1"] = new TH1F("hdz1","dz1 ntrk=4 OS",4000,-20.,20.);
+  histosTH1F["hdz2"] = new TH1F("hdz2","dz2 ntrk=4 OS",4000,-20.,20.);
+  histosTH1F["hdz3"] = new TH1F("hdz3","dz3 ntrk=4 OS",4000,-20.,20.);
+  histosTH1F["hdz4"] = new TH1F("hdz4","dz4 ntrk=4 OS",4000,-20.,20.);
+  //..transverse impact parameter histograms vtxdxy
+  histosTH1F["hvtxdxy1"] = new TH1F("hvtxdxy1","vtxdxy1 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdxy2"] = new TH1F("hvtxdxy2","vtxdxy2 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdxy3"] = new TH1F("hvtxdxy3","vtxdxy3 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdxy4"] = new TH1F("hvtxdxy4","vtxdxy4 ntrk=4 OS",5000,-5.,5.);
+  //...longitudinal impact parameter histograms vtxdz
+  histosTH1F["hvtxdz1"] = new TH1F("hvtxdz1","vtxdz1 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdz2"] = new TH1F("hvtxdz2","vtxdz2 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdz3"] = new TH1F("hvtxdz3","vtxdz3 ntrk=4 OS",5000,-5.,5.);
+  histosTH1F["hvtxdz4"] = new TH1F("hvtxdz4","vtxdz4 ntrk=4 OS",5000,-5.,5.);
+  
   //...OS-SS
   histosTH1F["hm2recOS"] = new TH1F("hm2recOS","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm2recOS2"] = new TH1F("hm2recOS2","M_{4#pi} OS",2.0*massbins,0,10.);
@@ -504,14 +529,22 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
 
   //...2OS-2SS
   histosTH1F["hm2rec2OS"] = new TH1F("hm2rec2OS","M_{4#pi} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OSm1234"] = new TH1F("hm2rec2OSm1234","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSm1324"] = new TH1F("hm2rec2OSm1324","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSm12"] = new TH1F("hm2rec2OSm12","M_{4#pi} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OSm34"] = new TH1F("hm2rec2OSm34","M_{4#pi} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OSm13"] = new TH1F("hm2rec2OSm13","M_{4#pi} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OSm24"] = new TH1F("hm2rec2OSm24","M_{4#pi} OS mass selection",massbins,0,5.);
+  //
   histosTH1F["hm2rec2OSvee"] = new TH1F("hm2rec2OSvee","M_{4#pi} OS",massbins,0,5.);
   //
   histosTH1F["hm2rec2OSvee11"] = new TH1F("hm2rec2OSvee11","M_{K#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OSvee02"] = new TH1F("hm2rec2OSvee02","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSvee02"] = new TH1F("hm2rec2OSvee02","M_{4#pi} OS",2*massbins,0,10.);
   histosTH1F["hm2rec2OSvee01"] = new TH1F("hm2rec2OSvee01","M_{2#pi} OS",massbins,0,5.);
   //
   histosTH1F["hm2rec2OSveeno11"] = new TH1F("hm2rec2OSveeno11","M_{K#pi} OS",massbins,0,5.);
-  histosTH1F["hm2rec2OSveeno02"] = new TH1F("hm2rec2OSveeno02","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm2rec2OSveeno02"] = new TH1F("hm2rec2OSveeno02","M_{4#pi} OS",2*massbins,0,10.);
   histosTH1F["hm2rec2OSveeno01"] = new TH1F("hm2rec2OSveeno01","M_{4#pi} OS",massbins,0,5.);
 
   histosTH1F["hm2rec2OSvee11a"] = new TH1F("hm2rec2OSvee11a","M_{K#pi} OS",massbins,0,5.);
@@ -559,6 +592,11 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   histosTH1F["hm2rec2OS_pi3pi4"] = new TH1F("hm2rec2OS_pi3pi4","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi1pi3"] = new TH1F("hm2rec2OS_pi1pi3","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi2pi4"] = new TH1F("hm2rec2OS_pi2pi4","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+  //
+  histosTH1F["hm2rec2OS_pi1pi2m"] = new TH1F("hm2rec2OS_pi1pi2m","M_{#pi_{1}#pi_{2}} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi3pi4m"] = new TH1F("hm2rec2OS_pi3pi4m","M_{#pi_{3}#pi_{4}} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi1pi3m"] = new TH1F("hm2rec2OS_pi1pi3m","M_{#pi_{1}#pi_{3}} OS mass selection",massbins,0,5.);
+  histosTH1F["hm2rec2OS_pi2pi4m"] = new TH1F("hm2rec2OS_pi2pi4m","M_{#pi_{2}#pi_{4}} OS mass selection",massbins,0,5.);
   //...v2
   histosTH1F["hm2rec2OS_pi1pi2v2"] = new TH1F("hm2rec2OS_pi1pi2v2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   histosTH1F["hm2rec2OS_pi3pi4v2"] = new TH1F("hm2rec2OS_pi3pi4v2","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
@@ -1301,6 +1339,7 @@ void anaRP(vector<string> const& fileNames, string const& outputFileName = "outp
   M215M(5,4)= 0.000000000000000e+00   ;
   M215M(5,5)= 1.000000000000000e+00   ;
 
+  /*
   //...Luiz
 TMatrix M213P(6,6);
 
@@ -1380,16 +1419,20 @@ M213M(5,3)= 0.000000000000000e+00   ;
 M213M(5,4)= 0.000000000000000e+00   ;
 M213M(5,5)= 1.000000000000000e+00   ;
 
+  */
  
   AlltransportMatrixPlus.insert(std::make_pair(220,M220P));
   AlltransportMatrixMinus.insert(std::make_pair(220,M220M));
 
   AlltransportMatrixPlus.insert(std::make_pair(215,M215P));
   AlltransportMatrixMinus.insert(std::make_pair(215,M215M));
+
+  /*
   //...Luiz
   AlltransportMatrixPlus.insert(std::make_pair(213,M213P));
   AlltransportMatrixMinus.insert(std::make_pair(213,M213M));
-
+  */
+  
   //===================
 
   int i_tot = 0 , nevt_tot = 0;
@@ -1953,6 +1996,16 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
        //...Luiz
        double m_p = 0.9382720813;
+            
+       //...................................
+       //...................................
+       //...K0 mass = 0.497611
+       //      Lx = 0.0268m
+       //...K+/- mass = 0,493677
+       //...Lambda mass = 1,115683
+       //          Lx = 0.0789m
+       //...................................
+       //...................................
        
        //-------------------------------
        //accept only 9919, 9922
@@ -2039,6 +2092,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
        bool fiducialRegion = false;
        bool fiducialRegionK = false;
        double etaCut= 2.5;
+       //double etaCut= 7.0;
        bool fiducialRegionPt = false;
        bool fiducialRegionPtK = false;
        //double ptCut= 0.2;
@@ -2152,18 +2206,45 @@ M213M(5,5)= 1.000000000000000e+00   ;
        double d0array[4]={0.,0.,0.,0.};
        double dzarray[4]={0.,0.,0.,0.};
        int pidarray[4]={0,0,0,0};
+       double vtxdxyarray[4]={0.,0.,0.,0.};
+       double vtxdzarray[4]={0.,0.,0.,0.};
        //...ordering
        int arraych[4]={0,0,0,0};
        double arraychi2[4]={0.,0.,0.,0.};
        double arrayd0[4]={0.,0.,0.,0.};
        double arraydz[4]={0.,0.,0.,0.};
        int arraypid[4]={0,0,0,0};
+       double arrayvtxdxy[4]={0.,0.,0.,0.};
+       double arrayvtxdz[4]={0.,0.,0.,0.};
       
        int ntrk0=0;
        int ntrk=0;
        int ntrkvtx=0;    
 
-       std::cout << " *** <<charge>> ***   " << std::endl;
+       int ntrk4q0=0;
+
+       // ...transverse impact parameter distribution 
+       double d01 = 0.0; 
+       double d02 = 0.0;
+       double d03 = 0.0;
+       double d04 = 0.0;
+       // ...longitudinal impact parameter distribution 
+       double dz1 = 0.0; 
+       double dz2 = 0.0;
+       double dz3 = 0.0;
+       double dz4 = 0.0;
+       // ...transverse impact parameter distribution 
+       double vtxdxy1 = 0.0; 
+       double vtxdxy2 = 0.0;
+       double vtxdxy3 = 0.0;
+       double vtxdxy4 = 0.0;
+       // ...longitudinal impact parameter distribution 
+       double vtxdz1 = 0.0; 
+       double vtxdz2 = 0.0;
+       double vtxdz3 = 0.0;
+       double vtxdz4 = 0.0;
+
+       //std::cout << " *** <<charge>> ***   " << std::endl;
 	 
        //       for(TrackCollection::const_iterator itTrack = tracks->begin();itTrack != tracks->end();++itTrack) {
        for(vector<MyTracks>::iterator itTrack = track_coll->begin() ; itTrack != track_coll->end() ; ++itTrack){
@@ -2180,6 +2261,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 double chi2 = itTrack->chi2n;	    
 	 double d0 = itTrack->d0;	    
 	 double dz = itTrack->dz;
+	 double vdxy = itTrack->vtxdxy[0];
+	 double vdz = itTrack->vtxdz[0];
 
 	 histosTH1F["hpt"]->Fill(pt);
 	 histosTH1F["heta"]->Fill(eta);
@@ -2189,7 +2272,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 
 	 ntrk0++;
 	 
-	 if(npixelhits>0){
+	 //if(npixelhits>0){
 	   //    if(npixelhits>0 && TMath::Abs(d0)<1. && TMath::Abs(dz)<20.){
 	   
 	   histosTH1F["hlooper"]->Fill(looper);
@@ -2234,7 +2317,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
 	   //std::cout << "pid2 = " << pid2 << std::endl;
 
-           std::cout << " charge = " << charge << std::endl;
+           //std::cout << " charge = " << charge << std::endl;
 	   
 	   //...beware of the index here
 	   if(ntrk==0){
@@ -2243,6 +2326,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     d0array[0]=d0;
 	     dzarray[0]=dz;
 	     pidarray[0]=pid2;
+	     vtxdxyarray[0]=vdxy;
+	     vtxdzarray[0]=vdz;
 	   }
 	   if(ntrk==1){
 	     charray[1]=charge;	
@@ -2250,6 +2335,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     d0array[1]=d0;
 	     dzarray[1]=dz;
 	     pidarray[1]=pid2;	     
+	     vtxdxyarray[1]=vdxy;
+	     vtxdzarray[1]=vdz;
 	   }
 	   if(ntrk==2){
 	     charray[2]=charge;	
@@ -2257,6 +2344,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     d0array[2]=d0;
 	     dzarray[2]=dz;
 	     pidarray[2]=pid2;
+	     vtxdxyarray[2]=vdxy;
+	     vtxdzarray[2]=vdz;
 	   }
 	   if(ntrk==3){
 	     charray[3]=charge;	
@@ -2264,6 +2353,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	     d0array[3]=d0;
 	     dzarray[3]=dz;
 	     pidarray[3]=pid2;
+	     vtxdxyarray[3]=vdxy;
+	     vtxdzarray[3]=vdz;
 	   }
 
        //...ordering pions and kaons by momentum, index=1 is the highest Pt
@@ -2280,101 +2371,147 @@ M213M(5,5)= 1.000000000000000e+00   ;
        arraychi2[0]=chi2array[0];
 	 arrayd0[0]=d0array[0];
 	 arraydz[0]=dzarray[0];
-        arraypid[0]=pidarray[0];}
+        arraypid[0]=pidarray[0];
+	arrayvtxdxy[0]=vtxdxyarray[0];
+	arrayvtxdz[0]=vtxdzarray[0];}
+      
        if(piVec[3]!=0.0 && piVec[3]==piB.Pt()){ pi1 = piB ; 
 	 arraych[0]=charray[1];
        arraychi2[0]=chi2array[1];
 	 arrayd0[0]=d0array[1];
 	 arraydz[0]=dzarray[1];
-        arraypid[0]=pidarray[1];}
+        arraypid[0]=pidarray[1];
+	arrayvtxdxy[0]=vtxdxyarray[1];
+	arrayvtxdz[0]=vtxdzarray[1];}
+ 
        if(piVec[3]!=0.0 && piVec[3]==piC.Pt()){ pi1 = piC ; 
 	 arraych[0]=charray[2];
        arraychi2[0]=chi2array[2];
 	 arrayd0[0]=d0array[2];
 	 arraydz[0]=dzarray[2];
-        arraypid[0]=pidarray[2];}
+        arraypid[0]=pidarray[2];
+       	arrayvtxdxy[0]=vtxdxyarray[2];
+	arrayvtxdz[0]=vtxdzarray[2];}
+ 
        if(piVec[3]!=0.0 && piVec[3]==piD.Pt()){ pi1 = piD ; 
 	 arraych[0]=charray[3];
        arraychi2[0]=chi2array[3];
 	 arrayd0[0]=d0array[3];
 	 arraydz[0]=dzarray[3];
-	arraypid[0]=pidarray[3];}
+	arraypid[0]=pidarray[3];
+	arrayvtxdxy[0]=vtxdxyarray[3];
+	arrayvtxdz[0]=vtxdzarray[3];}
+ 
        //	 
        if(piVec[2]!=0.0 && piVec[2]==piA.Pt()){ pi2 = piA ; 
 	 arraych[1]=charray[0];
        arraychi2[1]=chi2array[0];
 	 arrayd0[1]=d0array[0];
 	 arraydz[1]=dzarray[0];
-        arraypid[1]=pidarray[0];}
+        arraypid[1]=pidarray[0];
+       	arrayvtxdxy[1]=vtxdxyarray[0];
+	arrayvtxdz[1]=vtxdzarray[0];}
+
        if(piVec[2]!=0.0 && piVec[2]==piB.Pt()){ pi2 = piB ; 
 	 arraych[1]=charray[1];
        arraychi2[1]=chi2array[1];
 	 arrayd0[1]=d0array[1];
 	 arraydz[1]=dzarray[1];
-	arraypid[1]=pidarray[1];}
+	arraypid[1]=pidarray[1];
+       	arrayvtxdxy[1]=vtxdxyarray[1];
+	arrayvtxdz[1]=vtxdzarray[1];}
+	
        if(piVec[2]!=0.0 && piVec[2]==piC.Pt()){ pi2 = piC ; 
 	 arraych[1]=charray[2];
        arraychi2[1]=chi2array[2];
 	 arrayd0[1]=d0array[2];
 	 arraydz[1]=dzarray[2];
-	arraypid[1]=pidarray[2];}
+	arraypid[1]=pidarray[2];
+       	arrayvtxdxy[1]=vtxdxyarray[2];
+	arrayvtxdz[1]=vtxdzarray[2];}
+	
        if(piVec[2]!=0.0 && piVec[2]==piD.Pt()){ pi2 = piD ; 
 	 arraych[1]=charray[3];
        arraychi2[1]=chi2array[3];
 	 arrayd0[1]=d0array[3];
 	 arraydz[1]=dzarray[3];
-	arraypid[1]=pidarray[3];}
+	arraypid[1]=pidarray[3];
+       	arrayvtxdxy[1]=vtxdxyarray[3];
+	arrayvtxdz[1]=vtxdzarray[3];}
+       
        //	 
        if(piVec[1]!=0.0 && piVec[1]==piA.Pt()){ pi3 = piA ; 
 	 arraych[2]=charray[0];
        arraychi2[2]=chi2array[0];
 	 arrayd0[2]=d0array[0];
 	 arraydz[2]=dzarray[0];
-        arraypid[2]=pidarray[0];}
+        arraypid[2]=pidarray[0];
+       	arrayvtxdxy[2]=vtxdxyarray[0];
+	arrayvtxdz[2]=vtxdzarray[0];}
+	
        if(piVec[1]!=0.0 && piVec[1]==piB.Pt()){ pi3 = piB ; 
 	 arraych[2]=charray[1];
 	 arraychi2[2]=chi2array[1];
 	 arrayd0[2]=d0array[1];
 	 arraydz[2]=dzarray[1];
-	 arraypid[2]=pidarray[1];}
+	 arraypid[2]=pidarray[1];
+       	arrayvtxdxy[2]=vtxdxyarray[1];
+	arrayvtxdz[2]=vtxdzarray[1];}
+
        if(piVec[1]!=0.0 && piVec[1]==piC.Pt()){ pi3 = piC ; 
 	 arraych[2]=charray[2];
        arraychi2[2]=chi2array[2];
 	 arrayd0[2]=d0array[2];
 	 arraydz[2]=dzarray[2];
-	arraypid[2]=pidarray[2];}
+	arraypid[2]=pidarray[2];
+       	arrayvtxdxy[2]=vtxdxyarray[2];
+	arrayvtxdz[2]=vtxdzarray[2];}
+	
        if(piVec[1]!=0.0 && piVec[1]==piD.Pt()){ pi3 = piD ; 
 	 arraych[2]=charray[3];
        arraychi2[2]=chi2array[3];
 	 arrayd0[2]=d0array[3];
 	 arraydz[2]=dzarray[3];
-	arraypid[2]=pidarray[3];}
+	arraypid[2]=pidarray[3];
+       	arrayvtxdxy[2]=vtxdxyarray[3];
+	arrayvtxdz[2]=vtxdzarray[3];}
+	
        //
        if(piVec[0]!=0.0 && piVec[0]==piA.Pt()){ pi4 = piA ; 
 	 arraych[3]=charray[0];
        arraychi2[3]=chi2array[0];
 	 arrayd0[3]=d0array[0];
 	 arraydz[3]=dzarray[0];
-	arraypid[3]=pidarray[0];}
+	arraypid[3]=pidarray[0];
+       	arrayvtxdxy[3]=vtxdxyarray[0];
+	arrayvtxdz[3]=vtxdzarray[0];}
+	
        if(piVec[0]!=0.0 && piVec[0]==piB.Pt()){ pi4 = piB ; 
 	 arraych[3]=charray[1];
        arraychi2[3]=chi2array[1];
 	 arrayd0[3]=d0array[1];
 	 arraydz[3]=dzarray[1];
-	arraypid[3]=pidarray[1];}
+	arraypid[3]=pidarray[1];
+       	arrayvtxdxy[3]=vtxdxyarray[1];
+	arrayvtxdz[3]=vtxdzarray[1];}
+	
        if(piVec[0]!=0.0 && piVec[0]==piC.Pt()){ pi4 = piC ; 
 	 arraych[3]=charray[2];
        arraychi2[3]=chi2array[2];
 	 arrayd0[3]=d0array[2];
 	 arraydz[3]=dzarray[2];
-	arraypid[3]=pidarray[2];}
+	arraypid[3]=pidarray[2];
+       	arrayvtxdxy[3]=vtxdxyarray[2];
+	arrayvtxdz[3]=vtxdzarray[2];}
+	
        if(piVec[0]!=0.0 && piVec[0]==piD.Pt()){ pi4 = piD ; 
 	 arraych[3]=charray[3];       
        arraychi2[3]=chi2array[3];       
 	 arrayd0[3]=d0array[3];       
 	 arraydz[3]=dzarray[3];       
-	arraypid[3]=pidarray[3];}
-
+	arraypid[3]=pidarray[3];
+       	arrayvtxdxy[3]=vtxdxyarray[3];
+	arrayvtxdz[3]=vtxdzarray[3];}
   
 	   //-----------------------
 	   double eneK=TMath::Sqrt(pt*pt+pz*pz+m_k*m_k);
@@ -2427,8 +2564,10 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
 	   ntrk++;
 
-	   } //...end of npixelhits>0
+	   //} //...end of npixelhits>0
+	 //itTrack->Print();
 	   } //...end of MyTracks
+
 
 	   //-----------------------
 	   //double eneM=TMath::Sqrt(pt*pt+pz*pz+m_mu*m_mu);
@@ -2520,35 +2659,39 @@ M213M(5,5)= 1.000000000000000e+00   ;
        std::cout << "pidarray[1] = " << pidarray[1] << std::endl;
        std::cout << "pidarray[2] = " << pidarray[2] << std::endl;
        std::cout << "pidarray[3] = " << pidarray[3] << std::endl;
-       std::cout << "pidarrayk[0] = " << pidarrayk[0] << std::endl;
-       std::cout << "pidarrayk[1] = " << pidarrayk[1] << std::endl;
-       std::cout << "pidarrayk[2] = " << pidarrayk[2] << std::endl;
-       std::cout << "pidarrayk[3] = " << pidarrayk[3] << std::endl;
 	   */
-
 	   /*
        std::cout << " piA.Pt() = " << piA.Pt() << std::endl;
        std::cout << " piB.Pt() = " << piB.Pt() << std::endl;
        std::cout << " piC.Pt() = " << piC.Pt() << std::endl;
        std::cout << " piD.Pt() = " << piD.Pt() << std::endl;
-       //
+	   */
+	   /*
+       std::cout << " track1.Pt() = " << pi1.Pt() << std::endl;
+       std::cout << " track2.Pt() = " << pi2.Pt() << std::endl;
+       std::cout << " track3.Pt() = " << pi3.Pt() << std::endl;
+       std::cout << " track4.Pt() = " << pi4.Pt() << std::endl;
+	   */
+       /*
        std::cout << " pi1.Pt() = " << pi1.Pt() << std::endl;
        std::cout << " pi2.Pt() = " << pi2.Pt() << std::endl;
        std::cout << " pi3.Pt() = " << pi3.Pt() << std::endl;
        std::cout << " pi4.Pt() = " << pi4.Pt() << std::endl;
-      
+       */
+           /*
        std::cout << " kA.Pt() = " << kA.Pt() << std::endl;
        std::cout << " kB.Pt() = " << kB.Pt() << std::endl;
        std::cout << " kC.Pt() = " << kC.Pt() << std::endl;
        std::cout << " kD.Pt() = " << kD.Pt() << std::endl;
-       //
+	   */
+       /*
        std::cout << " k1.Pt() = " << k1.Pt() << std::endl;
        std::cout << " k2.Pt() = " << k2.Pt() << std::endl;
        std::cout << " k3.Pt() = " << k3.Pt() << std::endl;
        std::cout << " k4.Pt() = " << k4.Pt() << std::endl;       
-	   */
+       */  
 
-	   /*
+       /*
        std::cout << "***charge***   " << std::endl;
        std::cout << "charray[0] = " << charray[0] << std::endl;
        std::cout << "charray[1] = " << charray[1] << std::endl;
@@ -2558,7 +2701,19 @@ M213M(5,5)= 1.000000000000000e+00   ;
        std::cout << "arraych[1] = " << arraych[1] << std::endl;
        std::cout << "arraych[2] = " << arraych[2] << std::endl;
        std::cout << "arraych[3] = " << arraych[3] << std::endl;
-	   */
+       */
+       
+       /*
+       std::cout << "*** d0 ***   " << std::endl;
+       std::cout << "d0array[0] = " << d0array[0] << std::endl;
+       std::cout << "d0array[1] = " << d0array[1] << std::endl;
+       std::cout << "d0array[2] = " << d0array[2] << std::endl;
+       std::cout << "d0array[3] = " << d0array[3] << std::endl;
+       std::cout << "arrayd0[0] = " << arrayd0[0] << std::endl;
+       std::cout << "arrayd0[1] = " << arrayd0[1] << std::endl;
+       std::cout << "arrayd0[2] = " << arrayd0[2] << std::endl;
+       std::cout << "arrayd0[3] = " << arrayd0[3] << std::endl;
+       */  
 
        //...reseting to original definition with new order
 
@@ -2567,24 +2722,32 @@ M213M(5,5)= 1.000000000000000e+00   ;
          d0array[0] =   arrayd0[0] ;// d0;
          dzarray[0] =   arraydz[0] ;// dz;
         pidarray[0] =  arraypid[0] ;// pid2;
+     vtxdxyarray[0] = arrayvtxdxy[0];//vtxdxy;
+      vtxdzarray[0] =  arrayvtxdz[0];//vtxdz;
 	//
 	 charray[1] =   arraych[1] ;// charge;	
        chi2array[1] = arraychi2[1] ;// chi2;
          d0array[1] =   arrayd0[1] ;// d0;
          dzarray[1] =   arraydz[1] ;// dz;
         pidarray[1] =  arraypid[1] ;// pid2;
+     vtxdxyarray[1] = arrayvtxdxy[1];//vtxdxy;
+      vtxdzarray[1] =  arrayvtxdz[1];//vtxdz;
 	//
          charray[2] =   arraych[2] ;// charge;	
        chi2array[2] = arraychi2[2] ;// chi2;
 	 d0array[2] =   arrayd0[2] ;// d0;
 	 dzarray[2] =   arraydz[2] ;// dz;
 	pidarray[2] =  arraypid[2] ;// pid2;
+     vtxdxyarray[2] = arrayvtxdxy[2];//vtxdxy;
+      vtxdzarray[2] =  arrayvtxdz[2];//vtxdz;
 	//
          charray[3] =   arraych[3] ;// charge;	
        chi2array[3] = arraychi2[3] ;// chi2;
 	 d0array[3] =   arrayd0[3] ;// d0;
 	 dzarray[3] =   arraydz[3] ;// dz;
 	pidarray[3] =  arraypid[3] ;// pid2;
+     vtxdxyarray[3] = arrayvtxdxy[3];//vtxdxy;
+      vtxdzarray[3] =  arrayvtxdz[3];//vtxdz;
 	//
 
 	/*
@@ -2595,6 +2758,76 @@ M213M(5,5)= 1.000000000000000e+00   ;
        std::cout << "charray[3] = " << charray[3] << std::endl;
 	*/
 
+       
+	/*
+	//...finding the tracks connected to the primary vertex using impact parameter...type:11 only
+	bool isTrack1 = false ;
+	bool isTrack2 = false ;
+	bool isTrack3 = false ;
+	bool isTrack4 = false ;
+        vector<Double_t> d0Vec = { TMath::Abs(d0array[0]), TMath::Abs(d0array[1]), TMath::Abs(d0array[2]), TMath::Abs(d0array[3]) };
+        //
+        sort(d0Vec.begin(), d0Vec.end());
+        //	  
+        if(d0Vec[0]!=0.0 && d0Vec[0]==TMath::Abs(d0array[0])){ isTrack1 = true ; }
+        if(d0Vec[0]!=0.0 && d0Vec[0]==TMath::Abs(d0array[1])){ isTrack2 = true ; }
+        if(d0Vec[0]!=0.0 && d0Vec[0]==TMath::Abs(d0array[2])){ isTrack3 = true ; }
+        if(d0Vec[0]!=0.0 && d0Vec[0]==TMath::Abs(d0array[3])){ isTrack4 = true ; }       
+	//	
+	if(d0Vec[1]!=0.0 && d0Vec[1]==TMath::Abs(d0array[0])){ isTrack1 = true ; }
+        if(d0Vec[1]!=0.0 && d0Vec[1]==TMath::Abs(d0array[1])){ isTrack2 = true ; }
+        if(d0Vec[1]!=0.0 && d0Vec[1]==TMath::Abs(d0array[2])){ isTrack3 = true ; }
+        if(d0Vec[1]!=0.0 && d0Vec[1]==TMath::Abs(d0array[3])){ isTrack4 = true ; }
+	*/
+
+	//...finding the tracks connected to the primary vertex using impact parameter...type:11 only
+	bool isTrack1 = false ;
+	bool isTrack2 = false ;
+	bool isTrack3 = false ;
+	bool isTrack4 = false ;
+        vector<Double_t> vdxyVec = { TMath::Abs(vtxdxyarray[0]), TMath::Abs(vtxdxyarray[1]),
+				   TMath::Abs(vtxdxyarray[2]), TMath::Abs(vtxdxyarray[3]) };
+        //
+        sort(vdxyVec.begin(), vdxyVec.end());
+        //	  
+        if(vdxyVec[0]!=0.0 && vdxyVec[0]==TMath::Abs(vtxdxyarray[0])){ isTrack1 = true ; }
+        if(vdxyVec[0]!=0.0 && vdxyVec[0]==TMath::Abs(vtxdxyarray[1])){ isTrack2 = true ; }
+        if(vdxyVec[0]!=0.0 && vdxyVec[0]==TMath::Abs(vtxdxyarray[2])){ isTrack3 = true ; }
+        if(vdxyVec[0]!=0.0 && vdxyVec[0]==TMath::Abs(vtxdxyarray[3])){ isTrack4 = true ; }       
+	//	
+	if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[0])){ isTrack1 = true ; }
+        if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[1])){ isTrack2 = true ; }
+        if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[2])){ isTrack3 = true ; }
+        if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[3])){ isTrack4 = true ; }
+
+	/*
+	bool isTrack1 = false ;
+	bool isTrack2 = false ;
+	bool isTrack3 = false ;
+	bool isTrack4 = false ;
+
+	double rimpact[4]={0.,0.,0.,0.};
+	
+	rimpact[0] = TMath::Sqrt(d0array[0]*d0array[0]+dzarray[0]*dzarray[0]);
+	rimpact[1] = TMath::Sqrt(d0array[1]*d0array[1]+dzarray[1]*dzarray[1]);
+	rimpact[2] = TMath::Sqrt(d0array[2]*d0array[2]+dzarray[2]*dzarray[2]);
+	rimpact[3] = TMath::Sqrt(d0array[3]*d0array[3]+dzarray[3]*dzarray[3]);
+
+	  vector<Double_t> rimpVec = { rimpact[0], rimpact[1], rimpact[2], rimpact[3] };
+        //
+        sort(rimpVec.begin(), rimpVec.end());
+        //	  
+        if(rimpVec[0]!=0.0 && rimpVec[0]==rimpact[0]){ isTrack1 = true ; }
+        if(rimpVec[0]!=0.0 && rimpVec[0]==rimpact[1]){ isTrack2 = true ; }
+        if(rimpVec[0]!=0.0 && rimpVec[0]==rimpact[2]){ isTrack3 = true ; }
+        if(rimpVec[0]!=0.0 && rimpVec[0]==rimpact[3]){ isTrack4 = true ; }       
+	//	
+	if(rimpVec[1]!=0.0 && rimpVec[1]==rimpact[0]){ isTrack1 = true ; }
+        if(rimpVec[1]!=0.0 && rimpVec[1]==rimpact[1]){ isTrack2 = true ; }
+        if(rimpVec[1]!=0.0 && rimpVec[1]==rimpact[2]){ isTrack3 = true ; }
+        if(rimpVec[1]!=0.0 && rimpVec[1]==rimpact[3]){ isTrack4 = true ; }
+	*/
+	
 	   /*
      pi1pi2 pi3k4
      pi1pi3 pi2k4
@@ -2641,7 +2874,55 @@ M213M(5,5)= 1.000000000000000e+00   ;
        histosTH1F["hntrk0"]->Fill(ntrk0);
        histosTH1F["hntrk"]->Fill(ntrk);
 
+       if(ntrk==4 && totcharge==0){
+	 histosTH1F["hntrk4q0"]->Fill(ntrk);
+       }    
+
+       // ...transverse impact parameter distribution d0 (dxy)
+       d01 = d0array[0];
+       d02 = d0array[1];
+       d03 = d0array[2];
+       d04 = d0array[3];
+       // ...longitudinal impact parameter distribution dz
+       dz1 = dzarray[0];
+       dz2 = dzarray[1];
+       dz3 = dzarray[2];
+       dz4 = dzarray[3];
        
+       if(ntrk==4 && totcharge==0){
+	 histosTH1F["hd01"]->Fill(d01);
+	 histosTH1F["hd02"]->Fill(d02);
+	 histosTH1F["hd03"]->Fill(d03);
+	 histosTH1F["hd04"]->Fill(d04);
+	 //
+	 histosTH1F["hdz1"]->Fill(dz1);
+	 histosTH1F["hdz2"]->Fill(dz2);
+	 histosTH1F["hdz3"]->Fill(dz3);
+	 histosTH1F["hdz4"]->Fill(dz4);
+       }    
+       // ...transverse impact parameter distribution vtxdxy
+       vtxdxy1 = vtxdxyarray[0];
+       vtxdxy2 = vtxdxyarray[1];
+       vtxdxy3 = vtxdxyarray[2];
+       vtxdxy4 = vtxdxyarray[3];
+       // ...longitudinal impact parameter distribution vtxdz
+       vtxdz1 = vtxdzarray[0];
+       vtxdz2 = vtxdzarray[1];
+       vtxdz3 = vtxdzarray[2];
+       vtxdz4 = vtxdzarray[3];
+       
+       if(ntrk==4 && totcharge==0){
+	 histosTH1F["hvtxdxy1"]->Fill(vtxdxy1);
+	 histosTH1F["hvtxdxy2"]->Fill(vtxdxy2);
+	 histosTH1F["hvtxdxy3"]->Fill(vtxdxy3);
+	 histosTH1F["hvtxdxy4"]->Fill(vtxdxy4);
+         //	 
+	 histosTH1F["hvtxdz1"]->Fill(vtxdz1);
+	 histosTH1F["hvtxdz2"]->Fill(vtxdz2);
+	 histosTH1F["hvtxdz3"]->Fill(vtxdz3);
+	 histosTH1F["hvtxdz4"]->Fill(vtxdz4);
+       }    
+        
        if(ntrk==0){
 	 int nclusters=  sipixelcluster_coll->size();
 	 int nclusters2= sistripcluster_coll->nStripClusters;
@@ -2651,15 +2932,15 @@ M213M(5,5)= 1.000000000000000e+00   ;
        }
 
        int nvtx=0;
-       //       for(VertexCollection::const_iterator itVtx = vertices->begin();itVtx != vertices->end();++itVtx) {
+       //       for(VertexCollection::const_iterator itVtx = vertices->begin();itVtx != vertices->end();++itVtx){
        for(vector<MyVertex>::iterator itVtx = vertex_coll->begin() ; itVtx != vertex_coll->end() ; ++itVtx){
 	 int vtxisfake = itVtx->fake;
-	 if(vtxisfake==0) nvtx++;    
+	 if(vtxisfake==0) nvtx++;
 	 else continue;
 
 	 ntrkvtx = itVtx->ntracks;
 	 //...Luiz
-	 //////itVtx->Print();
+	 //itVtx->Print();
 
 	 //...nvtx counting is ok
        }
@@ -2676,10 +2957,13 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //not yet vertex cut, checking vertex-finding efficiency
        int  isfake = vertex_coll->begin()->fake;  
        double xvtx = vertex_coll->begin()->x;
-       //double xvtx = vertex_coll->begin()->x; only primary vertex?
+       //double xvtx = vertex_coll->begin()->x; only primary vertex
        double yvtx = vertex_coll->begin()->y;
        double zvtx = vertex_coll->begin()->z;
 
+       //...external...only for nvtx=1
+       //double vtxrad = TMath::Sqrt((xvtx)*(xvtx)+(yvtx)*(yvtx));
+       
        //       double chi2vtx = vertices->begin()->normalizedChi2();
        // not sure if the same variable.
        // myvertex.chi2        = p->chi2();
@@ -2726,11 +3010,15 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 histosTH2F["h2dimksxy"]->Fill(ksvertexx,ksvertexy);
 	 histosTH2F["h2dimksxz"]->Fill(ksvertexx,ksvertexz);
 	 histosTH2F["h2dimksyz"]->Fill(ksvertexy,ksvertexz);
-	 //std::cout << " nks = " << nks << std::endl;
-	 //std::cout << " ksvertexx = " << ksvertexx << std::endl;
-	 //std::cout << " ksvertexy = " << ksvertexy << std::endl;
-	 //std::cout << " ksvertexz = " << ksvertexz << std::endl;
-	 //std::cout << " ksmass = " << ksmass << std::endl;
+	 /*
+	 std::cout << " nks = " << nks << std::endl;
+	 std::cout << " ksvertexx = " << ksvertexx << std::endl;
+	 std::cout << " ksvertexy = " << ksvertexy << std::endl;
+	 std::cout << " ksvertexz = " << ksvertexz << std::endl;
+	 std::cout << " ksmass = " << ksmass << std::endl;
+	 std::cout << " kspt = " << kspt << std::endl;
+	 std::cout << " ksradius = " << ksradius << std::endl;
+	 */
 	 //it_ks->Print();
        }
        //...end Kshort
@@ -2744,9 +3032,14 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //std::cout << " nvtx = " << nvtx << std::endl;
        //std::cout << " isKshort = " << isKshort << std::endl;
        //std::cout << " --------------------------- " << std::endl;
+       //
+       //...external...only for nks=1
+       //double ksx = kshort_coll->begin()->vertexx;
+       //double ksy = kshort_coll->begin()->vertexy;
+       //double ksrad = TMath::Sqrt((ksx-xvtx)*(ksx-xvtx)+(ksy-yvtx)*(ksy-yvtx));
        //................
        
-      /*
+       /*
        //...Kshort...secondaryVertex
        //int  isfake = kshorts_coll->begin()->fake;  
        double xk = kshort_coll->begin()->vertexx;
@@ -2794,6 +3087,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 double lamphi = it_lam->phi;
 	 double lammass = it_lam->mass;
 	 double lamradius = TMath::Sqrt((lamvertexx-xvtx)*(lamvertexx-xvtx)+(lamvertexy-yvtx)*(lamvertexy-yvtx));
+  	 double lamenergy = TMath::Sqrt(lampt*lampt+1.115683*1.115683);
+	 double gammalorentzlam = lamenergy/1.115683;
+	 double lamlifetime = lamradius/gammalorentzlam;  
 	 histosTH1F["hlampt"]->Fill(lampt,wei);
 	 histosTH1F["hlameta"]->Fill(lameta,wei);
 	 histosTH1F["hlamphi"]->Fill(lamphi,wei);
@@ -2809,11 +3105,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 //std::cout << " ksvertexy = " << ksvertexy << std::endl;
 	 //std::cout << " ksvertexz = " << ksvertexz << std::endl;
 	 //std::cout << " ksmass = " << ksmass << std::endl;
-	 //it_ks->Print();
+	 //it_lam->Print();
        }
        //...end Lambda
        histosTH1F["hnlam"]->Fill(nlam);
-
+       histosTH2F["hntrknlam"]->Fill(ntrk,nlam);
+       histosTH2F["hnvtxnlam"]->Fill(nvtx,nlam);
 
        //for vertex plots
        //...Luiz  ntrk==4
@@ -2839,6 +3136,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 if(fiducialRegion && totcharge==0) histosTH1F["hvtx3"]->Fill( isfake );
        }    
 
+       /* Ferenc's recommendation!!
        //...very important...needed for theVees
        //......not this--> if(nvtx!=0 || nvtx!=1) continue;
        if(nvtx!=0){
@@ -2846,6 +3144,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	   if(nvtx!=2) continue;
 	 }
        }
+       */
+       
        //----------------------------
        //invariant mass
        //...Luiz
@@ -3053,19 +3353,19 @@ M213M(5,5)= 1.000000000000000e+00   ;
             } //end of ntrk=4
 	//...end of cut 9
 
-	   //...checking dEdx efficiency 11, 02, 01
+	   //...checking dEdx efficiency 11, 02, 01 ...negating Lambdas !(isLamda) or nlam==0
 	   //...fiducial: each entry in the scatter plot dE/dx vs p is a track!
 	   // int ntrkvee=0;
 	     for(vector<MyTracks>::iterator itTrack = track_coll->begin() ; itTrack != track_coll->end() ; ++itTrack){
 	       int npixelhitsvee = itTrack->nValidPixelHits;
-	       if(npixelhitsvee>0){
-		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==1 && nks==1){
+	       //if(npixelhitsvee>0){
+		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==1 && nks==1 && nlam==0){
 		   histosTH2F["hdedxvee11"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
-		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==2){
+      		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==2 && nlam==0){
 		   histosTH2F["hdedxvee02"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
-		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==1){
+		 if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK && totcharge==0 && isKshort && nvtx==0 && nks==1 && nlam==0){
 		   histosTH2F["hdedxvee01"]->Fill(itTrack->p,itTrack->harmonic2_dEdx);}
-	       }
+		 //}
 	     // ntrkvee++;
 	     // std::cout << " ntrkvee = " << ntrkvee << std::endl;
 	     } //...end of Mytracks-2
@@ -3077,7 +3377,7 @@ M213M(5,5)= 1.000000000000000e+00   ;
         if(fiducialRegion && fiducialRegionPt && fiducialRegionK && fiducialRegionPtK){
         //if(fiducialRegion && fiducialRegionPt){
 
-	  //AA...using PID...not yet
+	  //AA...using PID
       	  if(totcharge==0){
 	       
 	  //...using PID Pions & Kaons for selection=11
@@ -3087,8 +3387,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
 	     if(isKshort){
 
-	     //...one primary & one Vee  //  K+pi- pi+pi-  or  K-pi+ pi+pi- 
-	     if(nvtx==1 && nks==1){
+	     //...one primary & one Vee && no Lambda //  K+pi- pi+pi-  or  K-pi+ pi+pi- 
+	     if(nvtx==1 && nks==1 && nlam==0){
 
       	   /* 
      ...first combining, then select the Q_pairs=0
@@ -3112,6 +3412,8 @@ M213M(5,5)= 1.000000000000000e+00   ;
  	   */
 	       //double mrecKpi = 0.0 ;
 	       //
+
+	       /*
 	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi3k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
 	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi2k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
 	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) {mrecKpi = mrecpi1k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
@@ -3127,8 +3429,56 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) {mrecKpi = mreck1pi2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
 	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) {mrecKpi = mreck1pi3 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
 	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) {mrecKpi = mreck1pi4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       */
+
+	       //...d0 is the transverse impact parameter (dxy) w.r.t. IP
+	       //...dz is the longitudinal impact parameter     w.r.t. IP
+	       //...vtxdxy is the transverse impact parameter   w.r.t. primary vertex
+	       //...vtxdz is the longitudinal impact parameter  w.r.t. primary vertex
 	       
-	       
+               //
+	       if(charray[0]+charray[1] == 0 && pidarray[2]==3 && pidarray[3]==2
+		  && isTrack3 && isTrack4 )
+		 {mrecKpi = mrecpi3k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[2] == 0 && pidarray[1]==3 && pidarray[3]==2
+		  && isTrack2 && isTrack4 )
+		 {mrecKpi = mrecpi2k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[2] == 0 && pidarray[0]==3 && pidarray[3]==2
+		  && isTrack1 && isTrack4 )
+		 {mrecKpi = mrecpi1k4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[0]+charray[1] == 0 && pidarray[2]==2 && pidarray[3]==3
+		  && isTrack3 && isTrack4 )
+		 {mrecKpi = mreck3pi4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 && pidarray[2]==2 && pidarray[1]==3
+		  && isTrack3 && isTrack2 )
+		 {mrecKpi = mreck3pi2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[3] == 0 && pidarray[2]==2 && pidarray[0]==3
+		  && isTrack3 && isTrack1 )
+		 {mrecKpi = mreck3pi1 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[2]+charray[3] == 0 && pidarray[0]==3 && pidarray[1]==2
+		  && isTrack1 && isTrack2 )
+		 {mrecKpi = mrecpi1k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 && pidarray[2]==3 && pidarray[1]==2
+		  && isTrack3 && isTrack2 )
+		 {mrecKpi = mrecpi3k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[2] == 0 && pidarray[3]==3 && pidarray[1]==2
+		  && isTrack4 && isTrack2 )
+		 {mrecKpi = mrecpi4k2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[2]+charray[3] == 0 && pidarray[0]==2 && pidarray[1]==3
+		  && isTrack1 && isTrack2 )
+		 {mrecKpi = mreck1pi2 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[3] == 0 && pidarray[0]==2 && pidarray[2]==3
+		  && isTrack1 && isTrack3 )
+		 {mrecKpi = mreck1pi3 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[2] == 0 && pidarray[0]==2 && pidarray[3]==3
+		  && isTrack1 && isTrack4 )
+		 {mrecKpi = mreck1pi4 ; histosTH1F["hm2rec2OSvee11"]->Fill(mrecKpi);}
+
+
+	       /*
 	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11a"]->Fill( mrecpi3k4 );
 	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11b"]->Fill( mrecpi2k4 );
 	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OSvee11c"]->Fill( mrecpi1k4 );
@@ -3144,16 +3494,36 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OSvee11j"]->Fill( mreck1pi2 );
 	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) histosTH1F["hm2rec2OSvee11k"]->Fill( mreck1pi3 );
 	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OSvee11m"]->Fill( mreck1pi4 );
-	       
+	       */
 
-	       /*
+	       /*  ...this one
        std::cout << "*** charge cut 8 vee11 ***   " << std::endl;
        std::cout << "charray[0] = " << charray[0] << std::endl;
        std::cout << "charray[1] = " << charray[1] << std::endl;
        std::cout << "charray[2] = " << charray[2] << std::endl;
        std::cout << "charray[3] = " << charray[3] << std::endl;
+       std::cout << "*** d0 cut 8 vee11 ***   " << std::endl;
+       std::cout << "d0array[0] = " << d0array[0] << std::endl;
+       std::cout << "d0array[1] = " << d0array[1] << std::endl;
+       std::cout << "d0array[2] = " << d0array[2] << std::endl;
+       std::cout << "d0array[3] = " << d0array[3] << std::endl;
+       std::cout << "*** dz cut 8 vee11 ***   " << std::endl;
+       std::cout << "dzarray[0] = " << dzarray[0] << std::endl;
+       std::cout << "dzarray[1] = " << dzarray[1] << std::endl;
+       std::cout << "dzarray[2] = " << dzarray[2] << std::endl;
+       std::cout << "dzarray[3] = " << dzarray[3] << std::endl;	       
+       std::cout << "*** vtxdxy cut 8 vee11 ***   " << std::endl;
+       std::cout << "vtxdxyarray[0] = " << vtxdxyarray[0] << std::endl;
+       std::cout << "vtxdxyarray[1] = " << vtxdxyarray[1] << std::endl;
+       std::cout << "vtxdxyarray[2] = " << vtxdxyarray[2] << std::endl;
+       std::cout << "vtxdxyarray[3] = " << vtxdxyarray[3] << std::endl;
+       std::cout << "*** vtxdz cut 8 vee11 ***   " << std::endl;
+       std::cout << "vtxdzarray[0] = " << vtxdzarray[0] << std::endl;
+       std::cout << "vtxdzarray[1] = " << vtxdzarray[1] << std::endl;
+       std::cout << "vtxdzarray[2] = " << vtxdzarray[2] << std::endl;
+       std::cout << "vtxdzarray[3] = " << vtxdzarray[3] << std::endl;
 	       */
-
+	       
 	       /*
                std::cout << " ***charged pairs***   " << std::endl;	       
 	       if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OSvee11a"]->Fill( mrecpi3k4 );
@@ -3199,58 +3569,58 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       */
 
 	       //A  
-	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi3k4vee11"]->Fill(mrecpi3k4);    
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==3 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==3 && pidarray[3]==2 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_pi3k4vee11"]->Fill(mrecpi3k4);    
 	       ///histosTH2F["hm2dim2OS_pi1pi2_pi3k4vee11"]->Fill(mrecpi1pi2,mrecpi3k4);
 	       //     
-	       if(charray[0]+charray[2] == 0 && pidarray[0]==3 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
-	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi2k4vee11"]->Fill(mrecpi2k4);
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==3 && pidarray[2]==3 && isTrack1 && isTrack3 ) histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==2 && isTrack2 && isTrack4 ) histosTH1F["hm2rec2OS_pi2k4vee11"]->Fill(mrecpi2k4);
 	       ///histosTH2F["hm2dim2OS_pi1pi3_pi2k4vee11"]->Fill(mrecpi1pi3,mrecpi2k4);
 	       //
-	       if(charray[1]+charray[2] == 0 && pidarray[1]==3 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_pi2pi3vee11"]->Fill(mrecpi2pi3);
-	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 ) histosTH1F["hm2rec2OS_pi1k4vee11"]->Fill(mrecpi1k4);
+	       if(charray[1]+charray[2] == 0 && pidarray[1]==3 && pidarray[2]==3 && isTrack2 && isTrack3 ) histosTH1F["hm2rec2OS_pi2pi3vee11"]->Fill(mrecpi2pi3);
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==2 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_pi1k4vee11"]->Fill(mrecpi1k4);
 	       ///histosTH2F["hm2dim2OS_pi2pi3_pi1k4vee11"]->Fill(mrecpi2pi3,mrecpi1k4);
 
 	       //B  
 	       //if(charray[0]+charray[1] == 0) histosTH1F["hm2rec2OS_pi1pi2vee11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 && pidarray[2]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_k3pi4vee11"]->Fill(mreck3pi4);
+	       if(charray[2]+charray[3] == 0 && pidarray[2]==2 && pidarray[3]==3 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_k3pi4vee11"]->Fill(mreck3pi4);
 	       ///histosTH2F["hm2dim2OS_pi1pi2_k3pi4vee11"]->Fill(mrecpi1pi2,mreck3pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi1pi4vee11"]->Fill(mrecpi1pi4);
-	       if(charray[2]+charray[1] == 0 && pidarray[2]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_k3pi2vee11"]->Fill(mreck3pi2);
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==3 && pidarray[3]==3 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_pi1pi4vee11"]->Fill(mrecpi1pi4);
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==2 && pidarray[1]==3 && isTrack3 && isTrack2 ) histosTH1F["hm2rec2OS_k3pi2vee11"]->Fill(mreck3pi2);
 	       ///histosTH2F["hm2dim2OS_pi1pi4_k3pi2vee11"]->Fill(mrecpi1pi4,mreck3pi2);
 	       //
-	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
-	       if(charray[2]+charray[0] == 0 && pidarray[2]==2 && pidarray[0]==3 ) histosTH1F["hm2rec2OS_k3pi1vee11"]->Fill(mreck3pi1);
+	       if(charray[1]+charray[3] == 0 && pidarray[1]==3 && pidarray[3]==3 && isTrack2 && isTrack4 ) histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
+	       if(charray[2]+charray[0] == 0 && pidarray[2]==2 && pidarray[0]==3 && isTrack3 && isTrack1 ) histosTH1F["hm2rec2OS_k3pi1vee11"]->Fill(mreck3pi1);
 	       ///histosTH2F["hm2dim2OS_pi2pi4_k3pi1vee11"]->Fill(mrecpi2pi4,mreck3pi1);
 
 	       //C
-	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi1k2vee11"]->Fill(mrecpi1k2);
-	       if(charray[2]+charray[4] == 0 && pidarray[2]==3 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==3 && pidarray[1]==2 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_pi1k2vee11"]->Fill(mrecpi1k2);
+	       if(charray[2]+charray[4] == 0 && pidarray[2]==3 && pidarray[3]==3 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
       	       ///histosTH2F["hm2dim2OS_pi1k2_pi3pi4vee11"]->Fill(mrecpi1k2,mrecpi3pi4);
 	       //
-	       if(charray[2]+charray[1] == 0 && pidarray[2]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi3k2vee11"]->Fill(mrecpi3k2);
+	       if(charray[2]+charray[1] == 0 && pidarray[2]==3 && pidarray[1]==2 && isTrack3 && isTrack2 ) histosTH1F["hm2rec2OS_pi3k2vee11"]->Fill(mrecpi3k2);
 	       //if(charray[0]+charray[3] == 0) histosTH1F["hm2rec2OS_pi1pi4vee11"]->Fill(mrecpi1pi4);
 	       ///histosTH2F["hm2dim2OS_pi3k2_pi1pi4vee11"]->Fill(mrecpi3k2,mrecpi1pi4);
 	       //
-	       if(charray[3]+charray[1] == 0 && pidarray[3]==3 && pidarray[1]==2 ) histosTH1F["hm2rec2OS_pi4k2vee11"]->Fill(mrecpi4k2);
+	       if(charray[3]+charray[1] == 0 && pidarray[3]==3 && pidarray[1]==2 && isTrack4 && isTrack2 ) histosTH1F["hm2rec2OS_pi4k2vee11"]->Fill(mrecpi4k2);
 	       //if(charray[0]+charray[2] == 0) histosTH1F["hm2rec2OS_pi1pi3vee11"]->Fill(mrecpi1pi3);
 	       ///histosTH2F["hm2dim2OS_pi4k2_pi1pi3vee11"]->Fill(mrecpi4k2,mrecpi1pi3);
 
 	       //D
-	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 ) histosTH1F["hm2rec2OS_k1pi2vee11"]->Fill(mreck1pi2);
+	       if(charray[0]+charray[1] == 0 && pidarray[0]==2 && pidarray[1]==3 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_k1pi2vee11"]->Fill(mreck1pi2);
 	       //if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OS_pi3pi4vee11"]->Fill(mrecpi3pi4);
 	       ///histosTH2F["hm2dim2OS_k1pi2_pi3pi4vee11"]->Fill(mreck1pi2,mrecpi3pi4);
 	       //
-	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 ) histosTH1F["hm2rec2OS_k1pi3vee11"]->Fill(mreck1pi3);
+	       if(charray[0]+charray[2] == 0 && pidarray[0]==2 && pidarray[2]==3 && isTrack1 && isTrack3 ) histosTH1F["hm2rec2OS_k1pi3vee11"]->Fill(mreck1pi3);
 	       //if(charray[1]+charray[3] == 0) histosTH1F["hm2rec2OS_pi2pi4vee11"]->Fill(mrecpi2pi4);
 	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4vee11"]->Fill(mreck1pi3,mrecpi2pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 ) histosTH1F["hm2rec2OS_k1pi4vee11"]->Fill(mreck1pi4);
+	       if(charray[0]+charray[3] == 0 && pidarray[0]==2 && pidarray[3]==3 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_k1pi4vee11"]->Fill(mreck1pi4);
 	       //if(charray[1]+charray[2] == 0) histosTH1F["hm2rec2OS_pi2pi3vee11"]->Fill(mrecpi2pi3);
 	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4vee11"]->Fill(mreck1pi3,mrecpi2pi4);
 
-	     } //end of nvtx=1 nks=1
+	     } //end of nvtx=1 nks=1 nlam=0
 	     //} //...end of PID Pions & Kaons
 
 	  //...using PID Pions for selection=02 or 01
@@ -3297,8 +3667,50 @@ M213M(5,5)= 1.000000000000000e+00   ;
 
 	     if(isKshort){
 	       
-	     if(nvtx==1 && nks==1){
+	     if(nvtx==1 && nks==1 && nlam==0){
 
+               //double rlimit = 0.5;
+	       if(charray[0]+charray[1] == 0 
+		  && isTrack3 && isTrack4 )
+		 {mrecKpi = mrecpi3k4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[2] == 0 
+		  && isTrack2 && isTrack4  )
+		 {mrecKpi = mrecpi2k4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[2] == 0 
+		  && isTrack1 && isTrack4 )
+		 {mrecKpi = mrecpi1k4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[0]+charray[1] == 0 
+		  && isTrack3 && isTrack4 )
+		 {mrecKpi = mreck3pi4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 
+		  && isTrack3 && isTrack2 )
+		 {mrecKpi = mreck3pi2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[3] == 0 
+		  && isTrack3 && isTrack1 )
+		 {mrecKpi = mreck3pi1 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[2]+charray[3] == 0 
+		  && isTrack1 && isTrack2 )
+		 {mrecKpi = mrecpi1k2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[3] == 0 
+		  && isTrack3 && isTrack2 )
+		 {mrecKpi = mrecpi3k2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[0]+charray[2] == 0 
+		  && isTrack4 && isTrack2 )
+		 {mrecKpi = mrecpi4k2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       //
+	       if(charray[2]+charray[3] == 0 
+		  && isTrack1 && isTrack2 && isTrack1 && isTrack2 )
+		 {mrecKpi = mreck1pi2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[3] == 0
+		  && isTrack1 && isTrack3 && isTrack1 && isTrack3 )
+		 {mrecKpi = mreck1pi3 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       if(charray[1]+charray[2] == 0 
+		  && isTrack1 && isTrack4 && isTrack1 && isTrack4 )
+		 {mrecKpi = mreck1pi4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+
+	       /*
 	       //double mrecKpi = 0.0 ;
 	       //
 	       if(charray[2]+charray[3] == 0 ) {mrecKpi = mrecpi3k4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
@@ -3316,8 +3728,9 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       if(charray[0]+charray[1] == 0 ) {mrecKpi = mreck1pi2 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
 	       if(charray[0]+charray[2] == 0 ) {mrecKpi = mreck1pi3 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
 	       if(charray[0]+charray[3] == 0 ) {mrecKpi = mreck1pi4 ; histosTH1F["hm2rec2OSveeno11"]->Fill(mrecKpi);}
+	       */
 	       
-	       
+	       /*
 	       if(charray[2]+charray[3] == 0 ) histosTH1F["hm2rec2OSveeno11a"]->Fill( mrecpi3k4 );
 	       if(charray[1]+charray[3] == 0 ) histosTH1F["hm2rec2OSveeno11b"]->Fill( mrecpi2k4 );
 	       if(charray[0]+charray[3] == 0 ) histosTH1F["hm2rec2OSveeno11c"]->Fill( mrecpi1k4 );
@@ -3333,70 +3746,81 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	       if(charray[0]+charray[1] == 0 ) histosTH1F["hm2rec2OSveeno11j"]->Fill( mreck1pi2 );
 	       if(charray[0]+charray[2] == 0 ) histosTH1F["hm2rec2OSveeno11k"]->Fill( mreck1pi3 );
 	       if(charray[0]+charray[3] == 0 ) histosTH1F["hm2rec2OSveeno11m"]->Fill( mreck1pi4 );
-
+	       */
+	       
 	       //A  
-	       if(charray[0]+charray[1] == 0 ) histosTH1F["hm2rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 ) histosTH1F["hm2rec2OS_pi3k4veeno11"]->Fill(mrecpi3k4);    
+	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
+	       if(charray[2]+charray[3] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_pi3k4veeno11"]->Fill(mrecpi3k4);    
 	       ///histosTH2F["hm2dim2OS_pi1pi2_pi3k4veeno11"]->Fill(mrecpi1pi2,mrecpi3k4);
 	       //     
-	       if(charray[0]+charray[2] == 0 ) histosTH1F["hm2rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
-	       if(charray[1]+charray[3] == 0 ) histosTH1F["hm2rec2OS_pi2k4veeno11"]->Fill(mrecpi2k4);
+	       if(charray[0]+charray[2] == 0 && isTrack1 && isTrack3 ) histosTH1F["hm2rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
+	       if(charray[1]+charray[3] == 0 && isTrack2 && isTrack4 ) histosTH1F["hm2rec2OS_pi2k4veeno11"]->Fill(mrecpi2k4);
 	       ///histosTH2F["hm2dim2OS_pi1pi3_pi2k4veeno11"]->Fill(mrecpi1pi3,mrecpi2k4);
 	       //
-	       if(charray[1]+charray[2] == 0 ) histosTH1F["hm2rec2OS_pi2pi3veeno11"]->Fill(mrecpi2pi3);
-	       if(charray[0]+charray[3] == 0 ) histosTH1F["hm2rec2OS_pi1k4veeno11"]->Fill(mrecpi1k4);
+	       if(charray[1]+charray[2] == 0 && isTrack2 && isTrack3 ) histosTH1F["hm2rec2OS_pi2pi3veeno11"]->Fill(mrecpi2pi3);
+	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_pi1k4veeno11"]->Fill(mrecpi1k4);
 	       ///histosTH2F["hm2dim2OS_pi2pi3_pi1k4veeno11"]->Fill(mrecpi2pi3,mrecpi1k4);
 
 	       //B  
 	       //if(charray[0]+charray[1] == 0) histosTH1F["hm2rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 ) histosTH1F["hm2rec2OS_k3pi4veeno11"]->Fill(mreck3pi4);
+	       if(charray[2]+charray[3] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_k3pi4veeno11"]->Fill(mreck3pi4);
 	       ///histosTH2F["hm2dim2OS_pi1pi2_k3pi4veeno11"]->Fill(mrecpi1pi2,mreck3pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 ) histosTH1F["hm2rec2OS_pi1pi4veeno11"]->Fill(mrecpi1pi4);
-	       if(charray[2]+charray[1] == 0 ) histosTH1F["hm2rec2OS_k3pi2veeno11"]->Fill(mreck3pi2);
+	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_pi1pi4veeno11"]->Fill(mrecpi1pi4);
+	       if(charray[2]+charray[1] == 0 && isTrack3 && isTrack2 ) histosTH1F["hm2rec2OS_k3pi2veeno11"]->Fill(mreck3pi2);
 	       ///histosTH2F["hm2dim2OS_pi1pi4_k3pi2veeno11"]->Fill(mrecpi1pi4,mreck3pi2);
 	       //
-	       if(charray[1]+charray[3] == 0 ) histosTH1F["hm2rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
-	       if(charray[2]+charray[0] == 0 ) histosTH1F["hm2rec2OS_k3pi1veeno11"]->Fill(mreck3pi1);
+	       if(charray[1]+charray[3] == 0 && isTrack2 && isTrack4 ) histosTH1F["hm2rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
+	       if(charray[2]+charray[0] == 0 && isTrack3 && isTrack1 ) histosTH1F["hm2rec2OS_k3pi1veeno11"]->Fill(mreck3pi1);
 	       ///histosTH2F["hm2dim2OS_pi2pi4_k3pi1veeno11"]->Fill(mrecpi2pi4,mreck3pi1);
 
 	       //C
-	       if(charray[0]+charray[1] == 0 ) histosTH1F["hm2rec2OS_pi1k2veeno11"]->Fill(mrecpi1k2);
-	       if(charray[2]+charray[4] == 0 ) histosTH1F["hm2rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
+	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_pi1k2veeno11"]->Fill(mrecpi1k2);
+	       if(charray[2]+charray[4] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm2rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
       	       ///histosTH2F["hm2dim2OS_pi1k2_pi3pi4veeno11"]->Fill(mrecpi1k2,mrecpi3pi4);
 	       //
-	       if(charray[2]+charray[1] == 0 ) histosTH1F["hm2rec2OS_pi3k2veeno11"]->Fill(mrecpi3k2);
+	       if(charray[2]+charray[1] == 0 && isTrack3 && isTrack2 ) histosTH1F["hm2rec2OS_pi3k2veeno11"]->Fill(mrecpi3k2);
 	       //if(charray[0]+charray[3] == 0) histosTH1F["hm2rec2OS_pi1pi4veeno11"]->Fill(mrecpi1pi4);
 	       ///histosTH2F["hm2dim2OS_pi3k2_pi1pi4veeno11"]->Fill(mrecpi3k2,mrecpi1pi4);
 	       //
-	       if(charray[3]+charray[1] == 0 ) histosTH1F["hm2rec2OS_pi4k2veeno11"]->Fill(mrecpi4k2);
+	       if(charray[3]+charray[1] == 0 && isTrack4 && isTrack2 ) histosTH1F["hm2rec2OS_pi4k2veeno11"]->Fill(mrecpi4k2);
 	       //if(charray[0]+charray[2] == 0) histosTH1F["hm2rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
 	       ///histosTH2F["hm2dim2OS_pi4k2_pi1pi3veeno11"]->Fill(mrecpi4k2,mrecpi1pi3);
 
 	       //D
-	       if(charray[0]+charray[1] == 0 ) histosTH1F["hm2rec2OS_k1pi2veeno11"]->Fill(mreck1pi2);
+	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm2rec2OS_k1pi2veeno11"]->Fill(mreck1pi2);
 	       //if(charray[2]+charray[3] == 0) histosTH1F["hm2rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
 	       ///histosTH2F["hm2dim2OS_k1pi2_pi3pi4veeno11"]->Fill(mreck1pi2,mrecpi3pi4);
 	       //
-	       if(charray[0]+charray[2] == 0 ) histosTH1F["hm2rec2OS_k1pi3veeno11"]->Fill(mreck1pi3);
+	       if(charray[0]+charray[2] == 0 && isTrack1 && isTrack3 ) histosTH1F["hm2rec2OS_k1pi3veeno11"]->Fill(mreck1pi3);
 	       //if(charray[1]+charray[3] == 0) histosTH1F["hm2rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
 	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4veeno11"]->Fill(mreck1pi3,mrecpi2pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 ) histosTH1F["hm2rec2OS_k1pi4veeno11"]->Fill(mreck1pi4);
+	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm2rec2OS_k1pi4veeno11"]->Fill(mreck1pi4);
 	       //if(charray[1]+charray[2] == 0) histosTH1F["hm2rec2OS_pi2pi3veeno11"]->Fill(mrecpi2pi3);
 	       ///histosTH2F["hm2dim2OS_k1pi3_pi2pi4veeno11"]->Fill(mreck1pi3,mrecpi2pi4);
 
-	     } //end of nvtx=1 nks=1
+	     } //end of nvtx=1 nks=1 nlam=0
 
 	     
              if(nvtx==0 && nks==2){
 	       
 	       /*
-       std::cout << "*** charge cut 8 vee02 ***   " << std::endl;
+       std::cout << "*** charge cut 8 veeno02 ***   " << std::endl;
        std::cout << "charray[0] = " << charray[0] << std::endl;
        std::cout << "charray[1] = " << charray[1] << std::endl;
        std::cout << "charray[2] = " << charray[2] << std::endl;
        std::cout << "charray[3] = " << charray[3] << std::endl;
+       std::cout << "*** d0 cut 8 veeno02 ***   " << std::endl;
+       std::cout << "d0array[0] = " << d0array[0] << std::endl;
+       std::cout << "d0array[1] = " << d0array[1] << std::endl;
+       std::cout << "d0array[2] = " << d0array[2] << std::endl;
+       std::cout << "d0array[3] = " << d0array[3] << std::endl;
+       std::cout << "*** dz cut 8 veeno02 ***   " << std::endl;
+       std::cout << "dzarray[0] = " << dzarray[0] << std::endl;
+       std::cout << "dzarray[1] = " << dzarray[1] << std::endl;
+       std::cout << "dzarray[2] = " << dzarray[2] << std::endl;
+       std::cout << "dzarray[3] = " << dzarray[3] << std::endl;
 	       */
 	       
 	     histosTH1F["hm2rec2OSveeno02"]->Fill(mrec);      
@@ -3449,9 +3873,12 @@ M213M(5,5)= 1.000000000000000e+00   ;
        //if(nvtx!=0) continue;
        //////if(nvtx!=1) continue;
 
+	/* Ferenc's
        if(nvtx!=1) {
         if(nvtx!=2) continue;
        }
+	*/
+	
        //if(nvtx!=2) continue;
        //
        //if(nvtx!=1) continue;
@@ -3689,8 +4116,52 @@ M213M(5,5)= 1.000000000000000e+00   ;
 	 
 	 histosTH1F["hm2rec"]->Fill(mrec);      
 	 histosTH1F["hm2recbis"]->Fill(mrec);
+
+	 //...cut 0        ...K0s selection by mass
 	 
-       //...cut 1    nvtx==1 or 2
+         if(totcharge==0){
+
+	   //...selection of K0sK0s by pi+pi- pair mass restriction and transverse impact parameter
+	   double masslow = 0.49;
+	   double masshigh = 0.51;
+
+	   //	   if(pidarray[0]==pidPion && pidarray[1]==pidPion &&
+	   //	    pidarray[2]==pidPion && pidarray[3]==pidPion)
+	   double impactpar = 0.0050;
+	   if(TMath::Abs(vtxdxyarray[0]) > impactpar && TMath::Abs(vtxdxyarray[1]) > impactpar &&
+	      TMath::Abs(vtxdxyarray[2]) > impactpar && TMath::Abs(vtxdxyarray[3]) > impactpar)
+	   {
+
+	   if(charray[0]+charray[1] == 0)
+	            {
+	             if(mrecpi1pi2 < masshigh && mrecpi1pi2 > masslow){
+	             histosTH1F["hm2rec2OS_pi1pi2m"]->Fill(mrecpi1pi2);
+		     }
+		     if(mrecpi3pi4 < masshigh && mrecpi3pi4 > masslow){
+	             histosTH1F["hm2rec2OS_pi3pi4m"]->Fill(mrecpi3pi4);
+		     }
+	             if(mrecpi1pi2 < masshigh && mrecpi1pi2 > masslow &&
+			mrecpi3pi4 < masshigh && mrecpi3pi4 > masslow){		     
+		     histosTH1F["hm2rec2OSm1234"]->Fill(mrec);
+		     }
+	            }else if(charray[0]+charray[2] == 0)
+		    {
+	             if(mrecpi1pi3 < masshigh && mrecpi1pi3 > masslow){
+		     histosTH1F["hm2rec2OS_pi1pi3m"]->Fill(mrecpi1pi3);
+ 		     }
+		     if(mrecpi2pi4 < masshigh && mrecpi2pi4 > masslow){
+		     histosTH1F["hm2rec2OS_pi2pi4m"]->Fill(mrecpi2pi4);
+		     }
+	             if(mrecpi1pi3 < masshigh && mrecpi1pi3 > masslow &&
+			mrecpi2pi4 < masshigh && mrecpi2pi4 > masslow){		     
+		     histosTH1F["hm2rec2OSm1324"]->Fill(mrec);
+		     }
+		    }
+	   }
+	 } //...end of cut0
+
+	 
+       //...cut 1    ...nvtx==1 or 2
        
 	 if(totcharge==0){
 	   //...Luiz
