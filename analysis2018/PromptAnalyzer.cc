@@ -13,7 +13,7 @@
 //
 // Original Author:  Robert Ciesielski
 //         Created:  Wed, 27 Jun 2018 16:18:44 GMT
-//        Modified:  Luiz Emediato - Nov 24, 2020 
+//        Modified:  Luiz Emediato - 24 Nov 2020 
 //
 // system include files
 #include <memory>
@@ -95,6 +95,10 @@
 // Ferenc's PID
 #include "UserCode/EnergyLossPID/interface/ParticleType.h"
 
+// Forward Protons ...Luiz
+//#include "DataFormats/ProtonReco/interface/ForwardProton.h"
+//#include "DataFormats/ProtonReco/interface/ForwardProtonFwd.h"
+
 #define M_LN10 2.30258509299404568402
 #define Sqr(x) ((x) * (x))
 
@@ -119,6 +123,7 @@ double m_k0 =0.497611;
 //double m_mu = 0.1056583715;
 //double m_p =0.93827;
 double m_rho = 0.77;
+double m_phi = 1.019461;
 
 //...Luiz
 // new PDG
@@ -128,7 +133,7 @@ double m_mu = 0.1056583745;
 double m_e = 0.0005109989461;
 double m_p = 0.9382720813;
  
-//...using Ferenc's PID: pion is now 2, kaon is 3 ...Luiz
+//...using Ferenc's PID: pion now is 2, kaon is 3 ...Luiz
 //enum EPID { pidUnknown, pidProton, pidKaon, pidPion };
 //
 //..............0...........1.........2........3
@@ -178,6 +183,8 @@ class PromptAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
   // V0 ...Luiz
   edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> kshortsToken_;
   edm::EDGetTokenT<reco::VertexCompositeCandidateCollection> lambdasToken_;
+  //edm::EDGetTokenT<reco::ForwardProtonCollection> RecoProtonsSingleRPToken_;
+  //edm::EDGetTokenT<reco::ForwardProtonCollection> RecoProtonsMultiRPToken_;
   
   HLTConfigProvider hltConfig_;
 
@@ -195,8 +202,9 @@ class PromptAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 //                                                                                                             
 
 //                                                                                                             
-// constructors and destructor ...including kshorts and lambdas ...Luiz                                        
-//                                                                                                             
+// constructors and destructor ...including kshorts and lambdas and reco RP protons ...Luiz                                     
+//
+// TAGs from python configuration : TOKEN <-> TAG
 PromptAnalyzer::PromptAnalyzer(const edm::ParameterSet& iConfig)
   :
   trkToken_(consumes<reco::TrackCollection>(iConfig.getParameter<edm::InputTag>("tracks")))
@@ -207,8 +215,11 @@ PromptAnalyzer::PromptAnalyzer(const edm::ParameterSet& iConfig)
   // V0 ...Luiz                                                                                                
   ,kshortsToken_(consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("kshorts")))
   ,lambdasToken_(consumes<reco::VertexCompositeCandidateCollection>(iConfig.getParameter<edm::InputTag>("lambdas")))
+  // reco RP protons ...Luiz
+  //,RecoProtonsSingleRPToken_(consumes<reco::ForwardProtonCollection>(iConfig.getParameter<edm::InputTag>("tagRecoProtonsSingleRP")))
+  //,RecoProtonsMultiRPToken_(consumes<reco::ForwardProtonCollection>(iConfig.getParameter<edm::InputTag>("tagRecoProtonsMultiRP")))
 {
-
+  
   //now do what ever initialization is needed
 
   //usesResource("TFileService");
@@ -256,7 +267,10 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // kshorts and lambdas ...Luiz
   edm::Handle<reco::VertexCompositeCandidateCollection> kshorts;
   edm::Handle<reco::VertexCompositeCandidateCollection> lambdas;
-  
+  // reco RP protons ...Luiz
+  //edm::Handle<reco::ForwardProtonCollection> ProtonsSingleRP;
+  //edm::Handle<reco::ForwardProtonCollection> ProtonsMultiRP;
+
   
   iEvent.getByToken(trkToken_,tracks);
   iEvent.getByToken(RPtrkToken_,RPtracks);
@@ -266,6 +280,10 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // kshorts and lambdas ...Luiz
   iEvent.getByToken(kshortsToken_,kshorts);
   iEvent.getByToken(lambdasToken_,lambdas);
+  // reco RP protons ...Luiz
+  //iEvent.getByToken(RecoProtonsSingleRPToken_,ProtonsSingleRP);
+  //iEvent.getByToken(RecoProtonsMultiRPToken_,ProtonsMultiRP);
+  
   
   //------------------------------------------------------------------  
   /*
@@ -377,6 +395,11 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   TLorentzVector k1k4Rec(0.,0.,0.,0.);
   TLorentzVector k2k3Rec(0.,0.,0.,0.);
 
+  // checking
+  TLorentzVector pi1234Rec(0.,0.,0.,0.);
+  TLorentzVector pi1324Rec(0.,0.,0.,0.);
+  TLorentzVector pi1423Rec(0.,0.,0.,0.);
+
   //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
    /* 
   ...first combining, then select the Q_pairs=0
@@ -457,10 +480,62 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        double vtxdz3 = 0.0;
        double vtxdz4 = 0.0;
 
+  //...Luiz
   // Get primary vertex PV
   //if (vertices->empty()) return;  // skip the event if no PV found
-  /////const reco::Vertex& pv = vertices->begin()->position(); //////////////////////////////////////
-  
+  //const reco::Vertex& pv = vertices->begin()->position();
+
+    //...Luiz
+    //...to avoid 'not declared in this scope'
+    //math::XYZPoint ppv(0.,0.,0.);
+    math::XYZPoint pv(0.,0.,0.);
+    double pvx = 0.;
+    double pvy = 0.;
+    double pvz = 0.;
+    //int visfake = vertices->begin()->isFake();
+
+    //...what does it mean vertices->empty() ???
+
+    //...notice that *vertex* IS NOT *primary vertex*
+    //   this difference is clear in the software
+    //   vertex is the interaction point (0,0,0)
+    //   track referencePoint() is the PCA w.r.t. vertex or (0,0,0)
+    //   track referencePoint(pv) is the PCA w.r.t. primary vertex
+    
+    //...there are no vertices->empty events 
+    //...I am disabling the IF statement
+
+    //...vertices are primary vertices from the collection and we do have events with no primaries
+    
+    //if ( !( vertices->empty() ) ){
+    //math::XYZPoint pvtx = itTrack->referencePoint();  // PCA w.r.t. the center of CMS or beamspot (0,0,0) 
+    //math::XYZPoint ppv = (*vertices)[0].position();   // w.r.t. primary vertex
+    //math::XYZPoint pv = vertices->begin()->position();// w.r.t. primary vertex
+    //ppv = (*vertices)[0].position();
+       
+    pvx =  vertices->begin()->x();
+    pvy =  vertices->begin()->y();
+    pvz =  vertices->begin()->z();
+
+    math::XYZPoint mypv(pvx,pvy,pvz); //...important only within the IF
+
+    pv = mypv; //...scrumptious  
+    //}
+
+    /*
+    std::cout << " --- primary vertex position ----------------" << std::endl;
+    std::cout << "pv  = " << pv  << std::endl;
+    std::cout << "pvx = " << pvx << std::endl;
+    std::cout << "pvy = " << pvy << std::endl;
+    std::cout << "pvz = " << pvz << std::endl;
+    //std::cout << "ppv = " << ppv  << std::endl;
+    */
+
+    //...checking!
+    if ( vertices->empty() ){
+      std::cout << " +++ empty +++++++++++++++++  " << std::endl;
+    }
+       
   for(TrackCollection::const_iterator itTrack = tracks->begin();itTrack != tracks->end();++itTrack) {
 
     int looper = itTrack->isLooper();  
@@ -476,12 +551,48 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     double chi2 = itTrack->normalizedChi2();	    
     double d0 = itTrack->d0();	    
     double dz = itTrack->dz();
-    //...Luiz   crashes!
-    //double vdxy = itTrack->dxy(pv); // vtxdxy : transverse impact parameter
-    //double vdz = itTrack->dz(pv);   // vtxdz  : longitudinal impact parameter
 
+    // Bene: One can use TransientTracks to estimate track impact parameters with
+    // respect to the beam line or primary vertex, taking into account the curvature of the track.
+
+    //...Luiz
+    //math::XYZPoint pv = itTrack->referencePoint(); // PCA w.r.t. the center of CMS or beamspot (0,0,0) 
+    //double pvx =  itTrack->vx();
+    //double pvy =  itTrack->vy();
+    //double pvz =  itTrack->vz();
+    double vdxy = itTrack->dxy(pv); // vtxdxy : transverse impact parameter
+    double vdz =  itTrack->dz(pv);  // vtxdz  : longitudinal impact parameter
+    
+    //...Bene: be sure the pt of the tracks is bigger than 0.5 GeV (?)
+
+    /*
+    std::cout.precision(10);
+    std::cout << " --- primary vertex ----------------" << std::endl;
+    std::cout << "pv  = " << pv  << std::endl;
+    std::cout << "pvx = " << pvx << std::endl;
+    std::cout << "pvy = " << pvy << std::endl;
+    std::cout << "pvz = " << pvz << std::endl;
+    */
+    
+    /*
+    std::cout << " *** transverse i.p.   *** " << std::endl;
+    std::cout << "vdxy = " << vdxy << std::endl;
+    std::cout << " --- longitudinal i.p. --- " << std::endl;
+    std::cout << "vdz  = " << vdz << std::endl;
+    */
+    
+    /*
+    //...considering the track curvature
+    //
+    // with respect to any specified vertex, such as primary vertex
+    GlobalPoint vert(pv.x(), pv.y(), pv.z());
+    TrajectoryStateClosestToPoint  traj = itTrack->trajectoryStateClosestToPoint(vert );
+    double dd0 = traj.perigeeParameters().transverseImpactParameter();
+    double zz0 = traj.perigeeParameters().longitudinalImpactParameter();
+    */
+    
     //...attention here!
-    //// commented this line out only for the M(K0) window technique
+    //// comment this line out only for the M(K0) window technique
     if(npixelhits>0){
 
       histosTH1F["hpt"]->Fill(pt);
@@ -502,9 +613,9 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       histosTH1F["hd0BS"]->Fill(d0BS);
       histosTH1F["hdzBS"]->Fill(dzBS);
 
-      //...temporary
-      double vdxy = d0BS ;  
-      double vdz = dzBS ;
+      //...temporarily to avoid crash ...Luiz
+      //double vdxy = d0BS ;  
+      //double vdz = dzBS ;
       
       totcharge += charge;
 
@@ -567,7 +678,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   */
 	   
 	   
-	   //...temporarily
+	   //...temporarily ...no PID yet ...Luiz
 	   int pid2 = 3;
 	   
 	   
@@ -863,6 +974,12 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
            k1k4Rec = k1 + k4;
            k2k3Rec = k2 + k3;      
 
+	   // ...checking out
+	   pi1234Rec = pi1pi2Rec +  pi3pi4Rec;
+	   pi1324Rec = pi1pi3Rec +  pi2pi4Rec;
+	   pi1423Rec = pi1pi4Rec +  pi2pi3Rec;
+
+	   
      //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
            //
 	   /* 
@@ -982,6 +1099,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       bool isTrack3 = false ;
       bool isTrack4 = false ;
 
+      /*
         vector<Double_t> vdxyVec = { TMath::Abs(vtxdxyarray[0]), TMath::Abs(vtxdxyarray[1]),
 				     TMath::Abs(vtxdxyarray[2]), TMath::Abs(vtxdxyarray[3]) };
         // ...better to use 3D impact parameter...REVIEW!
@@ -996,7 +1114,8 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[1])){ isTrack2 = true ; }
         if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[2])){ isTrack3 = true ; }
         if(vdxyVec[1]!=0.0 && vdxyVec[1]==TMath::Abs(vtxdxyarray[3])){ isTrack4 = true ; }
-      
+      */      
+
        // ...transverse impact parameter distribution d0 (dxy)
        d01 = d0array[0];
        d02 = d0array[1];
@@ -1041,7 +1160,31 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 histosTH1F["hvtxdz3"]->Fill(vtxdz3);
 	 histosTH1F["hvtxdz4"]->Fill(vtxdz4);
        }    
-         
+
+  // ...Luiz
+  //...3D impact parameter
+  double rimpac1 = TMath::Sqrt( vtxdxy1*vtxdxy1 + vtxdz1*vtxdz1 );
+  double rimpac2 = TMath::Sqrt( vtxdxy2*vtxdxy2 + vtxdz2*vtxdz2 );
+  double rimpac3 = TMath::Sqrt( vtxdxy3*vtxdxy3 + vtxdz3*vtxdz3 );
+  double rimpac4 = TMath::Sqrt( vtxdxy4*vtxdxy4 + vtxdz4*vtxdz4 );
+
+        vector<Double_t> rimpacVec = { rimpac1, rimpac2, rimpac3, rimpac4 };
+
+        sort(rimpacVec.begin(), rimpacVec.end());
+        //
+	//...type:11 
+	//
+	//...prompt tracks have smaller impact parameters w.r.t. pv 
+        if(rimpacVec[0]!=0.0 && rimpacVec[0]==rimpac1){ isTrack1 = true ; }
+        if(rimpacVec[0]!=0.0 && rimpacVec[0]==rimpac2){ isTrack2 = true ; }
+        if(rimpacVec[0]!=0.0 && rimpacVec[0]==rimpac3){ isTrack3 = true ; }
+        if(rimpacVec[0]!=0.0 && rimpacVec[0]==rimpac4){ isTrack4 = true ; }       
+	//	
+	if(rimpacVec[1]!=0.0 && rimpacVec[1]==rimpac1){ isTrack1 = true ; }
+        if(rimpacVec[1]!=0.0 && rimpacVec[1]==rimpac2){ isTrack2 = true ; }
+        if(rimpacVec[1]!=0.0 && rimpacVec[1]==rimpac3){ isTrack3 = true ; }
+        if(rimpacVec[1]!=0.0 && rimpacVec[1]==rimpac4){ isTrack4 = true ; }
+     
   //----------------------------------------------------------------------
   // VERTEX
   
@@ -1054,7 +1197,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(vtxisfake==0) nvtx++;    
     else continue;
 
-    //...Luiz  ...crashes!
+    //...Luiz 
     ntrkvtx = itVtx->nTracks();
     ntrkvtxU = itVtx->tracksSize();
     //itVtx->Print();
@@ -1077,7 +1220,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //if(nvtx!=1) return;
 
   //...Luiz
-  int  isfake = vertices->begin()->isFake();
+  int isfake = vertices->begin()->isFake();
   
   double xvtx = vertices->begin()->x();
   double yvtx = vertices->begin()->y();
@@ -1093,20 +1236,12 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   /*
   // ...Luiz     ...this is interesting! primary vertex position & impact parameters
   math::XYZPoint pv2(xvtx,yvtx,zvtx);
-  double pv2dxy = tracks->begin()->dxy(pv2);
-  double pv2dz = tracks->begin()->dz(pv2);
+  double pv2dxy = dxy(pv2);   ??
+  double pv2dz  = dz(pv2);    ??
   histosTH1F["hpv2dxy"]->Fill(pv2dxy);
   histosTH1F["hpv2dz"]->Fill(pv2dz);
   */
   
-  // ...Luiz
-  //...3D impact parameter
-  double rimpac1 = TMath::Sqrt( vtxdxy1*vtxdxy1 + vtxdz1*vtxdz1 );
-  double rimpac2 = TMath::Sqrt( vtxdxy2*vtxdxy2 + vtxdz2*vtxdz2 );
-  double rimpac3 = TMath::Sqrt( vtxdxy3*vtxdxy3 + vtxdz3*vtxdz3 );
-  double rimpac4 = TMath::Sqrt( vtxdxy4*vtxdxy4 + vtxdz4*vtxdz4 );
-
- 
   //----------------------------------------------------------------------
   // V0
 
@@ -1126,22 +1261,36 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 double ksphi = it_ks->phi();
 	 double ksmass = it_ks->mass();
 	 double ksradius = TMath::Sqrt((ksvertexx-xvtx)*(ksvertexx-xvtx)+(ksvertexy-yvtx)*(ksvertexy-yvtx));
+	 double ks3Dradius = TMath::Sqrt((ksvertexx-xvtx)*(ksvertexx-xvtx)+(ksvertexy-yvtx)*(ksvertexy-yvtx)+(ksvertexz-zvtx)*(ksvertexz-zvtx));
 	 double ksenergy = TMath::Sqrt(kspt*kspt+0.4976*0.4976);
 	 double gammalorentzks = ksenergy/0.4976;
 	 double kslifetime = ksradius/gammalorentzks;  
+	 double ks3Dlifetime = ks3Dradius/gammalorentzks;  
 	 histosTH1F["hkspt"]->Fill(kspt);
 	 histosTH1F["hkseta"]->Fill(kseta);
 	 histosTH1F["hksphi"]->Fill(ksphi);
 	 histosTH1F["hksmass"]->Fill(ksmass);
 	 //
-	 if(nks == 1)histosTH1F["hksmassv1"]->Fill(ksmass);
-	 if(nks == 2)histosTH1F["hksmassv2"]->Fill(ksmass);
+	 if(nks == 1){histosTH1F["hksmassv1"]->Fill(ksmass);
+                      histosTH1F["hksradiusv1"]->Fill(ksradius);
+                      histosTH1F["hkslifetimev1"]->Fill(kslifetime);
+                      histosTH1F["hks3Dradiusv1"]->Fill(ks3Dradius);
+                      histosTH1F["hks3Dlifetimev1"]->Fill(ks3Dlifetime);
+	 }
+	 if(nks == 2){histosTH1F["hksmassv2"]->Fill(ksmass);
+                      histosTH1F["hksradiusv2"]->Fill(ksradius);
+                      histosTH1F["hkslifetimev2"]->Fill(kslifetime);
+                      histosTH1F["hks3Dradiusv2"]->Fill(ks3Dradius);
+                      histosTH1F["hks3Dlifetimev2"]->Fill(ks3Dlifetime);
+	 }
 	 //
 	 histosTH1F["hksvertexx"]->Fill(ksvertexx);
 	 histosTH1F["hksvertexy"]->Fill(ksvertexy);
 	 histosTH1F["hksvertexz"]->Fill(ksvertexz);
 	 histosTH1F["hksradius"]->Fill(ksradius);
+	 histosTH1F["hks3Dradius"]->Fill(ks3Dradius);
 	 histosTH1F["hkslifetime"]->Fill(kslifetime);
+	 histosTH1F["hks3Dlifetime"]->Fill(ks3Dlifetime);
 	 histosTH2F["h2dimksxy"]->Fill(ksvertexx,ksvertexy);
 	 histosTH2F["h2dimksxz"]->Fill(ksvertexx,ksvertexz);
 	 histosTH2F["h2dimksyz"]->Fill(ksvertexy,ksvertexz);
@@ -1188,9 +1337,11 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 double lamphi = it_lam->phi();
 	 double lammass = it_lam->mass();
 	 double lamradius = TMath::Sqrt((lamvertexx-xvtx)*(lamvertexx-xvtx)+(lamvertexy-yvtx)*(lamvertexy-yvtx));
+ 	 double lam3Dradius = TMath::Sqrt((lamvertexx-xvtx)*(lamvertexx-xvtx)+(lamvertexy-yvtx)*(lamvertexy-yvtx)+(lamvertexz-zvtx)*(lamvertexz-zvtx));
   	 double lamenergy = TMath::Sqrt(lampt*lampt+1.115683*1.115683);
 	 double gammalorentzlam = lamenergy/1.115683;
 	 double lamlifetime = lamradius/gammalorentzlam;  
+	 double lam3Dlifetime = lam3Dradius/gammalorentzlam;  
 	 histosTH1F["hlampt"]->Fill(lampt);
 	 histosTH1F["hlameta"]->Fill(lameta);
 	 histosTH1F["hlamphi"]->Fill(lamphi);
@@ -1199,6 +1350,9 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	 histosTH1F["hlamvertexy"]->Fill(lamvertexy);
 	 histosTH1F["hlamvertexz"]->Fill(lamvertexz);
 	 histosTH1F["hlamradius"]->Fill(lamradius);
+	 histosTH1F["hlam3Dradius"]->Fill(lam3Dradius);
+	 histosTH1F["hlamlifetime"]->Fill(lamlifetime);
+	 histosTH1F["hlam3Dlifetime"]->Fill(lam3Dlifetime);
 	 histosTH2F["h2dimlamxy"]->Fill(lamvertexx,lamvertexy);
 	 histosTH2F["h2dimlamxz"]->Fill(lamvertexx,lamvertexz);
 	 histosTH2F["h2dimlamyz"]->Fill(lamvertexy,lamvertexz);
@@ -1288,8 +1442,14 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     CTPPSDetId rpId(tr.getRPId());
     unsigned int rpDecId = 100*rpId.arm() + 10*rpId.station() + 1*rpId.rp();
     
-    //    std::cout<<"rpDecIs= "<<rpDecId<<std::endl;
-    
+    //    std::cout<<"rpDecId= "<<rpDecId<<std::endl;
+    //std::cout<<" --- RP Id --- "<<std::endl;
+    //std::cout<<"rpDecId= "<<rpDecId<<std::endl;
+        //std::cout<<"rpId.arm= "<<rpId.arm()<<std::endl;
+        //std::cout<<"rpId.station= "<<rpId.station()<<std::endl;
+        //std::cout<<"rpId.rp= "<<rpId.rp()<<std::endl;
+    //std::cout<<"                          "<<std::endl;
+	
     if(rpDecId == 4){rp_valid_004 = true; xLN = tr.getX() + mean_x4; yLN = tr.getY() + mean_y4;}
     if(rpDecId == 5){rp_valid_005 = true; xLN = tr.getX() + mean_x5; yLN = tr.getY() + mean_y5;}
 
@@ -1313,7 +1473,6 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     //    if(rpDecId == 124){rp_valid_124 = true; xRF = tr.getX(); yRF = tr.getY();}
     //    if(rpDecId == 125){rp_valid_125 = true; xRF = tr.getX(); yRF = tr.getY();}
-
   }
 
   bool diag_top45_bot56 = rp_valid_024 && rp_valid_004 && rp_valid_105 && rp_valid_125;
@@ -1458,12 +1617,43 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //-------------------------------
   //  if(!jsonLocal(runnr,LS)) return;
 
+  //-------------------------------
+  // Forward protons ...Luiz
+  //for (const auto &rpProton : *ProtonsMultiRP ) {
+  /*
+  for (const auto &rpProton : *ProtonsSingleRP ) {
+    
+  CTPPSDetId rpId((*rpProton.contributingLocalTracks().begin())->getRPId());
+    unsigned int decRPId = rpId.arm() * 100 + rpId.station() * 10 + rpId.rp();
+    
+  double proton_t = rpProton.t();
+  double proton_xi = rpProton.xi();
+  double proton_p = rpProton.p();
+  double proton_pt = rpProton.pt();
+  double proton_thx = rpProton.thetaX();
+  double proton_thy = rpProton.thetaY();
+  double proton_mass = rpProton.mass();
 
+  std::cout<<" --- Forward Protons RP Id --- "<<std::endl;
+  std::cout<<"decRPId= "<<decRPId<<std::endl;
+
+  std::cout << " *** forward proton ***" <<std::endl;
+  std::cout << " t    = " << proton_t <<std::endl;
+  std::cout << " xi   = " << proton_xi <<std::endl;
+  std::cout << " p    = " << proton_p <<std::endl;
+  std::cout << " pt   = " << proton_pt <<std::endl;
+  std::cout << " thx  = " << proton_thx <<std::endl;
+  std::cout << " thy  = " << proton_thy <<std::endl;
+  std::cout << " mass = " << proton_mass <<std::endl;
+    }
+  */
+  //}
+  
   //---------------------------------------------
   //CMS-TOTEM matching
   
   double TOTEMpy= 6500.*(ThyL+ThyR);
-  double TOTEMpx=-6500*(ThxL+ThxR);
+  double TOTEMpx=-6500.*(ThxL+ThxR);
   
   //  double TOTEMpt1= TMath::Sqrt(pow(TOTEMpx1,2)+pow(TOTEMpy1,2));
   //  double TOTEMpt2= TMath::Sqrt(pow(TOTEMpx2,2)+pow(TOTEMpy2,2));
@@ -1478,6 +1668,50 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //double CMSpx=pipiRec.Px();
   //double CMSpy=pipiRec.Py();
 
+  //...Ferenc
+  // (int & topology, pair<double,double> & pL, pair<double,double> & pR)
+  // pL = pair<double,double>(-6500*ThxL, 6500*ThyL);
+  // pR = pair<double,double>(-6500*ThxR, 6500*ThyR);
+  double proton_left_px  = -6500*ThxL ;
+  double proton_left_py  =  6500*ThyL ;
+  double proton_right_px = -6500*ThxR ;
+  double proton_right_py =  6500*ThyR ;
+
+  // pz needed
+  //double proton_left_p  = TMath::Sqrt((-6500*ThxL)*(-6500*ThxL)+(6500*ThyL)*(6500*ThyL));
+  //double proton_right_p = TMath::Sqrt((-6500*ThxR)*(-6500*ThxR)+(6500*ThyR)*(6500*ThyR));
+
+    histosTH1F["hprotonplx"]->Fill(proton_left_px);
+    histosTH1F["hprotonply"]->Fill(proton_left_py);
+    histosTH1F["hprotonprx"]->Fill(proton_right_px);
+    histosTH1F["hprotonpry"]->Fill(proton_right_py);
+  
+    //histosTH1F["hprotonpl"]->Fill(proton_left_p);
+    //histosTH1F["hprotonpr"]->Fill(proton_right_p);
+    
+  //...4-momentum transfer squared
+  // t1 = -p² (theta*_x_R² + theta*_y_R²)
+  // t2 = -p² (theta*_x_L² + theta*_y_L²)
+  // |-t1|
+  double t1 = 6500*6500*(ThxR*ThxR+ThyR*ThyR);
+  // |-t2|
+  double t2 = 6500*6500*(ThxL*ThxL+ThyL*ThyL);
+  // |-(t1+t2)|  
+  double Thetax = ThxL+ThxR;
+  double Thetay = ThyL+ThyR;
+  double t12 = 6500*6500*(Thetax*Thetax+Thetay*Thetay);
+ 
+    histosTH1F["ht1"]->Fill(t1);
+    histosTH1F["ht2"]->Fill(t2);
+    histosTH1F["ht12"]->Fill(t12);
+
+    // |-(t1+t2)| 
+    double t1t2 = t1;
+    histosTH1F["ht1t2"]->Fill(t1t2);
+    t1t2 = t2;
+    histosTH1F["ht1t2"]->Fill(t1t2);
+
+    
   //--------------------------------------------------------------------------------
   // 2 tracks
 
@@ -1514,7 +1748,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       //histosTH1F["hm2"]->Fill(mrec);      
       histosTH1F["hm2"]->Fill(mrec2);      
 
-      histosTH1F["hpt2"]->Fill(pi4pos1.Pt());      //???????????????????????????????
+      histosTH1F["hpt2"]->Fill(pi4pos1.Pt());      //????
       histosTH1F["hpt2"]->Fill(pi4neg1.Pt());
       
       histosTH1F["heta2"]->Fill(pi4pos1.Eta());
@@ -1585,7 +1819,7 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        		   TMath::Abs(pi3.Eta())<etaCut && TMath::Abs(pi4.Eta())<etaCut);  
     fiducialRegionPt4 = (ntrk==4 && pi1.Pt()>ptCut && pi2.Pt()>ptCut &&
        			   pi3.Pt()>ptCut && pi4.Pt()>ptCut);
-    //...Kaons
+    //...kaons
     fiducialRegionK4   = (ntrk==4 && TMath::Abs(k1.Eta())<etaCut && TMath::Abs(k2.Eta())<etaCut &&
    		   TMath::Abs(k3.Eta())<etaCut && TMath::Abs(k4.Eta())<etaCut);  
     fiducialRegionPtK4 = (ntrk==4 && k1.Pt()>ptCut && k2.Pt()>ptCut &&
@@ -1664,6 +1898,10 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        double mrecpi1pi4=pi1pi4Rec.M();
        double mrecpi2pi3=pi2pi3Rec.M();
        //
+       double mrec1234=pi1234Rec.M();
+       double mrec1324=pi1324Rec.M();
+       double mrec1423=pi1423Rec.M();
+       //
        double ptpi1pi2=pi1pi2Rec.Pt();
        double ptpi3pi4=pi3pi4Rec.Pt();
        double ptpi1pi3=pi1pi3Rec.Pt();
@@ -1685,12 +1923,14 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        double etapi1pi4=pi1pi4Rec.Eta();
        double etapi2pi3=pi2pi3Rec.Eta();
 
+       /*
        // fixing the mass of the pion pair 
        double eneMK012 = TMath::Sqrt(ptpi1pi2*ptpi1pi2 + pzpi1pi2*pzpi1pi2 + m_k0*m_k0);
        double eneMK034 = TMath::Sqrt(ptpi3pi4*ptpi3pi4 + pzpi3pi4*pzpi3pi4 + m_k0*m_k0);
 
        histosTH1F["henemk012"]->Fill(eneMK012);
        histosTH1F["henemk034"]->Fill(eneMK034);
+       */
        
      //...combining pions and kaons for the event selection type = 11 (one primary & one Vee)
 	   /* 
@@ -1727,16 +1967,53 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        //
        double mrecKpi = 0.0;
 
-
+       // M(1,2) M(3,4) M(1,3) M(2,4) M(1,4) M(2,3) ...kaons only 
+       double mreck1k2=k1k2Rec.M();
+       double mreck3k4=k3k4Rec.M();
+       double mreck1k3=k1k3Rec.M();
+       double mreck2k4=k2k4Rec.M();
+       double mreck1k4=k1k4Rec.M();
+       double mreck2k3=k2k3Rec.M();
+       //
+       double ptk1k2=k1k2Rec.Pt();
+       double ptk3k4=k3k4Rec.Pt();
+       double ptk1k3=k1k3Rec.Pt();
+       double ptk2k4=k2k4Rec.Pt();
+       double ptk1k4=k1k4Rec.Pt();
+       double ptk2k3=k2k3Rec.Pt();
+       //
+       double etak1k2=k1k2Rec.Eta();
+       double etak3k4=k3k4Rec.Eta();
+       double etak1k3=k1k3Rec.Eta();
+       double etak2k4=k2k4Rec.Eta();
+       double etak1k4=k1k4Rec.Eta();
+       double etak2k3=k2k3Rec.Eta();
+       
   //--------------------------------------------------------------------------------
   // my cuts
 
   if(fiducialRegion4 && fiducialRegionPt4 && allCuts4){
-  
+
+       //...ntrk vs nks
+       histosTH2F["hntrknksall4"]->Fill(ntrk,nks);
+       //...nvtx vs nks
+       histosTH2F["hnvtxnksall4"]->Fill(nvtx,nks);
+
+    
          //...K0 mass window
 	 double masslow = 0.49;
          double masshigh = 0.51;
+	 double masslow2 = 0.48;
+         double masshigh2 = 0.52;
+	 double rholow = 0.75;
+         double rhohigh = 0.79;
+	 double rholow2 = 0.72;
+         double rhohigh2 = 0.79;
 
+	 double sigpipik0 = 0.031;  // 31 MeV = 1*sigma, 62 MeV window = 2*sigma
+	 double sigpipirho = 0.138; // 138 MeV window ??????????????????????
+	 
+ 
 	 //...cut 05       ...K0sK0s channel ...selection by mass
 	 if(totcharge==0){
 
@@ -1768,6 +2045,18 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	             if(mrecpi1pi2 < masshigh && mrecpi1pi2 > masslow &&
 			mrecpi3pi4 < masshigh && mrecpi3pi4 > masslow ){		     
 		       	histosTH1F["hm4rec2OSm123405"]->Fill(mrec);
+		       	histosTH1F["hm4rec2OSmrec123405"]->Fill(mrec1234);
+			// testing mix-up channels
+			if(!nks){
+		       	histosTH1F["hm4rec2OSm123405nov"]->Fill(mrec);
+			}
+			if(nks==2){
+		       	histosTH1F["hm4rec2OSm123405yesv"]->Fill(mrec);
+			}
+			if(nks==1){
+		       	histosTH1F["hm4rec2OSm123405yes1"]->Fill(mrec);
+			}
+			//
 			if(mrec > 1.50 && mrec < 1.58){			  
 			  histosTH1F["hm4rec2OSm123405pi1pt"]->Fill(pi1pt);
 			  histosTH1F["hm4rec2OSm123405pi2pt"]->Fill(pi2pt);
@@ -1775,6 +2064,29 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			  histosTH1F["hm4rec2OSm123405pi4pt"]->Fill(pi4pt);
 			}
                	        histosTH2F["h2dim2OSm12x3405"]->Fill(mrecpi1pi2,mrecpi3pi4);
+		     }
+	             if(mrecpi1pi2 < masshigh2 && mrecpi1pi2 > masslow2 &&
+			mrecpi3pi4 < masshigh2 && mrecpi3pi4 > masslow2 ){
+		       	histosTH1F["hm4rec2OSm1234052"]->Fill(mrec);
+		     }
+		     //...| M(pi+pi-) - M(K0) | < 31 MeV = 1*sigma, mass window = 2*sigma = 62 MeV
+	             if( ( TMath::Abs(mrecpi1pi2 - m_k0) < sigpipik0 ) &&
+			 ( TMath::Abs(mrecpi3pi4 - m_k0) < sigpipik0 ) ){
+		       	histosTH1F["hm4rec2OSm123405sig"]->Fill(mrec);
+		     }
+		     //...rho
+		     if(mrecpi1pi2 < rhohigh && mrecpi1pi2 > rholow &&
+			mrecpi3pi4 < rhohigh && mrecpi3pi4 > rholow ){		     
+		       	histosTH1F["hm4rec2OSr123405"]->Fill(mrec);
+		     }
+		     if(mrecpi1pi2 < rhohigh2 && mrecpi1pi2 > rholow2 &&
+			mrecpi3pi4 < rhohigh2 && mrecpi3pi4 > rholow2 ){		     
+		       	histosTH1F["hm4rec2OSr1234052"]->Fill(mrec);
+		     }
+		     //...| M(pi+pi-) - M(rho) | < 138 MeV = 1*sigma, mass window = 2*sigma = 70 MeV
+	             if( ( TMath::Abs(mrecpi1pi2 - m_rho) < sigpipirho ) &&
+			 ( TMath::Abs(mrecpi3pi4 - m_rho) < sigpipirho ) ){
+		       	histosTH1F["hm4rec2OSr123405sig"]->Fill(mrec);
 		     }
 	          }
 	   if(charray[0]+charray[2] == 0)
@@ -1805,6 +2117,18 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	             if(mrecpi1pi3 < masshigh && mrecpi1pi3 > masslow &&
 			mrecpi2pi4 < masshigh && mrecpi2pi4 > masslow ){		     
 		        histosTH1F["hm4rec2OSm132405"]->Fill(mrec);
+		       	histosTH1F["hm4rec2OSmrec132405"]->Fill(mrec1324);
+			// testing mix-up channels
+			if(!nks){
+		       	histosTH1F["hm4rec2OSm132405nov"]->Fill(mrec);
+			}
+			if(nks==2){
+		       	histosTH1F["hm4rec2OSm132405yesv"]->Fill(mrec);
+			}
+			if(nks==1){
+		       	histosTH1F["hm4rec2OSm132405yes1"]->Fill(mrec);
+			}
+			//
  			if(mrec > 1.50 && mrec < 1.58){			  
 			  histosTH1F["hm4rec2OSm132405pi1pt"]->Fill(pi1pt);
 			  histosTH1F["hm4rec2OSm132405pi2pt"]->Fill(pi2pt);
@@ -1812,6 +2136,30 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			  histosTH1F["hm4rec2OSm132405pi4pt"]->Fill(pi4pt);
 			}
    		     histosTH2F["h2dim2OSm13x2405"]->Fill(mrecpi1pi3,mrecpi2pi4);
+		     }
+	             if(mrecpi1pi3 < masshigh2 && mrecpi1pi3 > masslow2 &&
+			mrecpi2pi4 < masshigh2 && mrecpi2pi4 > masslow2 ){
+		        histosTH1F["hm4rec2OSm1324052"]->Fill(mrec);
+		     }
+		     //...| M(pi+pi-) - M(K0) | < 31 MeV = 1*sigma, mass window = 2*sigma = 62 MeV
+	             if( ( TMath::Abs(mrecpi1pi3 - m_k0) < sigpipik0 ) &&
+			 ( TMath::Abs(mrecpi2pi4 - m_k0) < sigpipik0 ) ){
+		       	histosTH1F["hm4rec2OSm132405sig"]->Fill(mrec);
+		     }
+		     //...rho
+	             if(mrecpi1pi3 < rhohigh && mrecpi1pi3 > rholow &&
+			mrecpi2pi4 < rhohigh && mrecpi2pi4 > rholow ){		     
+		        histosTH1F["hm4rec2OSr132405"]->Fill(mrec);
+		     }		     
+	             if(mrecpi1pi3 < rhohigh2 && mrecpi1pi3 > rholow2 &&
+			mrecpi2pi4 < rhohigh2 && mrecpi2pi4 > rholow2 ){		     
+		        histosTH1F["hm4rec2OSr1324052"]->Fill(mrec);
+		     }
+    		     //...| M(pi+pi-) - M(rho) | < 35 MeV = 1*sigma, mass window = 2*sigma = 70 MeV
+    		     //...| M(pi+pi-) - M(rho) | < 138 MeV = 1*sigma, mass window = 2*sigma = 276 MeV
+	             if( ( TMath::Abs(mrecpi1pi3 - m_rho) < sigpipirho ) &&
+			 ( TMath::Abs(mrecpi2pi4 - m_rho) < sigpipirho ) ){
+		       	histosTH1F["hm4rec2OSr132405sig"]->Fill(mrec);
 		     }
 		  }
 	   if(charray[0]+charray[3] == 0)
@@ -1842,6 +2190,18 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	             if(mrecpi1pi4 < masshigh && mrecpi1pi4 > masslow &&
 			mrecpi2pi3 < masshigh && mrecpi2pi3 > masslow ){		     
 		        histosTH1F["hm4rec2OSm142305"]->Fill(mrec);
+		       	histosTH1F["hm4rec2OSmrec142305"]->Fill(mrec1423);
+			// testing mix-up channels
+			if(!nks){
+		       	histosTH1F["hm4rec2OSm142305nov"]->Fill(mrec);
+			}
+			if(nks==2){
+		       	histosTH1F["hm4rec2OSm142305yesv"]->Fill(mrec);
+			}
+			if(nks==1){
+		       	histosTH1F["hm4rec2OSm142305yes1"]->Fill(mrec);
+			}
+			//
 			if(mrec > 1.50 && mrec < 1.58){			  
 			  histosTH1F["hm4rec2OSm142305pi1pt"]->Fill(pi1pt);
 			  histosTH1F["hm4rec2OSm142305pi2pt"]->Fill(pi2pt);
@@ -1849,6 +2209,29 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			  histosTH1F["hm4rec2OSm142305pi4pt"]->Fill(pi4pt);
 			}		
                      histosTH2F["h2dim2OSm14x2305"]->Fill(mrecpi1pi4,mrecpi2pi3);
+		     }
+	             if(mrecpi1pi4 < masshigh2 && mrecpi1pi4 > masslow2 &&
+			mrecpi2pi3 < masshigh2 && mrecpi2pi3 > masslow2 ){
+		        histosTH1F["hm4rec2OSm1423052"]->Fill(mrec);
+		     }
+		     //...| M(pi+pi-) - M(K0) | < 31 MeV = 1*sigma, mass window = 2*sigma = 62 MeV
+	             if( ( TMath::Abs(mrecpi1pi4 - m_k0) < sigpipik0 ) &&
+			 ( TMath::Abs(mrecpi2pi3 - m_k0) < sigpipik0 ) ){
+		       	histosTH1F["hm4rec2OSm142305sig"]->Fill(mrec);
+		     }
+		     //...rho
+		     if(mrecpi1pi4 < rhohigh && mrecpi1pi4 > rholow &&
+			mrecpi2pi3 < rhohigh && mrecpi2pi3 > rholow ){		     
+		        histosTH1F["hm4rec2OSr142305"]->Fill(mrec);
+		     }		     
+		     if(mrecpi1pi4 < rhohigh2 && mrecpi1pi4 > rholow2 &&
+			mrecpi2pi3 < rhohigh2 && mrecpi2pi3 > rholow2 ){		     
+		        histosTH1F["hm4rec2OSr1423052"]->Fill(mrec);
+		     }
+    		     //...| M(pi+pi-) - M(rho) | < 35 MeV = 1*sigma, mass window = 2*sigma = 70 MeV
+	             if( ( TMath::Abs(mrecpi1pi4 - m_rho) < sigpipirho ) &&
+			 ( TMath::Abs(mrecpi2pi3 - m_rho) < sigpipirho ) ){
+		       	histosTH1F["hm4rec2OSr142305sig"]->Fill(mrec);
 		     }
 		  }
 	 } //...end of cut05
@@ -2041,12 +2424,18 @@ PromptAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 not now 2 */
 
-	   //BB...no PID Pions
+	   //BB...no PID Pions or Kaons
      	   if(totcharge==0){
 
+	     //...ntrk vs nks
+	     histosTH2F["hntrknksq0"]->Fill(ntrk,nks);
+	     //...nvtx vs nks
+	     histosTH2F["hnvtxnksq0"]->Fill(nvtx,nks);
+
 	     if(isKshort){
-	       
-	     if(nvtx==1 && nks==1 && nlam==0){
+
+	       //...type:11 is double counting but selecting the best distributions can fix it
+	     if(nvtx==1 && nks==1){
 
                //double rlimit = 0.5;
 	       if(charray[0]+charray[1] == 0 
@@ -2088,60 +2477,74 @@ not now 2 */
 	       if(charray[1]+charray[2] == 0 
 		  && isTrack1 && isTrack4 )
 		 {mrecKpi = mreck1pi4 ; histosTH1F["hm4rec2OSveeno11"]->Fill(mrecKpi);}
+
+	       //...attention here!
 	       
-	       //A  
-	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm4rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm4rec2OS_pi3k4veeno11"]->Fill(mrecpi3k4);    
+	       //A  k4
+	       if(charray[0]+charray[1] == 0 && isTrack3 && isTrack4 ) {
+		 histosTH1F["hm4rec2OS_pi1pi2k4veeno11"]->Fill(mrecpi1pi2); //a
+	         histosTH1F["hm4rec2OS_pi3k4veeno11"]->Fill(mrecpi3k4);}    
 	       ///histosTH2F["hm4dim2OS_pi1pi2_pi3k4veeno11"]->Fill(mrecpi1pi2,mrecpi3k4);
 	       //     
-	       if(charray[0]+charray[2] == 0 && isTrack1 && isTrack3 ) histosTH1F["hm4rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
-	       if(charray[1]+charray[3] == 0 && isTrack2 && isTrack4 ) histosTH1F["hm4rec2OS_pi2k4veeno11"]->Fill(mrecpi2k4);
+	       if(charray[0]+charray[2] == 0 && isTrack2 && isTrack4 ) {
+		 histosTH1F["hm4rec2OS_pi1pi3k4veeno11"]->Fill(mrecpi1pi3); //b
+	         histosTH1F["hm4rec2OS_pi2k4veeno11"]->Fill(mrecpi2k4);}
 	       ///histosTH2F["hm4dim2OS_pi1pi3_pi2k4veeno11"]->Fill(mrecpi1pi3,mrecpi2k4);
 	       //
-	       if(charray[1]+charray[2] == 0 && isTrack2 && isTrack3 ) histosTH1F["hm4rec2OS_pi2pi3veeno11"]->Fill(mrecpi2pi3);
-	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm4rec2OS_pi1k4veeno11"]->Fill(mrecpi1k4);
+	       if(charray[1]+charray[2] == 0 && isTrack1 && isTrack4 ) {
+		 histosTH1F["hm4rec2OS_pi2pi3k4veeno11"]->Fill(mrecpi2pi3); //c
+	         histosTH1F["hm4rec2OS_pi1k4veeno11"]->Fill(mrecpi1k4);}
 	       ///histosTH2F["hm4dim2OS_pi2pi3_pi1k4veeno11"]->Fill(mrecpi2pi3,mrecpi1k4);
 
-	       //B  
-	       //if(charray[0]+charray[1] == 0) histosTH1F["hm4rec2OS_pi1pi2veeno11"]->Fill(mrecpi1pi2);
-	       if(charray[2]+charray[3] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm4rec2OS_k3pi4veeno11"]->Fill(mreck3pi4);
+	       //B  k3
+	       if(charray[0]+charray[1] == 0 && isTrack3 && isTrack4 ) {
+		 histosTH1F["hm4rec2OS_pi1pi2k3veeno11"]->Fill(mrecpi1pi2); //ax2
+	         histosTH1F["hm4rec2OS_k3pi4veeno11"]->Fill(mreck3pi4);}
 	       ///histosTH2F["hm4dim2OS_pi1pi2_k3pi4veeno11"]->Fill(mrecpi1pi2,mreck3pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm4rec2OS_pi1pi4veeno11"]->Fill(mrecpi1pi4);
-	       if(charray[2]+charray[1] == 0 && isTrack3 && isTrack2 ) histosTH1F["hm4rec2OS_k3pi2veeno11"]->Fill(mreck3pi2);
+	       if(charray[0]+charray[3] == 0 && isTrack3 && isTrack2 ) {
+		 histosTH1F["hm4rec2OS_pi1pi4k3veeno11"]->Fill(mrecpi1pi4); //d
+	         histosTH1F["hm4rec2OS_k3pi2veeno11"]->Fill(mreck3pi2);}
 	       ///histosTH2F["hm4dim2OS_pi1pi4_k3pi2veeno11"]->Fill(mrecpi1pi4,mreck3pi2);
 	       //
-	       if(charray[1]+charray[3] == 0 && isTrack2 && isTrack4 ) histosTH1F["hm4rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
-	       if(charray[2]+charray[0] == 0 && isTrack3 && isTrack1 ) histosTH1F["hm4rec2OS_k3pi1veeno11"]->Fill(mreck3pi1);
+	       if(charray[1]+charray[3] == 0 && isTrack3 && isTrack1 ) {
+		 histosTH1F["hm4rec2OS_pi2pi4k3veeno11"]->Fill(mrecpi2pi4); //e
+	         histosTH1F["hm4rec2OS_k3pi1veeno11"]->Fill(mreck3pi1);}
 	       ///histosTH2F["hm4dim2OS_pi2pi4_k3pi1veeno11"]->Fill(mrecpi2pi4,mreck3pi1);
 
-	       //C
-	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm4rec2OS_pi1k2veeno11"]->Fill(mrecpi1k2);
-	       if(charray[2]+charray[3] == 0 && isTrack3 && isTrack4 ) histosTH1F["hm4rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
+	       //C  k2
+	       if(charray[2]+charray[3] == 0 && isTrack1 && isTrack2 ) {
+		 histosTH1F["hm4rec2OS_pi1k2veeno11"]->Fill(mrecpi1k2);
+                 histosTH1F["hm4rec2OS_pi3pi4k2veeno11"]->Fill(mrecpi3pi4);} //f
       	       ///histosTH2F["hm4dim2OS_pi1k2_pi3pi4veeno11"]->Fill(mrecpi1k2,mrecpi3pi4);
 	       //
-	       if(charray[2]+charray[1] == 0 && isTrack3 && isTrack2 ) histosTH1F["hm4rec2OS_pi3k2veeno11"]->Fill(mrecpi3k2);
-	       //if(charray[0]+charray[3] == 0) histosTH1F["hm4rec2OS_pi1pi4veeno11"]->Fill(mrecpi1pi4);
+	       if(charray[0]+charray[3] == 0 && isTrack3 && isTrack2 ) {
+		 histosTH1F["hm4rec2OS_pi3k2veeno11"]->Fill(mrecpi3k2);
+	         histosTH1F["hm4rec2OS_pi1pi4k2veeno11"]->Fill(mrecpi1pi4);} //dx2
 	       ///histosTH2F["hm4dim2OS_pi3k2_pi1pi4veeno11"]->Fill(mrecpi3k2,mrecpi1pi4);
 	       //
-	       if(charray[3]+charray[1] == 0 && isTrack4 && isTrack2 ) histosTH1F["hm4rec2OS_pi4k2veeno11"]->Fill(mrecpi4k2);
-	       //if(charray[0]+charray[2] == 0) histosTH1F["hm4rec2OS_pi1pi3veeno11"]->Fill(mrecpi1pi3);
+	       if(charray[0]+charray[2] == 0 && isTrack4 && isTrack2 ) {
+		 histosTH1F["hm4rec2OS_pi4k2veeno11"]->Fill(mrecpi4k2);
+	         histosTH1F["hm4rec2OS_pi1pi3k2veeno11"]->Fill(mrecpi1pi3);} //bx2
 	       ///histosTH2F["hm4dim2OS_pi4k2_pi1pi3veeno11"]->Fill(mrecpi4k2,mrecpi1pi3);
 
-	       //D
-	       if(charray[0]+charray[1] == 0 && isTrack1 && isTrack2 ) histosTH1F["hm4rec2OS_k1pi2veeno11"]->Fill(mreck1pi2);
-	       //if(charray[2]+charray[3] == 0) histosTH1F["hm4rec2OS_pi3pi4veeno11"]->Fill(mrecpi3pi4);
+	       //D  k1
+	       if(charray[2]+charray[3] == 0 && isTrack1 && isTrack2 ) {
+		 histosTH1F["hm4rec2OS_k1pi2veeno11"]->Fill(mreck1pi2);
+	         histosTH1F["hm4rec2OS_pi3pi4k1veeno11"]->Fill(mrecpi3pi4);} //fx2
 	       ///histosTH2F["hm4dim2OS_k1pi2_pi3pi4veeno11"]->Fill(mreck1pi2,mrecpi3pi4);
 	       //
-	       if(charray[0]+charray[2] == 0 && isTrack1 && isTrack3 ) histosTH1F["hm4rec2OS_k1pi3veeno11"]->Fill(mreck1pi3);
-	       //if(charray[1]+charray[3] == 0) histosTH1F["hm4rec2OS_pi2pi4veeno11"]->Fill(mrecpi2pi4);
+	       if(charray[1]+charray[3] == 0 && isTrack1 && isTrack3 ) {
+		 histosTH1F["hm4rec2OS_k1pi3veeno11"]->Fill(mreck1pi3);
+	         histosTH1F["hm4rec2OS_pi2pi4k1veeno11"]->Fill(mrecpi2pi4);} //ex2
 	       ///histosTH2F["hm4dim2OS_k1pi3_pi2pi4veeno11"]->Fill(mreck1pi3,mrecpi2pi4);
 	       //
-	       if(charray[0]+charray[3] == 0 && isTrack1 && isTrack4 ) histosTH1F["hm4rec2OS_k1pi4veeno11"]->Fill(mreck1pi4);
-	       //if(charray[1]+charray[2] == 0) histosTH1F["hm4rec2OS_pi2pi3veeno11"]->Fill(mrecpi2pi3);
+	       if(charray[1]+charray[2] == 0 && isTrack1 && isTrack4 ) {
+		 histosTH1F["hm4rec2OS_k1pi4veeno11"]->Fill(mreck1pi4);
+	         histosTH1F["hm4rec2OS_pi2pi3k1veeno11"]->Fill(mrecpi2pi3);} //cx2
 	       ///histosTH2F["hm4dim2OS_k1pi3_pi2pi4veeno11"]->Fill(mreck1pi3,mrecpi2pi4);
 
-	     } //end of nvtx=1 nks=1 nlam=0
+	     } //end of nvtx=1 nks=1
 
 	     
              if(nvtx==0 && nks==2){
@@ -2178,6 +2581,79 @@ not now 2 */
  
        //-----------end of cut 8
 
+
+
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	 //...cut k1  ...K+K-
+	 
+         if(totcharge==0){
+	   histosTH1F["hm4rec2OSk"]->Fill(mrecKKKK);
+
+	   if(nvtx==1){
+	     
+	   histosTH1F["hm4rec2OS2k"]->Fill(mrecKKKK);
+	   
+	   //...REVIEW! LOGIC NOT OK!
+	   if(charray[0]+charray[1] == 0)
+	          {
+	             histosTH1F["hm4rec2OS_k1k2m"]->Fill(mreck1k2);
+		     //
+                     ////histosTH1F["h2OSpt12k"]->Fill(ptk1k2);
+                     ////histosTH1F["h2OSeta12k"]->Fill(etak1k2);
+                     ////histosTH2F["h2dim2OSpteta12k"]->Fill(ptk1k2,etak1k2);
+		     //
+		     histosTH1F["hm4rec2OS_k3k4m"]->Fill(mreck3k4);
+		     //
+                     ////histosTH1F["h2OSpt34k"]->Fill(ptk3k4);
+                     ////histosTH1F["h2OSeta34k"]->Fill(etak3k4);
+                     ////histosTH2F["h2dim2OSpteta34k"]->Fill(ptk3k4,etak3k4);		     
+		     // 
+	               histosTH1F["hm4rec2OSm1234k"]->Fill(mrecKKKK);
+		       histosTH2F["h2dim2OSm12x34k"]->Fill(mreck1k2,mreck3k4);
+                     	          }
+	   if(charray[0]+charray[2] == 0)
+		  {
+	             histosTH1F["hm4rec2OS_k1k3m"]->Fill(mreck1k3);
+                     //
+		     ////histosTH1F["h2OSpt13k"]->Fill(ptk1k3);
+                     ////histosTH1F["h2OSeta13k"]->Fill(etak1k3);
+                     ////histosTH2F["h2dim2OSpteta13k"]->Fill(ptk1k3,etak1k3);
+ 		     //
+		     histosTH1F["hm4rec2OS_k2k4m"]->Fill(mreck2k4);
+		     //
+		     ////histosTH1F["h2OSpt24k"]->Fill(ptk2k4);
+                     ////histosTH1F["h2OSeta24k"]->Fill(etak2k4);
+                     ////histosTH2F["h2dim2OSpteta24k"]->Fill(ptk2k4,etak2k4);		     
+ 		     //
+	               histosTH1F["hm4rec2OSm1324k"]->Fill(mrecKKKK);
+		       histosTH2F["h2dim2OSm13x24k"]->Fill(mreck1k3,mreck2k4);
+		    		  }
+	   if(charray[0]+charray[3] == 0)
+	          {	    
+	             histosTH1F["hm4rec2OS_k1k4m"]->Fill(mreck1k4);
+                     //
+		     ////histosTH1F["h2OSpt14k"]->Fill(ptk1k4);
+                     ////histosTH1F["h2OSeta14k"]->Fill(etak1k4);
+                     ////histosTH2F["h2dim2OSpteta14k"]->Fill(ptk1k4,etak1k4);
+		     //
+		     histosTH1F["hm4rec2OS_k2k3m"]->Fill(mreck2k3);
+                     //
+		     ////histosTH1F["h2OSpt23k"]->Fill(ptk2k3);
+                     ////histosTH1F["h2OSeta23k"]->Fill(etak2k3);
+                     ////histosTH2F["h2dim2OSpteta23k"]->Fill(ptk2k3,etak2k3);		     
+		     // 
+	               histosTH1F["hm4rec2OSm1423k"]->Fill(mrecKKKK);
+		       histosTH2F["h2dim2OSm14x23k"]->Fill(mreck1k4,mreck2k3);
+		     		  }
+
+	   } //...end of nvtx=1
+      	 } //...end of cut k1 totalcharge
+
+
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+	   
 	   
        //...cut 1    ...nvtx==1 or 2
        
@@ -2188,9 +2664,29 @@ not now 2 */
          }
 	  
 
-	 //...include cut 2 here
+       //...cut 2    ...Luiz
+
+	 if(totcharge==0){
+
+	     histosTH1F["hm4rec2OS"]->Fill(mrec); 
 	 
-	
+	     //...nvtx=1
+	     if(nvtx==1){
+	        histosTH1F["hm4rec2OS2"]->Fill(mrec);
+	        //...no V0    ...pure 4-pion channel
+       	        if(!nks){
+		   histosTH1F["hm4rec2OS2nov0"]->Fill(mrec);
+		 }
+	     }
+	     //...nvtx=1 and nks=0  : type:10
+	     //...does not improve the 4-pi channel, the difference is 22k events only
+	     if(nvtx==1 && nks==0){
+	        histosTH1F["hm4rec2OS2veeno10"]->Fill(mrec);
+	     }
+	 }
+	// end of cut 2
+
+	       
   } //...end of fiducialRegion4 && allCuts4
 
     
@@ -2372,12 +2868,29 @@ PromptAnalyzer::beginJob()
   histosTH1F["hnks"] = fs->make<TH1F>("hnks","N Kshorts",10,0,10);
   histosTH2F["hntrknks"] = fs->make<TH2F>("hntrknks","# of K0s Vees vs # of Tracks",150,0,150,10,0,10);
   histosTH2F["hnvtxnks"] = fs->make<TH2F>("hnvtxnks","# of K0s Vees vs # of Vertices",150,0,150,10,0,10);
+  //...all4
+  histosTH2F["hntrknksall4"] = fs->make<TH2F>("hntrknksall4","# of K0s Vees vs # of Tracks all4",150,0,150,10,0,10);
+  histosTH2F["hnvtxnksall4"] = fs->make<TH2F>("hnvtxnksall4","# of K0s Vees vs # of Vertices all4",150,0,150,10,0,10);
+  //...Q=0
+  histosTH2F["hntrknksq0"] = fs->make<TH2F>("hntrknksq0","# of K0s Vees vs # of Tracks Q=0",150,0,150,10,0,10);
+  histosTH2F["hnvtxnksq0"] = fs->make<TH2F>("hnvtxnksq0","# of K0s Vees vs # of Vertices Q=0",150,0,150,10,0,10);
+  //
   histosTH2F["hntrknvtx"] = fs->make<TH2F>("hntrknvtx","# of Vertices vs # of Tracks",150,0,150,150,0,150);
   histosTH1F["hksvertexx"] = fs->make<TH1F>("hksvertexx","K0s X vertex",1200,-30.,30.);
   histosTH1F["hksvertexy"] = fs->make<TH1F>("hksvertexy","K0s Y vertex",1200,-30.,30.);
   histosTH1F["hksvertexz"] = fs->make<TH1F>("hksvertexz","K0s Z vertex",1200,-50.,50.);
-  histosTH1F["hksradius"] = fs->make<TH1F>("hksradius","K0s vertex radius",600,0.,30.);
-  histosTH1F["hkslifetime"] = fs->make<TH1F>("hkslifetime","K0s lifetime",200,0.,10.);
+  histosTH1F["hksradius"] = fs->make<TH1F>("hksradius","K0s vertex radius",20000,0.,100.);
+  histosTH1F["hksradiusv1"] = fs->make<TH1F>("hksradiusv1","K0s vertex radius v1",20000,0.,100.);
+  histosTH1F["hksradiusv2"] = fs->make<TH1F>("hksradiusv2","K0s vertex radius v2",20000,0.,100.);
+  histosTH1F["hks3Dradius"] = fs->make<TH1F>("hks3Dradius","K0s vertex radius 3D",20000,0.,100.);
+  histosTH1F["hks3Dradiusv1"] = fs->make<TH1F>("hks3Dradiusv1","K0s vertex radius 3D v1",20000,0.,100.);
+  histosTH1F["hks3Dradiusv2"] = fs->make<TH1F>("hks3Dradiusv2","K0s vertex radius 3D v2",20000,0.,100.);
+  histosTH1F["hkslifetime"] = fs->make<TH1F>("hkslifetime","K0s lifetime",20000,0.,100.);
+  histosTH1F["hkslifetimev1"] = fs->make<TH1F>("hkslifetimev1","K0s lifetime v1",20000,0.,100.);
+  histosTH1F["hkslifetimev2"] = fs->make<TH1F>("hkslifetimev2","K0s lifetime v2",20000,0.,100.);
+  histosTH1F["hks3Dlifetime"] = fs->make<TH1F>("hks3Dlifetime","K0s lifetime 3D",20000,0.,100.);
+  histosTH1F["hks3Dlifetimev1"] = fs->make<TH1F>("hks3Dlifetimev1","K0s lifetime 3D v1",20000,0.,100.);
+  histosTH1F["hks3Dlifetimev2"] = fs->make<TH1F>("hks3Dlifetimev2","K0s lifetime 3D v2",20000,0.,100.);
   //...2D
   histosTH2F["h2dimksxy"] = fs->make<TH2F>("h2dimksxy","K0s X vs Y vtx",300,-30.,30.,300,-30.,30.);
   histosTH2F["h2dimksxz"] = fs->make<TH2F>("h2dimksxz","K0s X vs Z vtx",300,-30.,30.,300,-30.,30.);
@@ -2396,10 +2909,10 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["hksrad4"] = fs->make<TH1F>("hksrad4","K0s radius4",800,0,40.);
   //**histosTH1F["hksrad0"] = fs->make<TH1F>("hksrad0","K0s radius0",800,0,40.);
   //
-  histosTH1F["hrimpac1"] = fs->make<TH1F>("hrimpac1","3D impact parameter 1",1000,0,10.);
-  histosTH1F["hrimpac2"] = fs->make<TH1F>("hrimpac2","3D impact parameter 2",1000,0,10.);
-  histosTH1F["hrimpac3"] = fs->make<TH1F>("hrimpac3","3D impact parameter 3",1000,0,10.);
-  histosTH1F["hrimpac4"] = fs->make<TH1F>("hrimpac4","3D impact parameter 4",1000,0,10.);
+  histosTH1F["hrimpac1"] = fs->make<TH1F>("hrimpac1","3D impact parameter 1",10000,0,10.);
+  histosTH1F["hrimpac2"] = fs->make<TH1F>("hrimpac2","3D impact parameter 2",10000,0,10.);
+  histosTH1F["hrimpac3"] = fs->make<TH1F>("hrimpac3","3D impact parameter 3",10000,0,10.);
+  histosTH1F["hrimpac4"] = fs->make<TH1F>("hrimpac4","3D impact parameter 4",10000,0,10.);
   //
   //**histosTH1F["hntag1"] = fs->make<TH1F>("hntag1","test ntag1",10,0,10);
   //**histosTH1F["hntag2"] = fs->make<TH1F>("hntag2","test ntag2",10,0,10);
@@ -2412,7 +2925,10 @@ PromptAnalyzer::beginJob()
   histosTH1F["hlamvertexx"] = fs->make<TH1F>("hlamvertexx","#Lambda X vertex",120,-30.,30.);
   histosTH1F["hlamvertexy"] = fs->make<TH1F>("hlamvertexy","#Lambda Y vertex",120,-30.,30.);
   histosTH1F["hlamvertexz"] = fs->make<TH1F>("hlamvertexz","#Lambda Z vertex",120,-30.,30.);
-  histosTH1F["hlamradius"] = fs->make<TH1F>("hlamradius","#Lambda vertex radius",60,0.,30.);
+  histosTH1F["hlamradius"] = fs->make<TH1F>("hlamradius","#Lambda vertex radius",20000,0.,100.);
+  histosTH1F["hlam3Dradius"] = fs->make<TH1F>("hlam3Dradius","#Lambda vertex 3D radius",20000,0.,100.);
+  histosTH1F["hlamlifetime"] = fs->make<TH1F>("hlamlifetime","#Lambda vertex lifetime",20000,0.,100.);
+  histosTH1F["hlam3Dlifetime"] = fs->make<TH1F>("hlam3Dlifetime","#Lambda vertex 3D lifetime",20000,0.,100.);
   //...2D
   histosTH2F["h2dimlamxy"] = fs->make<TH2F>("h2dimlamxy","#Lambda X vs Y vtx",300,-30.,30.,300,-30.,30.);
   histosTH2F["h2dimlamxz"] = fs->make<TH2F>("h2dimlamxz","#Lambda X vs Z vtx",300,-30.,30.,300,-30.,30.);
@@ -2487,8 +3003,8 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["hm4recSS_ttbb"] = fs->make<TH1F>("hm4recSS_ttbb","M_{4#pi} TT/BB SS",massbins,0,5.);
 
   //...2OS-2SS
-  //**histosTH1F["hm4rec2OS"] = fs->make<TH1F>("hm4rec2OS","M_{4#pi} OS",massbins,0,5.);
-  //**histosTH1F["hm4rec2OSk"] = fs->make<TH1F>("hm4rec2OSk","M_{4K} OS",massbins,0,5.);
+  histosTH1F["hm4rec2OS"] = fs->make<TH1F>("hm4rec2OS","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm4rec2OSk"] = fs->make<TH1F>("hm4rec2OSk","M_{4K} OS",massbins,0,5.);
   //**histosTH1F["hm4rec2OSrejKp"] = fs->make<TH1F>("hm4rec2OSrejKp","M_{4#pi} OS rejecting at least one K or p",massbins,0,5.);
   //**histosTH1F["hm4rec2OS2rejKp"] = fs->make<TH1F>("hm4rec2OS2rejKp","M_{4#pi} OS nvtx=1 rejecting at least one K or p",massbins,0,5.);
   //**histosTH1F["hm4rec2OSrejKpu"] = fs->make<TH1F>("hm4rec2OSrejKpu","M_{4#pi} OS rejecting at least one K or p or unknown",massbins,0,5.);
@@ -2515,6 +3031,43 @@ PromptAnalyzer::beginJob()
   histosTH1F["hm4rec2OSm123405"] = fs->make<TH1F>("hm4rec2OSm123405","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm4rec2OSm132405"] = fs->make<TH1F>("hm4rec2OSm132405","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm4rec2OSm142305"] = fs->make<TH1F>("hm4rec2OSm142305","M_{4#pi} OS",massbins,0,5.);
+  //
+  histosTH1F["hm4rec2OSm1234052"] = fs->make<TH1F>("hm4rec2OSm1234052","M_{4#pi} OS range",massbins,0,5.);
+  histosTH1F["hm4rec2OSm1324052"] = fs->make<TH1F>("hm4rec2OSm1324052","M_{4#pi} OS range",massbins,0,5.);
+  histosTH1F["hm4rec2OSm1423052"] = fs->make<TH1F>("hm4rec2OSm1423052","M_{4#pi} OS range",massbins,0,5.);
+  //
+  histosTH1F["hm4rec2OSm123405sig"] = fs->make<TH1F>("hm4rec2OSm123405sig","M_{4#pi} OS sigma",massbins,0,5.);
+  histosTH1F["hm4rec2OSm132405sig"] = fs->make<TH1F>("hm4rec2OSm132405sig","M_{4#pi} OS sigma",massbins,0,5.);
+  histosTH1F["hm4rec2OSm142305sig"] = fs->make<TH1F>("hm4rec2OSm142305sig","M_{4#pi} OS sigma",massbins,0,5.);
+   //
+  histosTH1F["hm4rec2OSr123405"] = fs->make<TH1F>("hm4rec2OSr123405","M_{4#pi} OS #rho#rho",massbins,0,5.);
+  histosTH1F["hm4rec2OSr132405"] = fs->make<TH1F>("hm4rec2OSr132405","M_{4#pi} OS #rho#rho",massbins,0,5.);
+  histosTH1F["hm4rec2OSr142305"] = fs->make<TH1F>("hm4rec2OSr142305","M_{4#pi} OS #rho#rho",massbins,0,5.);
+   //
+  histosTH1F["hm4rec2OSr1234052"] = fs->make<TH1F>("hm4rec2OSr1234052","M_{4#pi} OS #rho#rho range",massbins,0,5.);
+  histosTH1F["hm4rec2OSr1324052"] = fs->make<TH1F>("hm4rec2OSr1324052","M_{4#pi} OS #rho#rho range",massbins,0,5.);
+  histosTH1F["hm4rec2OSr1423052"] = fs->make<TH1F>("hm4rec2OSr1423052","M_{4#pi} OS #rho#rho range",massbins,0,5.);
+   //
+  histosTH1F["hm4rec2OSr123405sig"] = fs->make<TH1F>("hm4rec2OSr123405sig","M_{4#pi} OS #rho#rho sigma",massbins,0,5.);
+  histosTH1F["hm4rec2OSr132405sig"] = fs->make<TH1F>("hm4rec2OSr132405sig","M_{4#pi} OS #rho#rho sigma",massbins,0,5.);
+  histosTH1F["hm4rec2OSr142305sig"] = fs->make<TH1F>("hm4rec2OSr142305sig","M_{4#pi} OS #rho#rho sigma",massbins,0,5.);
+  //
+  histosTH1F["hm4rec2OSmrec123405"] = fs->make<TH1F>("hm4rec2OSmrec123405","M_{4#pi} OS mrec1234",massbins,0,5.);
+  histosTH1F["hm4rec2OSmrec132405"] = fs->make<TH1F>("hm4rec2OSmrec132405","M_{4#pi} OS mrec1324",massbins,0,5.);
+  histosTH1F["hm4rec2OSmrec142305"] = fs->make<TH1F>("hm4rec2OSmrec142305","M_{4#pi} OS mrec1423",massbins,0,5.);
+  //
+  // testing mix-up channels ...no 2V0
+  histosTH1F["hm4rec2OSm123405nov"] = fs->make<TH1F>("hm4rec2OSm123405nov","M_{4#pi} OS no 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm132405nov"] = fs->make<TH1F>("hm4rec2OSm132405nov","M_{4#pi} OS no 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm142305nov"] = fs->make<TH1F>("hm4rec2OSm142305nov","M_{4#pi} OS no 2V0",massbins,0,5.);
+  // testing mix-up channels ...yes 2V0
+  histosTH1F["hm4rec2OSm123405yesv"] = fs->make<TH1F>("hm4rec2OSm123405yesv","M_{4#pi} OS yes 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm132405yesv"] = fs->make<TH1F>("hm4rec2OSm132405yesv","M_{4#pi} OS yes 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm142305yesv"] = fs->make<TH1F>("hm4rec2OSm142305yesv","M_{4#pi} OS yes 2V0",massbins,0,5.);
+  // testing mix-up channels ...yes 1V0
+  histosTH1F["hm4rec2OSm123405yes1"] = fs->make<TH1F>("hm4rec2OSm123405yes1","M_{4#pi} OS yes 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm132405yes1"] = fs->make<TH1F>("hm4rec2OSm132405yes1","M_{4#pi} OS yes 2V0",massbins,0,5.);
+  histosTH1F["hm4rec2OSm142305yes1"] = fs->make<TH1F>("hm4rec2OSm142305yes1","M_{4#pi} OS yes 2V0",massbins,0,5.);
   // fixed
   histosTH1F["hm4rec2OSm123405fix12"] = fs->make<TH1F>("hm4rec2OSm123405fix12","M_{4#pi} OS",massbins,0,5.);
   histosTH1F["hm4rec2OSm123405fix34"] = fs->make<TH1F>("hm4rec2OSm123405fix34","M_{4#pi} OS",massbins,0,5.);
@@ -2554,9 +3107,10 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["hm4rec2OSm132406"] = fs->make<TH1F>("hm4rec2OSm132406","M_{4#pi} OS",massbins,0,5.);
   //**histosTH1F["hm4rec2OSm142306"] = fs->make<TH1F>("hm4rec2OSm142306","M_{4#pi} OS",massbins,0,5.);
   //
-  //**histosTH1F["hm4rec2OSm1234k"] = fs->make<TH1F>("hm4rec2OSm1234k","M_{4K} OS",massbins,0,5.);
-  //**histosTH1F["hm4rec2OSm1324k"] = fs->make<TH1F>("hm4rec2OSm1324k","M_{4K} OS",massbins,0,5.);
-  //**histosTH1F["hm4rec2OSm1423k"] = fs->make<TH1F>("hm4rec2OSm1423k","M_{4K} OS",massbins,0,5.);
+  //...cut k1
+  histosTH1F["hm4rec2OSm1234k"] = fs->make<TH1F>("hm4rec2OSm1234k","M_{4K} OS",massbins,0,5.);
+  histosTH1F["hm4rec2OSm1324k"] = fs->make<TH1F>("hm4rec2OSm1324k","M_{4K} OS",massbins,0,5.);
+  histosTH1F["hm4rec2OSm1423k"] = fs->make<TH1F>("hm4rec2OSm1423k","M_{4K} OS",massbins,0,5.);
   //
   //...mass selection ...pions ...cut 0
   //***histosTH2F["h2dim2OSm12x34"]  = fs->make<TH2F>("h2dim2OSm12x34","M_{#pi_{1}#pi_{2}} vs M_{#pi_{3}#pi_{4}} K0s mass windows",massbins,0,5.,massbins,0,5.);
@@ -2671,7 +3225,7 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["h2OSeta2306"] = fs->make<TH1F>("h2OSeta2306","#eta_{#pi_{2}#pi_{3}} K0s mass windows",100,-5.,5.);
   //
   //...cut k1 
-  //***histosTH2F["h2dim2OSm12x34k"]  = fs->make<TH2F>("h2dim2OSm12x34k","M_{K_{1}K_{2}} vs M_{K_{3}K_{4}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
+  histosTH2F["h2dim2OSm12x34k"]  = fs->make<TH2F>("h2dim2OSm12x34k","M_{K_{1}K_{2}} vs M_{K_{3}K_{4}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
   //***histosTH2F["h2dim2OSpteta12k"] = fs->make<TH2F>("h2dim2OSpteta12k","pt_{K_{1}K_{2}} vs #eta_{K_{1}K_{2}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //***histosTH2F["h2dim2OSpteta34k"] = fs->make<TH2F>("h2dim2OSpteta34k","pt_{K_{3}K_{4}} vs #eta_{K_{3}K_{4}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //**histosTH1F["h2OSpt12k"]  = fs->make<TH1F>("h2OSpt12k","pt_{K_{1}K_{2}} K^{+}K^{-}",100,0,5.);
@@ -2679,7 +3233,7 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["h2OSeta12k"] = fs->make<TH1F>("h2OSeta12k","#eta_{K_{1}K_{2}} K^{+}K^{-}",100,-5.,5.);
   //**histosTH1F["h2OSeta34k"] = fs->make<TH1F>("h2OSeta34k","#eta_{K_{3}K_{4}} K^{+}K^{-}",100,-5.,5.);
   //
-  //***histosTH2F["h2dim2OSm13x24k"]  = fs->make<TH2F>("h2dim2OSm13x24k","M_{K_{1}K_{3}} vs M_{K_{2}K_{4}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
+  histosTH2F["h2dim2OSm13x24k"]  = fs->make<TH2F>("h2dim2OSm13x24k","M_{K_{1}K_{3}} vs M_{K_{2}K_{4}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
   //***histosTH2F["h2dim2OSpteta13k"] = fs->make<TH2F>("h2dim2OSpteta13k","pt_{K_{1}K_{3}} vs #eta_{K_{1}K_{3}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //***histosTH2F["h2dim2OSpteta24k"] = fs->make<TH2F>("h2dim2OSpteta24k","pt_{K_{2}K_{4}} vs #eta_{K_{2}K_{4}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //**histosTH1F["h2OSpt13k"]  = fs->make<TH1F>("h2OSpt13k","pt_{K_{1}K_{3}} K^{+}K^{-}",100,0,5.);
@@ -2687,7 +3241,7 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["h2OSeta13k"] = fs->make<TH1F>("h2OSeta13k","#eta_{K_{1}K_{3}} K^{+}K^{-}",100,-5.,5.);
   //**histosTH1F["h2OSeta24k"] = fs->make<TH1F>("h2OSeta24k","#eta_{K_{2}K_{4}} K^{+}K^{-}",100,-5.,5.);
   //  
-  //***histosTH2F["h2dim2OSm14x23k"]  = fs->make<TH2F>("h2dim2OSm14x23k","M_{K_{1}K_{4}} vs M_{K_{2}K_{3}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
+  histosTH2F["h2dim2OSm14x23k"]  = fs->make<TH2F>("h2dim2OSm14x23k","M_{K_{1}K_{4}} vs M_{K_{2}K_{3}} K^{+}K^{-}",massbins,0,5.,massbins,0,5.);
   //***histosTH2F["h2dim2OSpteta14k"] = fs->make<TH2F>("h2dim2OSpteta14k","pt_{K_{1}K_{4}} vs #eta_{K_{1}K_{4}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //***histosTH2F["h2dim2OSpteta23k"] = fs->make<TH2F>("h2dim2OSpteta23k","pt_{K_{2}K_{3}} vs #eta_{K_{2}K_{3}} K^{+}K^{-}",100,0,5.,100,-5.,5.);
   //**histosTH1F["h2OSpt14k"]  = fs->make<TH1F>("h2OSpt14k","pt_{K_{1}K_{4}} K^{+}K^{-}",100,0,5.);
@@ -2742,8 +3296,10 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["hm4rec2OSvtx1"] = fs->make<TH1F>("hm4rec2OSvtx1","M_{4#pi} OS",massbins,0,5.);
   //**histosTH1F["hm4rec2OSvtx2"] = fs->make<TH1F>("hm4rec2OSvtx2","M_{4#pi} OS",massbins,0,5.);
   
-  //**histosTH1F["hm4rec2OS2"] = fs->make<TH1F>("hm4rec2OS2","M_{4#pi} OS",2.0*massbins,0,10.);
-  //**histosTH1F["hm4rec2OS2k"] = fs->make<TH1F>("hm4rec2OS2k","M_{4K} OS",2.0*massbins,0,10.);
+  histosTH1F["hm4rec2OS2"] = fs->make<TH1F>("hm4rec2OS2","M_{4#pi} OS",massbins,0,5.);
+  histosTH1F["hm4rec2OS2nov0"] = fs->make<TH1F>("hm4rec2OS2nov0","M_{4#pi} OS no V0",massbins,0,5.);
+  histosTH1F["hm4rec2OS2veeno10"] = fs->make<TH1F>("hm4rec2OS2veeno10","M_{4#pi} OS type:10",massbins,0,5.);
+  histosTH1F["hm4rec2OS2k"] = fs->make<TH1F>("hm4rec2OS2k","M_{4K} OS",2.0*massbins,0,10.);
   // 12 34 13 24  ...for now
   //**histosTH1F["hm4rec2OS_pipi"] = fs->make<TH1F>("hm4rec2OS_pipi","M_{#pi#pi} OS",massbins,0,5.);
 
@@ -2817,12 +3373,13 @@ PromptAnalyzer::beginJob()
   //**histosTH1F["hm4rec2OS_pi1pi4m06"] = fs->make<TH1F>("hm4rec2OS_pi1pi4m06","M_{#pi_{1}#pi_{4}} K0s mass selection",massbins,0,5.);
   //**histosTH1F["hm4rec2OS_pi2pi3m06"] = fs->make<TH1F>("hm4rec2OS_pi2pi3m06","M_{#pi_{2}#pi_{3}} K0s mass selection",massbins,0,5.);
   //
-  //**histosTH1F["hm4rec2OS_k1k2m"] = fs->make<TH1F>("hm4rec2OS_k1k2m","M_{K_{1}K_{2}} K^{+}K^{-}",massbins,0,5.);
-  //**histosTH1F["hm4rec2OS_k3k4m"] = fs->make<TH1F>("hm4rec2OS_k3k4m","M_{K_{3}K_{4}} K^{+}K^{-}",massbins,0,5.);
-  //**histosTH1F["hm4rec2OS_k1k3m"] = fs->make<TH1F>("hm4rec2OS_k1k3m","M_{K_{1}K_{3}} K^{+}K^{-}",massbins,0,5.);
-  //**histosTH1F["hm4rec2OS_k2k4m"] = fs->make<TH1F>("hm4rec2OS_k2k4m","M_{K_{2}K_{4}} K^{+}K^{-}",massbins,0,5.);
-  //**histosTH1F["hm4rec2OS_k1k4m"] = fs->make<TH1F>("hm4rec2OS_k1k4m","M_{K_{1}K_{4}} K^{+}K^{-}",massbins,0,5.);
-  //**histosTH1F["hm4rec2OS_k2k3m"] = fs->make<TH1F>("hm4rec2OS_k2k3m","M_{K_{2}K_{3}} K^{+}K^{-}",massbins,0,5.);
+  //..cut k1
+  histosTH1F["hm4rec2OS_k1k2m"] = fs->make<TH1F>("hm4rec2OS_k1k2m","M_{K_{1}K_{2}} K^{+}K^{-}",massbins,0,5.);
+  histosTH1F["hm4rec2OS_k3k4m"] = fs->make<TH1F>("hm4rec2OS_k3k4m","M_{K_{3}K_{4}} K^{+}K^{-}",massbins,0,5.);
+  histosTH1F["hm4rec2OS_k1k3m"] = fs->make<TH1F>("hm4rec2OS_k1k3m","M_{K_{1}K_{3}} K^{+}K^{-}",massbins,0,5.);
+  histosTH1F["hm4rec2OS_k2k4m"] = fs->make<TH1F>("hm4rec2OS_k2k4m","M_{K_{2}K_{4}} K^{+}K^{-}",massbins,0,5.);
+  histosTH1F["hm4rec2OS_k1k4m"] = fs->make<TH1F>("hm4rec2OS_k1k4m","M_{K_{1}K_{4}} K^{+}K^{-}",massbins,0,5.);
+  histosTH1F["hm4rec2OS_k2k3m"] = fs->make<TH1F>("hm4rec2OS_k2k3m","M_{K_{2}K_{3}} K^{+}K^{-}",massbins,0,5.);
   
   //...v2
   //**histosTH1F["hm4rec2OS_pi1pi2v2"] = fs->make<TH1F>("hm4rec2OS_pi1pi2v2","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
@@ -2919,37 +3476,47 @@ PromptAnalyzer::beginJob()
    //
    //**histosTH1F["hm4rec2OS_k1pi4vee11"] = fs->make<TH1F>("hm4rec2OS_k1pi4vee11","M_{K_{1}#pi_{4}} OS",massbins,0,5.);
    //
-   //...A...no PID
-   histosTH1F["hm4rec2OS_pi1pi2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi2veeno11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+  
+   //...A...no PID  k4
+   histosTH1F["hm4rec2OS_pi1pi2k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi2k4veeno11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
    histosTH1F["hm4rec2OS_pi3k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi3k4veeno11","M_{#pi_{3}K_{4}} OS",massbins,0,5.);
    //  
-   histosTH1F["hm4rec2OS_pi1pi3veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi3veeno11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi1pi3k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi3k4veeno11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
    histosTH1F["hm4rec2OS_pi2k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2k4veeno11","M_{#pi_{2}K_{4}} OS",massbins,0,5.);
    //
-   histosTH1F["hm4rec2OS_pi2pi3veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi3veeno11","M_{#pi_{2}#pi_{3}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi2pi3k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi3k4veeno11","M_{#pi_{2}#pi_{3}} OS",massbins,0,5.);
    histosTH1F["hm4rec2OS_pi1k4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1k4veeno11","M_{#pi_{1}K_{4}} OS",massbins,0,5.);
-   //...B...no PID
-   histosTH1F["hm4rec2OS_k3pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_k3pi4veeno11","M_{K_{3}#pi_{4}} OS",massbins,0,5.);
    //
-   histosTH1F["hm4rec2OS_pi1pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi4veeno11","M_{#pi_{1}#pi_{4}} OS",massbins,0,5.);
+   //...B...no PID  k3
+   histosTH1F["hm4rec2OS_k3pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_k3pi4veeno11","M_{K_{3}#pi_{4}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi1pi2k3veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi2k3veeno11","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
+   //
+   histosTH1F["hm4rec2OS_pi1pi4k3veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi4k3veeno11","M_{#pi_{1}#pi_{4}} OS",massbins,0,5.);
    histosTH1F["hm4rec2OS_k3pi2veeno11"] = fs->make<TH1F>("hm4rec2OS_k3pi2veeno11","M_{K_{3}#pi_{2}} OS",massbins,0,5.);
    //
-   histosTH1F["hm4rec2OS_pi2pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi4veeno11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi2pi4k3veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi4k3veeno11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
    histosTH1F["hm4rec2OS_k3pi1veeno11"] = fs->make<TH1F>("hm4rec2OS_k3pi1veeno11","M_{K_{3}#pi_{1}} OS",massbins,0,5.);
-   //...C...no PID
+   //
+   //...C...no PID  k2
    histosTH1F["hm4rec2OS_pi1k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1k2veeno11","M_{#pi_{1}K_{2}} OS",massbins,0,5.);
-   histosTH1F["hm4rec2OS_pi3pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_pi3pi4veeno11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi3pi4k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi3pi4k2veeno11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
    //
    histosTH1F["hm4rec2OS_pi3k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi3k2veeno11","M_{#pi_{3}K_{2}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi1pi4k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi4k2veeno11","M_{#pi_{1}#pi_{4}} OS",massbins,0,5.);
    //
    histosTH1F["hm4rec2OS_pi4k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi4k2veeno11","M_{#pi_{4}K_{2}} OS",massbins,0,5.);
-   //...D...no PID
+   histosTH1F["hm4rec2OS_pi1pi3k2veeno11"] = fs->make<TH1F>("hm4rec2OS_pi1pi3k2veeno11","M_{#pi_{1}#pi_{3}} OS",massbins,0,5.);
+   //
+   //...D...no PID  k1
    histosTH1F["hm4rec2OS_k1pi2veeno11"] = fs->make<TH1F>("hm4rec2OS_k1pi2veeno11","M_{K_{1}#pi_{2}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi3pi4k1veeno11"] = fs->make<TH1F>("hm4rec2OS_pi3pi4k1veeno11","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
    //
    histosTH1F["hm4rec2OS_k1pi3veeno11"] = fs->make<TH1F>("hm4rec2OS_k1pi3veeno11","M_{K_{1}#pi_{3}} OS",massbins,0,5.);
+   histosTH1F["hm4rec2OS_pi2pi4k1veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi4k1veeno11","M_{#pi_{2}#pi_{4}} OS",massbins,0,5.);
    //
    histosTH1F["hm4rec2OS_k1pi4veeno11"] = fs->make<TH1F>("hm4rec2OS_k1pi4veeno11","M_{K_{1}#pi_{4}} OS",massbins,0,5.);
-
+   histosTH1F["hm4rec2OS_pi2pi3k1veeno11"] = fs->make<TH1F>("hm4rec2OS_pi2pi3k1veeno11","M_{#pi_{2}#pi_{3}} OS",massbins,0,5.);
+   
   //...vee02
   //**histosTH1F["hm4rec2OS_pi1pi2vee02"] = fs->make<TH1F>("hm4rec2OS_pi1pi2vee02","M_{#pi_{1}#pi_{2}} OS",massbins,0,5.);
   //**histosTH1F["hm4rec2OS_pi3pi4vee02"] = fs->make<TH1F>("hm4rec2OS_pi3pi4vee02","M_{#pi_{3}#pi_{4}} OS",massbins,0,5.);
@@ -3287,10 +3854,30 @@ PromptAnalyzer::beginJob()
   //***histosTH2F["hlndedx"]  = fs->make<TH2F>("hlndedx","ln dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
   //***histosTH2F["hl10dedx"] = fs->make<TH2F>("hl10dedx","log10 dE/dx vs p", 500, 0.,5.,1000, 0.,5.);
 
+  /*
   // eneMK0
   histosTH1F["henemk012"] = fs->make<TH1F>("henemk012","eneMK0 #pi1#pi2", 5000, 0.,50.);
   histosTH1F["henemk034"] = fs->make<TH1F>("henemk034","eneMK0 #pi3#pi4", 5000, 0.,50.);
+  */
+  
+  //...proton momentum
+  histosTH1F["hprotonpl"] = fs->make<TH1F>("hprotonpl","proton left p",1000,0.,20.);
+  histosTH1F["hprotonpr"] = fs->make<TH1F>("hprotonpr","proton right p",1000,0.,20.);
+  //
+  histosTH1F["hprotonplx"] = fs->make<TH1F>("hprotonplx","proton left px",2000,-20.,20.);
+  histosTH1F["hprotonply"] = fs->make<TH1F>("hprotonply","proton left py",2000,-20.,20.);
+  histosTH1F["hprotonprx"] = fs->make<TH1F>("hprotonprx","proton right px",2000,-20.,20.);
+  histosTH1F["hprotonpry"] = fs->make<TH1F>("hprotonpry","proton right py",2000,-20.,20.);
 
+  //...4-momentum transfer squared
+  histosTH1F["ht1"] = fs->make<TH1F>("ht1","|-t1|",1000,0.,5.);
+  histosTH1F["ht2"] = fs->make<TH1F>("ht2","|-t2|",1000,0.,5.);
+  histosTH1F["ht1t2"] = fs->make<TH1F>("ht1t2","|-(t1+t2)|",1000,0.,5.);
+  histosTH1F["ht12"] = fs->make<TH1F>("ht12","|-(t1+t2)|",1000,0.,5.);
+
+  // xi 200,-0.5,0.5
+// <<<<<<<<<<
+  
   std::cout<<"booked all of Luiz' histograms."<<std::endl;
   
   //--------------end of my histograms
